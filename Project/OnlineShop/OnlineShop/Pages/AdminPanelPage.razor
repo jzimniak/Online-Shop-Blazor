@@ -1,0 +1,28 @@
+﻿@page  "/admin-panel"
+@using OnlineShop.Components.Product_Management
+
+@inject SimpleUserInfo SimpleUserInfo
+@inject Refresh_Component Refresh_Component
+<div class="flex-cointainer mt-30px">
+    @if (SimpleUserInfo.IsLogged && SimpleUserInfo.UserRole == "Admin")
+    {
+        <ProductManagementComponent />
+    }
+    else
+    {
+        <span class="brakdostepu-span">
+            Brak dostępu
+        </span>
+    }
+</div>
+
+@code { 
+    protected override void OnInitialized()
+    {
+        Refresh_Component.adminPanelPage = this;
+    }
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
+}

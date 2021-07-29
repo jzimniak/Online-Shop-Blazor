@@ -1,0 +1,2044 @@
+﻿@page "/c/{category:int}"
+
+@using Microsoft.AspNetCore.WebUtilities
+@using DataAccess
+@using Models
+@using OnlineShop.Components.ProductList
+@using Microsoft.AspNetCore.Hosting
+
+@inject IWebHostEnvironment env
+@inject SqlDataAccess _data
+@inject NavigationManager NavigationManager
+
+@if (loading)
+{
+    @switch (category)
+    {
+        case 1:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="processor" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="1" />
+                        </CascadingValue>
+                    </div>
+                    <div style="padding-right: 4vw; padding-left: 4vw;" class="container col-9 mr-auto ml-auto">
+                        @if (processor.Count != 0 && processor is not null)
+                        {
+                            var l = (processor.Count % (rows * 3) == 0) ? processor.Count / (rows * 3) : (processor.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @processor.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && processor.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((processor.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[x*3].Id)" rating="opinions.Find(x=>x.productID==processor[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[i*3].Id).opinions" price=@processor[i*3].Price name=@processor[i*3].Name Photo=@processor[i*3].Attributes.Photo[0] ID=@processor[i*3].Id Attributes="@(new List<string> {"Seria: "+ processor[i*3].Attributes.Processor_number, "Taktowanie: "+processor[i*3].Attributes.Frequency,"Liczba rdzeni: "+processor[i*3].Attributes.Cores.ToString(),"Cache: "+processor[i*3].Attributes.Cache })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[x*3+1].Id)" rating="opinions.Find(x=>x.productID==processor[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[i*3+1].Id).opinions" price=@processor[i*3+1].Price name=@processor[i*3+1].Name Photo=@processor[i*3+1].Attributes.Photo[0] ID=@processor[i*3+1].Id Attributes="@(new List<string> {"Seria: "+ processor[i*3+1].Attributes.Processor_number,"Taktowanie: "+ processor[i*3+1].Attributes.Frequency,"Liczba rdzeni: "+processor[i*3+1].Attributes.Cores.ToString(),"Cache: "+processor[i*3+1].Attributes.Cache })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[x*3+2].Id)" rating="opinions.Find(x=>x.productID==processor[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[i*3+2].Id).opinions" price=@processor[i*3+2].Price name=@processor[i*3+2].Name Photo=@processor[i*3+2].Attributes.Photo[0] ID=@processor[i*3+2].Id Attributes="@(new List<string> {"Seria: "+ processor[i*3+2].Attributes.Processor_number,"Taktowanie: "+ processor[i*3+2].Attributes.Frequency,"Liczba rdzeni: "+processor[i*3+2].Attributes.Cores.ToString(),"Cache: "+processor[i*3+2].Attributes.Cache })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                if (processor.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[processor.Count-1].Id)" rating="opinions.Find(x=>x.productID==processor[processor.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[processor.Count-1].Id).opinions" price=@processor[processor.Count-1].Price name=@processor[processor.Count-1].Name Photo=@processor[processor.Count-1].Attributes.Photo[0] ID=@processor[processor.Count-1].Id Attributes="@(new List<string> {"Seria: "+ processor[processor.Count-1].Attributes.Processor_number, "Taktowanie: "+processor[processor.Count-1].Attributes.Frequency,"Liczba rdzeni: "+processor[processor.Count-1].Attributes.Cores.ToString(),"Cache: "+processor[processor.Count-1].Attributes.Cache })" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (processor.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(processor[processor.Count-2].Id)" rating="opinions.Find(x=>x.productID==processor[processor.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[processor.Count-2].Id).opinions" price=@processor[processor.Count-2].Price name=@processor[processor.Count-2].Name Photo=@processor[processor.Count-2].Attributes.Photo[0] ID=@processor[processor.Count-2].Id Attributes="@(new List<string> {"Seria: "+ processor[processor.Count-2].Attributes.Processor_number, "Taktowanie: "+processor[processor.Count-2].Attributes.Frequency,"Liczba rdzeni: "+processor[processor.Count-2].Attributes.Cores.ToString(),"Cache: "+processor[processor.Count-2].Attributes.Cache })" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(processor[processor.Count-1].Id)" rating="opinions.Find(x=>x.productID==processor[processor.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[processor.Count-1].Id).opinions" price=@processor[processor.Count-1].Price name=@processor[processor.Count-1].Name Photo=@processor[processor.Count-1].Attributes.Photo[0] ID=@processor[processor.Count-1].Id Attributes="@(new List<string> {"Seria: "+ processor[processor.Count-1].Attributes.Processor_number, "Taktowanie: "+processor[processor.Count-1].Attributes.Frequency,"Liczba rdzeni: "+processor[processor.Count-1].Attributes.Cores.ToString(),"Cache: "+processor[processor.Count-1].Attributes.Cache })" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[x*3].Id)" rating="opinions.Find(x=>x.productID==processor[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[i*3].Id).opinions" price=@processor[i*3].Price name=@processor[i*3].Name Photo=@processor[i*3].Attributes.Photo[0] ID=@processor[i*3].Id Attributes="@(new List<string> {"Seria: "+ processor[i*3].Attributes.Processor_number, "Taktowanie: "+processor[i*3].Attributes.Frequency,"Liczba rdzeni: "+processor[i*3].Attributes.Cores.ToString(),"Cache: "+processor[i*3].Attributes.Cache })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[x*3+1].Id)" rating="opinions.Find(x=>x.productID==processor[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[i*3+1].Id).opinions" price=@processor[i*3+1].Price name=@processor[i*3+1].Name Photo=@processor[i*3+1].Attributes.Photo[0] ID=@processor[i*3+1].Id Attributes="@(new List<string> {"Seria: "+ processor[i*3+1].Attributes.Processor_number,"Taktowanie: "+ processor[i*3+1].Attributes.Frequency,"Liczba rdzeni: "+processor[i*3+1].Attributes.Cores.ToString(),"Cache: "+processor[i*3+1].Attributes.Cache })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[x*3+2].Id)" rating="opinions.Find(x=>x.productID==processor[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[i*3+2].Id).opinions" price=@processor[i*3+2].Price name=@processor[i*3+2].Name Photo=@processor[i*3+2].Attributes.Photo[0] ID=@processor[i*3+2].Id Attributes="@(new List<string> {"Seria: "+ processor[i*3+2].Attributes.Processor_number,"Taktowanie: "+ processor[i*3+2].Attributes.Frequency,"Liczba rdzeni: "+processor[i*3+2].Attributes.Cores.ToString(),"Cache: "+processor[i*3+2].Attributes.Cache })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (processor.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[0].Id)" rating="opinions.Find(x=>x.productID==processor[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[0].Id).opinions" price=@processor[0].Price name=@processor[0].Name Photo=@processor[0].Attributes.Photo[0] ID=@processor[0].Id Attributes="@(new List<string> {"Seria: "+ processor[0].Attributes.Processor_number, "Taktowanie: "+processor[0].Attributes.Frequency,"Liczba rdzeni: "+processor[0].Attributes.Cores.ToString(),"Cache: "+processor[0].Attributes.Cache })" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (processor.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[0].Id)" rating="opinions.Find(x=>x.productID==processor[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[0].Id).opinions" price=@processor[0].Price name=@processor[0].Name Photo=@processor[0].Attributes.Photo[0] ID=@processor[0].Id Attributes="@(new List<string> {"Seria: "+ processor[0].Attributes.Processor_number, "Taktowanie: "+processor[0].Attributes.Frequency,"Liczba rdzeni: "+processor[0].Attributes.Cores.ToString(),"Cache: "+processor[0].Attributes.Cache })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(processor[1].Id)" rating="opinions.Find(x=>x.productID==processor[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==processor[1].Id).opinions" price=@processor[1].Price name=@processor[1].Name Photo=@processor[1].Attributes.Photo[0] ID=@processor[1].Id Attributes="@(new List<string> {"Seria: "+ processor[1].Attributes.Processor_number, "Taktowanie: "+processor[1].Attributes.Frequency,"Liczba rdzeni: "+processor[1].Attributes.Cores.ToString(),"Cache: "+processor[1].Attributes.Cache })" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0 h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            break;
+        case 2:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="computercase" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="2" />
+                        </CascadingValue>
+                    </div>
+                    <div style="padding-right: 4vw; padding-left: 4vw;" class="container col-9 mr-auto ml-auto">
+                        @if (computercase.Count != 0 && computercase is not null)
+                        {
+                            var l = (computercase.Count % (rows * 3) == 0) ? computercase.Count / (rows * 3) : (computercase.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @computercase.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && computercase.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((computercase.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[x*3].Id)" rating="opinions.Find(x=>x.productID==computercase[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[i*3].Id).opinions" price=@computercase[i*3].Price name=@computercase[i*3].Name Photo=@computercase[i*3].Attributes.Photo[0] ID=@computercase[i*3].Id Attributes="@(new List<string> {"Typ: "+ computercase[i*3].Attributes.Type,"Standard płyty: "+computercase[i*3].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[i*3].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[i*3].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[x*3+1].Id)" rating="opinions.Find(x=>x.productID==computercase[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[i*3+1].Id).opinions" price=@computercase[i*3+1].Price name=@computercase[i*3+1].Name Photo=@computercase[i*3+1].Attributes.Photo[0] ID=@computercase[i*3+1].Id Attributes="@(new List<string> {"Typ: "+ computercase[i*3+1].Attributes.Type,"Standard płyty: "+computercase[i*3+1].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[i*3+1].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[i*3+1].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[x*3+2].Id)" rating="opinions.Find(x=>x.productID==computercase[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[i*3+2].Id).opinions" price=@computercase[i*3+2].Price name=@computercase[i*3+2].Name Photo=@computercase[i*3+2].Attributes.Photo[0] ID=@computercase[i*3+2].Id Attributes="@(new List<string> {"Typ: "+ computercase[i*3+2].Attributes.Type,"Standard płyty: "+computercase[i*3+2].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[i*3+2].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[i*3+2].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                if (computercase.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[computercase.Count-1].Id)" rating="opinions.Find(x=>x.productID==computercase[computercase.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[computercase.Count-1].Id).opinions" price=@computercase[computercase.Count-1].Price name=@computercase[computercase.Count-1].Name Photo=@computercase[computercase.Count-1].Attributes.Photo[0] ID=@computercase[computercase.Count-1].Id Attributes="@(new List<string> {"Typ: "+ computercase[computercase.Count-1].Attributes.Type,"Standard płyty: "+computercase[computercase.Count-1].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[computercase.Count-1].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[computercase.Count-1].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (computercase.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(computercase[computercase.Count-2].Id)" rating="opinions.Find(x=>x.productID==computercase[computercase.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[computercase.Count-2].Id).opinions" price=@computercase[computercase.Count-2].Price name=@computercase[computercase.Count-2].Name Photo=@computercase[computercase.Count-2].Attributes.Photo[0] ID=@computercase[computercase.Count-2].Id Attributes="@(new List<string> {"Typ: "+ computercase[computercase.Count-2].Attributes.Type,"Standard płyty: "+computercase[computercase.Count-2].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[computercase.Count-2].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[computercase.Count-2].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(computercase[computercase.Count-1].Id)" rating="opinions.Find(x=>x.productID==computercase[computercase.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[computercase.Count-1].Id).opinions" price=@computercase[computercase.Count-1].Price name=@computercase[computercase.Count-1].Name Photo=@computercase[computercase.Count-1].Attributes.Photo[0] ID=@computercase[computercase.Count-1].Id Attributes="@(new List<string> {"Typ: "+ computercase[computercase.Count-1].Attributes.Type,"Standard płyty: "+computercase[computercase.Count-1].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[computercase.Count-1].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[computercase.Count-1].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[x*3].Id)" rating="opinions.Find(x=>x.productID==computercase[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[i*3].Id).opinions" price=@computercase[i*3].Price name=@computercase[i*3].Name Photo=@computercase[i*3].Attributes.Photo[0] ID=@computercase[i*3].Id Attributes="@(new List<string> {"Typ: "+ computercase[i*3].Attributes.Type,"Standard płyty: "+computercase[i*3].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[i*3].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[i*3].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[x*3+1].Id)" rating="opinions.Find(x=>x.productID==computercase[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[i*3+1].Id).opinions" price=@computercase[i*3+1].Price name=@computercase[i*3+1].Name Photo=@computercase[i*3+1].Attributes.Photo[0] ID=@computercase[i*3+1].Id Attributes="@(new List<string> {"Typ: "+ computercase[i*3+1].Attributes.Type,"Standard płyty: "+computercase[i*3+1].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[i*3+1].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[i*3+1].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[x*3+2].Id)" rating="opinions.Find(x=>x.productID==computercase[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[i*3+2].Id).opinions" price=@computercase[i*3+2].Price name=@computercase[i*3+2].Name Photo=@computercase[i*3+2].Attributes.Photo[0] ID=@computercase[i*3+2].Id Attributes="@(new List<string> {"Typ: "+ computercase[i*3+2].Attributes.Type,"Standard płyty: "+computercase[i*3+2].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[i*3+2].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[i*3+2].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (computercase.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[0].Id)" rating="opinions.Find(x=>x.productID==computercase[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[0].Id).opinions" price=@computercase[0].Price name=@computercase[0].Name Photo=@computercase[0].Attributes.Photo[0] ID=@computercase[0].Id Attributes="@(new List<string> {"Typ: "+ computercase[0].Attributes.Type,"Standard płyty: "+computercase[0].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[0].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[0].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (computercase.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[0].Id)" rating="opinions.Find(x=>x.productID==computercase[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[0].Id).opinions" price=@computercase[0].Price name=@computercase[0].Name Photo=@computercase[0].Attributes.Photo[0] ID=@computercase[0].Id Attributes="@(new List<string> {"Typ: "+ computercase[0].Attributes.Type,"Standard płyty: "+computercase[0].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[0].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[0].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(computercase[1].Id)" rating="opinions.Find(x=>x.productID==computercase[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==computercase[1].Id).opinions" price=@computercase[1].Price name=@computercase[1].Name Photo=@computercase[1].Attributes.Photo[0] ID=@computercase[1].Id Attributes="@(new List<string> {"Typ: "+ computercase[1].Attributes.Type,"Standard płyty: "+computercase[1].Attributes.Motherboards_typeSTR,"Karty rozszerzeń: "+computercase[1].Attributes.Extension_cards.ToString(),"Maks. długość grafiki: "+computercase[1].Attributes.Max_graphic_card_length.ToString()+" mm" })" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center min-height-100 user-select-none">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0  h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            break;
+        case 3:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="disc" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="3" />
+                        </CascadingValue>
+                    </div>
+                    <div style="padding-right: 4vw; padding-left: 4vw;" class="container col-9 mr-auto ml-auto">
+                        @if (disc.Count != 0 && disc is not null)
+                        {
+                            var l = (disc.Count % (rows * 3) == 0) ? disc.Count / (rows * 3) : (disc.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @disc.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            @if (page_number_selected == l && disc.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((disc.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[x*3].Id)" rating="opinions.Find(x=>x.productID==disc[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[i*3].Id).opinions" price=@disc[i*3].Price name=@disc[i*3].Name Photo=@disc[i*3].Attributes.Photo[0] ID=@disc[i*3].Id Attributes="@(new List<string> { "Pojemność: "+disc[i*3].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[i*3].Attributes.Interfaces,"Prędkość odczytu: "+disc[i*3].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[i*3].Attributes.Write_speed.ToString()+" MB/s" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[x*3+1].Id)" rating="opinions.Find(x=>x.productID==disc[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[i*3+1].Id).opinions" price=@disc[i*3+1].Price name=@disc[i*3+1].Name Photo=@disc[i*3+1].Attributes.Photo[0] ID=@disc[i*3+1].Id Attributes="@(new List<string> { "Pojemność: "+disc[i*3+1].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[i*3+1].Attributes.Interfaces,"Prędkość odczytu: "+disc[i*3+1].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[i*3+1].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[x*3+2].Id)" rating="opinions.Find(x=>x.productID==disc[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[i*3+2].Id).opinions" price=@disc[i*3+2].Price name=@disc[i*3+2].Name Photo=@disc[i*3+2].Attributes.Photo[0] ID=@disc[i*3+2].Id Attributes="@(new List<string> { "Pojemność: "+disc[i*3+2].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[i*3+2].Attributes.Interfaces,"Prędkość odczytu: "+disc[i*3+2].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[i*3+2].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (disc.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[disc.Count-1].Id)" rating="opinions.Find(x=>x.productID==disc[disc.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[disc.Count-1].Id).opinions" price=@disc[disc.Count-1].Price name=@disc[disc.Count-1].Name Photo=@disc[disc.Count-1].Attributes.Photo[0] ID=@disc[disc.Count-1].Id Attributes="@(new List<string> {"Pojemność: "+ disc[disc.Count-1].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[disc.Count-1].Attributes.Interfaces,"Prędkość odczytu: "+disc[disc.Count-1].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[disc.Count-1].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (disc.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(disc[disc.Count-2].Id)" rating="opinions.Find(x=>x.productID==disc[disc.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[disc.Count-2].Id).opinions" price=@disc[disc.Count-2].Price name=@disc[disc.Count-2].Name Photo=@disc[disc.Count-2].Attributes.Photo[0] ID=@disc[disc.Count-2].Id Attributes="@(new List<string> {"Pojemność: "+ disc[disc.Count-2].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[disc.Count-2].Attributes.Interfaces,"Prędkość odczytu: "+disc[disc.Count-2].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[disc.Count-2].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(disc[disc.Count-1].Id)" rating="opinions.Find(x=>x.productID==disc[disc.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[disc.Count-1].Id).opinions" price=@disc[disc.Count-1].Price name=@disc[disc.Count-1].Name Photo=@disc[disc.Count-1].Attributes.Photo[0] ID=@disc[disc.Count-1].Id Attributes="@(new List<string> {"Pojemność: "+ disc[disc.Count-1].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[disc.Count-1].Attributes.Interfaces,"Prędkość odczytu: "+disc[disc.Count-1].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[disc.Count-1].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[x*3].Id)" rating="opinions.Find(x=>x.productID==disc[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[i*3].Id).opinions" price=@disc[i*3].Price name=@disc[i*3].Name Photo=@disc[i*3].Attributes.Photo[0] ID=@disc[i*3].Id Attributes="@(new List<string> { "Pojemność: "+disc[i*3].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[i*3].Attributes.Interfaces,"Prędkość odczytu: "+disc[i*3].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[i*3].Attributes.Write_speed.ToString()+" MB/s" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[x*3+1].Id)" rating="opinions.Find(x=>x.productID==disc[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[i*3+1].Id).opinions" price=@disc[i*3+1].Price name=@disc[i*3+1].Name Photo=@disc[i*3+1].Attributes.Photo[0] ID=@disc[i*3+1].Id Attributes="@(new List<string> { "Pojemność: "+disc[i*3+1].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[i*3+1].Attributes.Interfaces,"Prędkość odczytu: "+disc[i*3+1].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[i*3+1].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[x*3+2].Id)" rating="opinions.Find(x=>x.productID==disc[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[i*3+2].Id).opinions" price=@disc[i*3+2].Price name=@disc[i*3+2].Name Photo=@disc[i*3+2].Attributes.Photo[0] ID=@disc[i*3+2].Id Attributes="@(new List<string> { "Pojemność: "+disc[i*3+2].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[i*3+2].Attributes.Interfaces,"Prędkość odczytu: "+disc[i*3+2].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[i*3+2].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (disc.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[0].Id)" rating="opinions.Find(x=>x.productID==disc[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[0].Id).opinions" price=@disc[0].Price name=@disc[0].Name Photo=@disc[0].Attributes.Photo[0] ID=@disc[0].Id Attributes="@(new List<string> {"Pojemność: "+ disc[0].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[0].Attributes.Interfaces,"Prędkość odczytu: "+disc[0].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[0].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (disc.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[0].Id)" rating="opinions.Find(x=>x.productID==disc[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[0].Id).opinions" price=@disc[0].Price name=@disc[0].Name Photo=@disc[0].Attributes.Photo[0] ID=@disc[0].Id Attributes="@(new List<string> {"Pojemność: "+ disc[0].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[0].Attributes.Interfaces,"Prędkość odczytu: "+disc[0].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[0].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(disc[1].Id)" rating="opinions.Find(x=>x.productID==disc[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==disc[1].Id).opinions" price=@disc[1].Price name=@disc[1].Name Photo=@disc[1].Attributes.Photo[0] ID=@disc[1].Id Attributes="@(new List<string> {"Pojemność: "+ disc[1].Attributes.Capacity.ToString()+" GB","Interfejs: "+disc[1].Attributes.Interfaces,"Prędkość odczytu: "+disc[1].Attributes.Read_speed.ToString()+" MB/s","Prędkość zapisu: "+disc[1].Attributes.Write_speed.ToString()+" MB/s"  })" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0  h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            break;
+        case 4:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="graphiccard" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="4" />
+                        </CascadingValue>
+                    </div>
+                    <div style="padding-right: 4vw; padding-left: 4vw;" class="container col-9 mr-auto ml-auto">
+                        @if (graphiccard.Count != 0 && graphiccard is not null)
+                        {
+                            var l = (graphiccard.Count % (rows * 3) == 0) ? graphiccard.Count / (rows * 3) : (graphiccard.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @graphiccard.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && graphiccard.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((graphiccard.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[x*3].Id)" rating="opinions.Find(x=>x.productID==graphiccard[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[i*3].Id).opinions" price=@graphiccard[i*3].Price name=@graphiccard[i*3].Name Photo=@graphiccard[i*3].Attributes.Photo[0] ID=@graphiccard[i*3].Id Attributes="@(new List<string> { "Układ: "+graphiccard[i*3].Attributes.Graphics_processing,"Pamięć: "+graphiccard[i*3].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[i*3].Attributes.Memory_type,"Złącza: "+graphiccard[i*3].Attributes.OutputsSTR })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[x*3+1].Id)" rating="opinions.Find(x=>x.productID==graphiccard[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[i*3+1].Id).opinions" price=@graphiccard[i*3+1].Price name=@graphiccard[i*3+1].Name Photo=@graphiccard[i*3+1].Attributes.Photo[0] ID=@graphiccard[i*3+1].Id Attributes="@(new List<string> { "Układ: "+graphiccard[i*3+1].Attributes.Graphics_processing,"Pamięć: "+graphiccard[i*3+1].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[i*3+1].Attributes.Memory_type,"Złącza: "+graphiccard[i*3+1].Attributes.OutputsSTR  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[x*3+2].Id)" rating="opinions.Find(x=>x.productID==graphiccard[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[i*3+2].Id).opinions" price=@graphiccard[i*3+2].Price name=@graphiccard[i*3+2].Name Photo=@graphiccard[i*3+2].Attributes.Photo[0] ID=@graphiccard[i*3+2].Id Attributes="@(new List<string> { "Układ: "+graphiccard[i*3+2].Attributes.Graphics_processing,"Pamięć: "+graphiccard[i*3+2].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[i*3+2].Attributes.Memory_type,"Złącza: "+graphiccard[i*3+2].Attributes.OutputsSTR })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (graphiccard.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[graphiccard.Count-1].Id)" rating="opinions.Find(x=>x.productID==graphiccard[graphiccard.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[graphiccard.Count-1].Id).opinions" price=@graphiccard[graphiccard.Count-1].Price name=@graphiccard[graphiccard.Count-1].Name Photo=@graphiccard[graphiccard.Count-1].Attributes.Photo[0] ID=@graphiccard[graphiccard.Count-1].Id Attributes="@(new List<string> { "Układ: "+graphiccard[graphiccard.Count-1].Attributes.Graphics_processing,"Pamięć: "+graphiccard[graphiccard.Count-1].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[graphiccard.Count-1].Attributes.Memory_type,"Złącza: "+graphiccard[graphiccard.Count-1].Attributes.OutputsSTR})" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (graphiccard.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(graphiccard[graphiccard.Count-2].Id)" rating="opinions.Find(x=>x.productID==graphiccard[graphiccard.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[graphiccard.Count-2].Id).opinions" price=@graphiccard[graphiccard.Count-2].Price name=@graphiccard[graphiccard.Count-2].Name Photo=@graphiccard[graphiccard.Count-2].Attributes.Photo[0] ID=@graphiccard[graphiccard.Count-2].Id Attributes="@(new List<string> { "Układ: "+graphiccard[graphiccard.Count-2].Attributes.Graphics_processing,"Pamięć: "+graphiccard[graphiccard.Count-2].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[graphiccard.Count-2].Attributes.Memory_type,"Złącza: "+graphiccard[graphiccard.Count-2].Attributes.OutputsSTR})" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(graphiccard[graphiccard.Count-1].Id)" rating="opinions.Find(x=>x.productID==graphiccard[graphiccard.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[graphiccard.Count-1].Id).opinions" price=@graphiccard[graphiccard.Count-1].Price name=@graphiccard[graphiccard.Count-1].Name Photo=@graphiccard[graphiccard.Count-1].Attributes.Photo[0] ID=@graphiccard[graphiccard.Count-1].Id Attributes="@(new List<string> { "Układ: "+graphiccard[graphiccard.Count-1].Attributes.Graphics_processing,"Pamięć: "+graphiccard[graphiccard.Count-1].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[graphiccard.Count-1].Attributes.Memory_type,"Złącza: "+graphiccard[graphiccard.Count-1].Attributes.OutputsSTR})" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[x*3].Id)" rating="opinions.Find(x=>x.productID==graphiccard[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[i*3].Id).opinions" price=@graphiccard[i*3].Price name=@graphiccard[i*3].Name Photo=@graphiccard[i*3].Attributes.Photo[0] ID=@graphiccard[i*3].Id Attributes="@(new List<string> { "Układ: "+graphiccard[i*3].Attributes.Graphics_processing,"Pamięć: "+graphiccard[i*3].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[i*3].Attributes.Memory_type,"Złącza: "+graphiccard[i*3].Attributes.OutputsSTR })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[x*3+1].Id)" rating="opinions.Find(x=>x.productID==graphiccard[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[i*3+1].Id).opinions" price=@graphiccard[i*3+1].Price name=@graphiccard[i*3+1].Name Photo=@graphiccard[i*3+1].Attributes.Photo[0] ID=@graphiccard[i*3+1].Id Attributes="@(new List<string> { "Układ: "+graphiccard[i*3+1].Attributes.Graphics_processing,"Pamięć: "+graphiccard[i*3+1].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[i*3+1].Attributes.Memory_type,"Złącza: "+graphiccard[i*3+1].Attributes.OutputsSTR  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[x*3+2].Id)" rating="opinions.Find(x=>x.productID==graphiccard[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[i*3+2].Id).opinions" price=@graphiccard[i*3+2].Price name=@graphiccard[i*3+2].Name Photo=@graphiccard[i*3+2].Attributes.Photo[0] ID=@graphiccard[i*3+2].Id Attributes="@(new List<string> { "Układ: "+graphiccard[i*3+2].Attributes.Graphics_processing,"Pamięć: "+graphiccard[i*3+2].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[i*3+2].Attributes.Memory_type,"Złącza: "+graphiccard[i*3+2].Attributes.OutputsSTR })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (graphiccard.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[0].Id)" rating="opinions.Find(x=>x.productID==graphiccard[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[0].Id).opinions" price=@graphiccard[0].Price name=@graphiccard[0].Name Photo=@graphiccard[0].Attributes.Photo[0] ID=@graphiccard[0].Id Attributes="@(new List<string> { "Układ: "+graphiccard[0].Attributes.Graphics_processing,"Pamięć: "+graphiccard[0].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[0].Attributes.Memory_type,"Złącza: "+graphiccard[0].Attributes.OutputsSTR})" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (graphiccard.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[0].Id)" rating="opinions.Find(x=>x.productID==graphiccard[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[0].Id).opinions" price=@graphiccard[0].Price name=@graphiccard[0].Name Photo=@graphiccard[0].Attributes.Photo[0] ID=@graphiccard[0].Id Attributes="@(new List<string> { "Układ: "+graphiccard[0].Attributes.Graphics_processing,"Pamięć: "+graphiccard[0].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[0].Attributes.Memory_type,"Złącza: "+graphiccard[0].Attributes.OutputsSTR})" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(graphiccard[1].Id)" rating="opinions.Find(x=>x.productID==graphiccard[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==graphiccard[1].Id).opinions" price=@graphiccard[1].Price name=@graphiccard[1].Name Photo=@graphiccard[1].Attributes.Photo[0] ID=@graphiccard[1].Id Attributes="@(new List<string> { "Układ: "+graphiccard[1].Attributes.Graphics_processing,"Pamięć: "+graphiccard[1].Attributes.Memory_size.ToString()+" GB","Rodzaj pamięci: "+graphiccard[1].Attributes.Memory_type,"Złącza: "+graphiccard[1].Attributes.OutputsSTR})" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0 h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            break;
+        case 5:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="motherboard" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="5" />
+                        </CascadingValue>
+                    </div>
+                    <div style="margin-left: auto; margin-right: auto; padding-right: 4vw; padding-left: 4vw;" class="container col-9 ">
+                        @if (motherboard.Count != 0 && motherboard is not null)
+                        {
+                            var l = (motherboard.Count % (rows * 3) == 0) ? motherboard.Count / (rows * 3) : (motherboard.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @motherboard.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && motherboard.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((motherboard.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[x*3].Id)" rating="opinions.Find(x=>x.productID==motherboard[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[i*3].Id).opinions" price=@motherboard[i*3].Price name=@motherboard[i*3].Name Photo=@motherboard[i*3].Attributes.Photo[0] ID=@motherboard[i*3].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[i*3].Attributes.Socket,"Format: "+motherboard[i*3].Attributes.Format,"Chipset: "+motherboard[i*3].Attributes.Chipset,"Max wielkość RAM: "+motherboard[i*3].Attributes.Memory_max_size.ToString()+" GB" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[x*3+1].Id)" rating="opinions.Find(x=>x.productID==motherboard[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[i*3+1].Id).opinions" price=@motherboard[i*3+1].Price name=@motherboard[i*3+1].Name Photo=@motherboard[i*3+1].Attributes.Photo[0] ID=@motherboard[i*3+1].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[i*3+1].Attributes.Socket,"Format: "+motherboard[i*3+1].Attributes.Format,"Chipset: "+motherboard[i*3+1].Attributes.Chipset,"Max wielkość RAM: "+motherboard[i*3+1].Attributes.Memory_max_size.ToString()+" GB"  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[x*3+2].Id)" rating="opinions.Find(x=>x.productID==motherboard[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[i*3+2].Id).opinions" price=@motherboard[i*3+2].Price name=@motherboard[i*3+2].Name Photo=@motherboard[i*3+2].Attributes.Photo[0] ID=@motherboard[i*3+2].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[i*3+2].Attributes.Socket,"Format: "+motherboard[i*3+2].Attributes.Format,"Chipset: "+motherboard[i*3+2].Attributes.Chipset,"Max wielkość RAM: "+motherboard[i*3+2].Attributes.Memory_max_size.ToString()+" GB" })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (motherboard.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[motherboard.Count-1].Id)" rating="opinions.Find(x=>x.productID==motherboard[motherboard.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[motherboard.Count-1].Id).opinions" price=@motherboard[motherboard.Count-1].Price name=@motherboard[motherboard.Count-1].Name Photo=@motherboard[motherboard.Count-1].Attributes.Photo[0] ID=@motherboard[motherboard.Count-1].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[motherboard.Count-1].Attributes.Socket,"Format: "+motherboard[motherboard.Count-1].Attributes.Format,"Chipset: "+motherboard[motherboard.Count-1].Attributes.Chipset,"Max wielkość RAM: "+motherboard[motherboard.Count-1].Attributes.Memory_max_size.ToString()+" GB"})" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (motherboard.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(motherboard[motherboard.Count-2].Id)" rating="opinions.Find(x=>x.productID==motherboard[motherboard.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[motherboard.Count-2].Id).opinions" price=@motherboard[motherboard.Count-2].Price name=@motherboard[motherboard.Count-2].Name Photo=@motherboard[motherboard.Count-2].Attributes.Photo[0] ID=@motherboard[motherboard.Count-2].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[motherboard.Count-2].Attributes.Socket,"Format: "+motherboard[motherboard.Count-2].Attributes.Format,"Chipset: "+motherboard[motherboard.Count-2].Attributes.Chipset,"Max wielkość RAM: "+motherboard[motherboard.Count-2].Attributes.Memory_max_size.ToString()+" GB"})" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(motherboard[motherboard.Count-1].Id)" rating="opinions.Find(x=>x.productID==motherboard[motherboard.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[motherboard.Count-1].Id).opinions" price=@motherboard[motherboard.Count-1].Price name=@motherboard[motherboard.Count-1].Name Photo=@motherboard[motherboard.Count-1].Attributes.Photo[0] ID=@motherboard[motherboard.Count-1].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[motherboard.Count-1].Attributes.Socket,"Format: "+motherboard[motherboard.Count-1].Attributes.Format,"Chipset: "+motherboard[motherboard.Count-1].Attributes.Chipset,"Max wielkość RAM: "+motherboard[motherboard.Count-1].Attributes.Memory_max_size.ToString()+" GB"})" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[x*3].Id)" rating="opinions.Find(x=>x.productID==motherboard[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[i*3].Id).opinions" price=@motherboard[i*3].Price name=@motherboard[i*3].Name Photo=@motherboard[i*3].Attributes.Photo[0] ID=@motherboard[i*3].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[i*3].Attributes.Socket,"Format: "+motherboard[i*3].Attributes.Format,"Chipset: "+motherboard[i*3].Attributes.Chipset,"Max wielkość RAM: "+motherboard[i*3].Attributes.Memory_max_size.ToString()+" GB" })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[x*3+1].Id)" rating="opinions.Find(x=>x.productID==motherboard[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[i*3+1].Id).opinions" price=@motherboard[i*3+1].Price name=@motherboard[i*3+1].Name Photo=@motherboard[i*3+1].Attributes.Photo[0] ID=@motherboard[i*3+1].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[i*3+1].Attributes.Socket,"Format: "+motherboard[i*3+1].Attributes.Format,"Chipset: "+motherboard[i*3+1].Attributes.Chipset,"Max wielkość RAM: "+motherboard[i*3+1].Attributes.Memory_max_size.ToString()+" GB"  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[x*3+2].Id)" rating="opinions.Find(x=>x.productID==motherboard[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[i*3+2].Id).opinions" price=@motherboard[i*3+2].Price name=@motherboard[i*3+2].Name Photo=@motherboard[i*3+2].Attributes.Photo[0] ID=@motherboard[i*3+2].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[i*3+2].Attributes.Socket,"Format: "+motherboard[i*3+2].Attributes.Format,"Chipset: "+motherboard[i*3+2].Attributes.Chipset,"Max wielkość RAM: "+motherboard[i*3+2].Attributes.Memory_max_size.ToString()+" GB" })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (motherboard.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[0].Id)" rating="opinions.Find(x=>x.productID==motherboard[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[0].Id).opinions" price=@motherboard[0].Price name=@motherboard[0].Name Photo=@motherboard[0].Attributes.Photo[0] ID=@motherboard[0].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[0].Attributes.Socket,"Format: "+motherboard[0].Attributes.Format,"Chipset: "+motherboard[0].Attributes.Chipset,"Max wielkość RAM: "+motherboard[0].Attributes.Memory_max_size.ToString()+" GB"})" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (motherboard.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[0].Id)" rating="opinions.Find(x=>x.productID==motherboard[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[0].Id).opinions" price=@motherboard[0].Price name=@motherboard[0].Name Photo=@motherboard[0].Attributes.Photo[0] ID=@motherboard[0].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[0].Attributes.Socket,"Format: "+motherboard[0].Attributes.Format,"Chipset: "+motherboard[0].Attributes.Chipset,"Max wielkość RAM: "+motherboard[0].Attributes.Memory_max_size.ToString()+" GB"})" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(motherboard[1].Id)" rating="opinions.Find(x=>x.productID==motherboard[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==motherboard[1].Id).opinions" price=@motherboard[1].Price name=@motherboard[1].Name Photo=@motherboard[1].Attributes.Photo[0] ID=@motherboard[1].Id Attributes="@(new List<string> { "Gniazdo procesora: "+motherboard[1].Attributes.Socket,"Format: "+motherboard[1].Attributes.Format,"Chipset: "+motherboard[1].Attributes.Chipset,"Max wielkość RAM: "+motherboard[1].Attributes.Memory_max_size.ToString()+" GB"})" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0 h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            break;
+        case 6:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="Powersupply" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="6" />
+                        </CascadingValue>
+                    </div>
+                    <div style="padding-right: 4vw; padding-left: 4vw;" class="container col-9 mr-auto ml-auto">
+                        @if (Powersupply.Count != 0 && Powersupply is not null)
+                        {
+                            var l = (Powersupply.Count % (rows * 3) == 0) ? Powersupply.Count / (rows * 3) : (Powersupply.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @Powersupply.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && Powersupply.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((Powersupply.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[x*3].Id)" rating="opinions.Find(x=>x.productID==Powersupply[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[i*3].Id).opinions" price=@Powersupply[i*3].Price name=@Powersupply[i*3].Name Photo=@Powersupply[i*3].Attributes.Photo[0] ID=@Powersupply[i*3].Id Attributes="@(new List<string> { "Moc: "+Powersupply[i*3].Attributes.Power.ToString()+" W","Standard: "+Powersupply[i*3].Attributes.Standard,"Sprawność: "+Powersupply[i*3].Attributes.Efficiency,"Certyfikat: "+Powersupply[i*3].Attributes.Certificate })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[x*3+1].Id)" rating="opinions.Find(x=>x.productID==Powersupply[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[i*3+1].Id).opinions" price=@Powersupply[i*3+1].Price name=@Powersupply[i*3+1].Name Photo=@Powersupply[i*3+1].Attributes.Photo[0] ID=@Powersupply[i*3+1].Id Attributes="@(new List<string> { "Moc: "+Powersupply[i*3+1].Attributes.Power.ToString()+" W","Standard: "+Powersupply[i*3+1].Attributes.Standard,"Sprawność: "+Powersupply[i*3+1].Attributes.Efficiency,"Certyfikat: "+Powersupply[i*3+1].Attributes.Certificate  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[x*3+2].Id)" rating="opinions.Find(x=>x.productID==Powersupply[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[i*3+2].Id).opinions" price=@Powersupply[i*3+2].Price name=@Powersupply[i*3+2].Name Photo=@Powersupply[i*3+2].Attributes.Photo[0] ID=@Powersupply[i*3+2].Id Attributes="@(new List<string> { "Moc: "+Powersupply[i*3+2].Attributes.Power.ToString()+" W","Standard: "+Powersupply[i*3+2].Attributes.Standard,"Sprawność: "+Powersupply[i*3+2].Attributes.Efficiency,"Certyfikat: "+Powersupply[i*3+2].Attributes.Certificate })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (Powersupply.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[Powersupply.Count-1].Id)" rating="opinions.Find(x=>x.productID==Powersupply[Powersupply.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[Powersupply.Count-1].Id).opinions" price=@Powersupply[Powersupply.Count-1].Price name=@Powersupply[Powersupply.Count-1].Name Photo=@Powersupply[Powersupply.Count-1].Attributes.Photo[0] ID=@Powersupply[Powersupply.Count-1].Id Attributes="@(new List<string> { "Moc: "+Powersupply[Powersupply.Count-1].Attributes.Power.ToString()+" W","Standard: "+Powersupply[Powersupply.Count-1].Attributes.Standard,"Sprawność: "+Powersupply[Powersupply.Count-1].Attributes.Efficiency,"Certyfikat: "+Powersupply[Powersupply.Count-1].Attributes.Certificate})" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (Powersupply.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(Powersupply[Powersupply.Count-2].Id)" rating="opinions.Find(x=>x.productID==Powersupply[Powersupply.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[Powersupply.Count-2].Id).opinions" price=@Powersupply[Powersupply.Count-2].Price name=@Powersupply[Powersupply.Count-2].Name Photo=@Powersupply[Powersupply.Count-2].Attributes.Photo[0] ID=@Powersupply[Powersupply.Count-2].Id Attributes="@(new List<string> { "Moc: "+Powersupply[Powersupply.Count-2].Attributes.Power.ToString()+" W","Standard: "+Powersupply[Powersupply.Count-2].Attributes.Standard,"Sprawność: "+Powersupply[Powersupply.Count-2].Attributes.Efficiency,"Certyfikat: "+Powersupply[Powersupply.Count-2].Attributes.Certificate})" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(Powersupply[Powersupply.Count-1].Id)" rating="opinions.Find(x=>x.productID==Powersupply[Powersupply.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[Powersupply.Count-1].Id).opinions" price=@Powersupply[Powersupply.Count-1].Price name=@Powersupply[Powersupply.Count-1].Name Photo=@Powersupply[Powersupply.Count-1].Attributes.Photo[0] ID=@Powersupply[Powersupply.Count-1].Id Attributes="@(new List<string> { "Moc: "+Powersupply[Powersupply.Count-1].Attributes.Power.ToString()+" W","Standard: "+Powersupply[Powersupply.Count-1].Attributes.Standard,"Sprawność: "+Powersupply[Powersupply.Count-1].Attributes.Efficiency,"Certyfikat: "+Powersupply[Powersupply.Count-1].Attributes.Certificate})" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[x*3].Id)" rating="opinions.Find(x=>x.productID==Powersupply[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[i*3].Id).opinions" price=@Powersupply[i*3].Price name=@Powersupply[i*3].Name Photo=@Powersupply[i*3].Attributes.Photo[0] ID=@Powersupply[i*3].Id Attributes="@(new List<string> { "Moc: "+Powersupply[i*3].Attributes.Power.ToString()+" W","Standard: "+Powersupply[i*3].Attributes.Standard,"Sprawność: "+Powersupply[i*3].Attributes.Efficiency,"Certyfikat: "+Powersupply[i*3].Attributes.Certificate })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[x*3+1].Id)" rating="opinions.Find(x=>x.productID==Powersupply[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[i*3+1].Id).opinions" price=@Powersupply[i*3+1].Price name=@Powersupply[i*3+1].Name Photo=@Powersupply[i*3+1].Attributes.Photo[0] ID=@Powersupply[i*3+1].Id Attributes="@(new List<string> { "Moc: "+Powersupply[i*3+1].Attributes.Power.ToString()+" W","Standard: "+Powersupply[i*3+1].Attributes.Standard,"Sprawność: "+Powersupply[i*3+1].Attributes.Efficiency,"Certyfikat: "+Powersupply[i*3+1].Attributes.Certificate  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[x*3+2].Id)" rating="opinions.Find(x=>x.productID==Powersupply[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[i*3+2].Id).opinions" price=@Powersupply[i*3+2].Price name=@Powersupply[i*3+2].Name Photo=@Powersupply[i*3+2].Attributes.Photo[0] ID=@Powersupply[i*3+2].Id Attributes="@(new List<string> { "Moc: "+Powersupply[i*3+2].Attributes.Power.ToString()+" W","Standard: "+Powersupply[i*3+2].Attributes.Standard,"Sprawność: "+Powersupply[i*3+2].Attributes.Efficiency,"Certyfikat: "+Powersupply[i*3+2].Attributes.Certificate })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (Powersupply.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[0].Id)" rating="opinions.Find(x=>x.productID==Powersupply[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[0].Id).opinions" price=@Powersupply[0].Price name=@Powersupply[0].Name Photo=@Powersupply[0].Attributes.Photo[0] ID=@Powersupply[0].Id Attributes="@(new List<string> { "Moc: "+Powersupply[0].Attributes.Power.ToString()+" W","Standard: "+Powersupply[0].Attributes.Standard,"Sprawność: "+Powersupply[0].Attributes.Efficiency,"Certyfikat: "+Powersupply[0].Attributes.Certificate})" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (Powersupply.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[0].Id)" rating="opinions.Find(x=>x.productID==Powersupply[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[0].Id).opinions" price=@Powersupply[0].Price name=@Powersupply[0].Name Photo=@Powersupply[0].Attributes.Photo[0] ID=@Powersupply[0].Id Attributes="@(new List<string> { "Moc: "+Powersupply[0].Attributes.Power.ToString()+" W","Standard: "+Powersupply[0].Attributes.Standard,"Sprawność: "+Powersupply[0].Attributes.Efficiency,"Certyfikat: "+Powersupply[0].Attributes.Certificate})" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(Powersupply[1].Id)" rating="opinions.Find(x=>x.productID==Powersupply[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==Powersupply[1].Id).opinions" price=@Powersupply[1].Price name=@Powersupply[1].Name Photo=@Powersupply[1].Attributes.Photo[0] ID=@Powersupply[1].Id Attributes="@(new List<string> { "Moc: "+Powersupply[1].Attributes.Power.ToString()+" W","Standard: "+Powersupply[1].Attributes.Standard,"Sprawność: "+Powersupply[1].Attributes.Efficiency,"Certyfikat: "+Powersupply[1].Attributes.Certificate})" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0 h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            break;
+        case 7:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="radiator" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="7" />
+                        </CascadingValue>
+                    </div>
+                    <div style="padding-right: 4vw; padding-left: 4vw;" class="container col-9 mr-auto ml-auto">
+                        @if (radiator.Count != 0 && radiator is not null)
+                        {
+                            var l = (radiator.Count % (rows * 3) == 0) ? radiator.Count / (rows * 3) : (radiator.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @radiator.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && radiator.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((radiator.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[x*3].Id)" rating="opinions.Find(x=>x.productID==radiator[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[i*3].Id).opinions" price=@radiator[i*3].Price name=@radiator[i*3].Name Photo=@radiator[i*3].Attributes.Photo[0] ID=@radiator[i*3].Id Attributes="@(new List<string> { "Rodzaj chłodzenia: "+radiator[i*3].Attributes.Cooling_type,"Kompatybilność: "+radiator[i*3].Attributes.SocketsSTR,"Wentylatory: "+radiator[i*3].Attributes.FansSTR,"Max głośność: "+radiator[i*3].Attributes.Max_dB })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[x*3+1].Id)" rating="opinions.Find(x=>x.productID==radiator[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[i*3+1].Id).opinions" price=@radiator[i*3+1].Price name=@radiator[i*3+1].Name Photo=@radiator[i*3+1].Attributes.Photo[0] ID=@radiator[i*3+1].Id Attributes="@(new List<string> { "Rodzaj chłodzenia: "+radiator[i*3+1].Attributes.Cooling_type,"Kompatybilność: "+radiator[i*3+1].Attributes.SocketsSTR,"Wentylatory: "+radiator[i*3+1].Attributes.FansSTR,"Max głośność: "+radiator[i*3+1].Attributes.Max_dB  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[x*3+2].Id)" rating="opinions.Find(x=>x.productID==radiator[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[i*3+2].Id).opinions" price=@radiator[i*3+2].Price name=@radiator[i*3+2].Name Photo=@radiator[i*3+2].Attributes.Photo[0] ID=@radiator[i*3+2].Id Attributes="@(new List<string> {"Rodzaj chłodzenia: "+ radiator[i*3+2].Attributes.Cooling_type,"Kompatybilność: "+radiator[i*3+2].Attributes.SocketsSTR,"Wentylatory: "+radiator[i*3+2].Attributes.FansSTR,"Max głośność: "+radiator[i*3+2].Attributes.Max_dB })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (radiator.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[radiator.Count-1].Id)" rating="opinions.Find(x=>x.productID==radiator[radiator.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[radiator.Count-1].Id).opinions" price=@radiator[radiator.Count-1].Price name=@radiator[radiator.Count-1].Name Photo=@radiator[radiator.Count-1].Attributes.Photo[0] ID=@radiator[radiator.Count - 1].Id Attributes="@(new List<string> {"Rodzaj chłodzenia: "+ radiator[radiator.Count-1].Attributes.Cooling_type,"Kompatybilność: "+radiator[radiator.Count-1].Attributes.SocketsSTR,"Wentylatory: "+radiator[radiator.Count-1].Attributes.FansSTR,"Max głośność: "+radiator[radiator.Count-1].Attributes.Max_dB})" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (radiator.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(radiator[radiator.Count-2].Id)" rating="opinions.Find(x=>x.productID==radiator[radiator.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[radiator.Count-2].Id).opinions" price=@radiator[radiator.Count-2].Price name=@radiator[radiator.Count-2].Name Photo=@radiator[radiator.Count-2].Attributes.Photo[0] ID=@radiator[radiator.Count-2].Id Attributes="@(new List<string> { "Rodzaj chłodzenia: "+radiator[radiator.Count-2].Attributes.Cooling_type,"Kompatybilność: "+radiator[radiator.Count-2].Attributes.SocketsSTR,"Wentylatory: "+radiator[radiator.Count-2].Attributes.FansSTR,"Max głośność: "+radiator[radiator.Count-2].Attributes.Max_dB})" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(radiator[radiator.Count-1].Id)" rating="opinions.Find(x=>x.productID==radiator[radiator.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[radiator.Count-1].Id).opinions" price=@radiator[radiator.Count-1].Price name=@radiator[radiator.Count-1].Name Photo=@radiator[radiator.Count-1].Attributes.Photo[0] ID=@radiator[radiator.Count - 1].Id Attributes="@(new List<string> {"Rodzaj chłodzenia: "+ radiator[radiator.Count-1].Attributes.Cooling_type,"Kompatybilność: "+radiator[radiator.Count-1].Attributes.SocketsSTR,"Wentylatory: "+radiator[radiator.Count-1].Attributes.FansSTR,"Max głośność: "+radiator[radiator.Count-1].Attributes.Max_dB})" />
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[x*3].Id)" rating="opinions.Find(x=>x.productID==radiator[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[i*3].Id).opinions" price=@radiator[i*3].Price name=@radiator[i*3].Name Photo=@radiator[i*3].Attributes.Photo[0] ID=@radiator[i*3].Id Attributes="@(new List<string> { "Rodzaj chłodzenia: "+radiator[i*3].Attributes.Cooling_type,"Kompatybilność: "+radiator[i*3].Attributes.SocketsSTR,"Wentylatory: "+radiator[i*3].Attributes.FansSTR,"Max głośność: "+radiator[i*3].Attributes.Max_dB })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[x*3+1].Id)" rating="opinions.Find(x=>x.productID==radiator[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[i*3+1].Id).opinions" price=@radiator[i*3+1].Price name=@radiator[i*3+1].Name Photo=@radiator[i*3+1].Attributes.Photo[0] ID=@radiator[i*3+1].Id Attributes="@(new List<string> { "Rodzaj chłodzenia: "+radiator[i*3+1].Attributes.Cooling_type,"Kompatybilność: "+radiator[i*3+1].Attributes.SocketsSTR,"Wentylatory: "+radiator[i*3+1].Attributes.FansSTR,"Max głośność: "+radiator[i*3+1].Attributes.Max_dB  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[x*3+2].Id)" rating="opinions.Find(x=>x.productID==radiator[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[i*3+2].Id).opinions" price=@radiator[i*3+2].Price name=@radiator[i*3+2].Name Photo=@radiator[i*3+2].Attributes.Photo[0] ID=@radiator[i*3+2].Id Attributes="@(new List<string> {"Rodzaj chłodzenia: "+ radiator[i*3+2].Attributes.Cooling_type,"Kompatybilność: "+radiator[i*3+2].Attributes.SocketsSTR,"Wentylatory: "+radiator[i*3+2].Attributes.FansSTR,"Max głośność: "+radiator[i*3+2].Attributes.Max_dB })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (radiator.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[0].Id)" rating="opinions.Find(x=>x.productID==radiator[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[0].Id).opinions" price=@radiator[0].Price name=@radiator[0].Name Photo=@radiator[0].Attributes.Photo[0] ID=@radiator[0].Id Attributes="@(new List<string> {"Rodzaj chłodzenia: "+ radiator[0].Attributes.Cooling_type,"Kompatybilność: "+radiator[0].Attributes.SocketsSTR,"Wentylatory: "+radiator[0].Attributes.FansSTR,"Max głośność: "+radiator[0].Attributes.Max_dB})" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (radiator.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[0].Id)" rating="opinions.Find(x=>x.productID==radiator[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[0].Id).opinions" price=@radiator[0].Price name=@radiator[0].Name Photo=@radiator[0].Attributes.Photo[0] ID=@radiator[0].Id Attributes="@(new List<string> { "Rodzaj chłodzenia: "+radiator[0].Attributes.Cooling_type,"Kompatybilność: "+radiator[0].Attributes.SocketsSTR,"Wentylatory: "+radiator[0].Attributes.FansSTR,"Max głośność: "+radiator[0].Attributes.Max_dB})" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(radiator[1].Id)" rating="opinions.Find(x=>x.productID==radiator[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==radiator[1].Id).opinions" price=@radiator[1].Price name=@radiator[1].Name Photo=@radiator[1].Attributes.Photo[0] ID=@radiator[1].Id Attributes="@(new List<string> {"Rodzaj chłodzenia: "+ radiator[1].Attributes.Cooling_type,"Kompatybilność: "+radiator[1].Attributes.SocketsSTR,"Wentylatory: "+radiator[1].Attributes.FansSTR,"Max głośność: "+radiator[1].Attributes.Max_dB})" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0 h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            break;
+        case 8:
+            <div class="container-fluid mt-5 p-0 w-80">
+                <div class="row mr-auto ml-auto">
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="ram" currenturi="NavigationManager.ToAbsoluteUri(NavigationManager.Uri)" categoryID="8" />
+                        </CascadingValue>
+                    </div>
+                    <div style="padding-right: 4vw; padding-left: 4vw;" class="container col-9 mr-auto ml-auto">
+                        @if (ram.Count != 0 && ram is not null)
+                        {
+                            var l = (ram.Count % (rows * 3) == 0) ? ram.Count / (rows * 3) : (ram.Count / (rows * 3)) + 1;
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba produktów: @ram.Count
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && ram.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((ram.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[x*3].Id)" rating="opinions.Find(x=>x.productID==ram[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[i*3].Id).opinions" price=@ram[i*3].Price name=@ram[i*3].Name Photo=@ram[i*3].Attributes.Photo[0] ID=@ram[i*3].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[i*3].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[i*3].Attributes.Memory_type,"Taktowanie: "+ram[i*3].Attributes.Frequency,"Opóźnienie: "+ram[i*3].Attributes.Cycle_latency })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[x*3+1].Id)" rating="opinions.Find(x=>x.productID==ram[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[i*3+1].Id).opinions" price=@ram[i*3+1].Price name=@ram[i*3+1].Name Photo=@ram[i*3+1].Attributes.Photo[0] ID=@ram[i*3+1].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[i*3+1].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[i*3+1].Attributes.Memory_type,"Taktowanie: "+ram[i*3+1].Attributes.Frequency,"Opóźnienie: "+ram[i*3+1].Attributes.Cycle_latency  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[x*3+2].Id)" rating="opinions.Find(x=>x.productID==ram[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[i*3+2].Id).opinions" price=@ram[i*3+2].Price name=@ram[i*3+2].Name Photo=@ram[i*3+2].Attributes.Photo[0] ID=@ram[i*3+2].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[i*3+2].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[i*3+2].Attributes.Memory_type,"Taktowanie: "+ram[i*3+2].Attributes.Frequency,"Opóźnienie: "+ram[i*3+2].Attributes.Cycle_latency })" />
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (ram.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[ram.Count-1].Id)" rating="opinions.Find(x=>x.productID==ram[ram.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[ram.Count-1].Id).opinions" price=@ram[ram.Count-1].Price name=@ram[ram.Count-1].Name Photo=@ram[ram.Count-1].Attributes.Photo[0] ID=@ram[ram.Count-1].Id Attributes="@(new List<string> {"Całkowita pojemność: "+ ram[ram.Count-1].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[ram.Count-1].Attributes.Memory_type,"Taktowanie: "+ram[ram.Count-1].Attributes.Frequency,"Opóźnienie: "+ram[ram.Count-1].Attributes.Cycle_latency})" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (ram.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(ram[ram.Count-2].Id)" rating="opinions.Find(x=>x.productID==ram[ram.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[ram.Count-2].Id).opinions" price=@ram[ram.Count-2].Price name=@ram[ram.Count-2].Name Photo=@ram[ram.Count-2].Attributes.Photo[0] ID=@ram[ram.Count-2].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[ram.Count-2].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[ram.Count-2].Attributes.Memory_type,"Taktowanie: "+ram[ram.Count-2].Attributes.Frequency,"Opóźnienie: "+ram[ram.Count-2].Attributes.Cycle_latency})" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(ram[ram.Count-1].Id)" rating="opinions.Find(x=>x.productID==ram[ram.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[ram.Count-1].Id).opinions" price=@ram[ram.Count-1].Price name=@ram[ram.Count-1].Name Photo=@ram[ram.Count-1].Attributes.Photo[0] ID=@ram[ram.Count-1].Id Attributes="@(new List<string> {"Całkowita pojemność: "+ ram[ram.Count-1].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[ram.Count-1].Attributes.Memory_type,"Taktowanie: "+ram[ram.Count-1].Attributes.Frequency,"Opóźnienie: "+ram[ram.Count-1].Attributes.Cycle_latency})" />
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[x*3].Id)" rating="opinions.Find(x=>x.productID==ram[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[i*3].Id).opinions" price=@ram[i*3].Price name=@ram[i*3].Name Photo=@ram[i*3].Attributes.Photo[0] ID=@ram[i*3].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[i*3].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[i*3].Attributes.Memory_type,"Taktowanie: "+ram[i*3].Attributes.Frequency,"Opóźnienie: "+ram[i*3].Attributes.Cycle_latency })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[x*3+1].Id)" rating="opinions.Find(x=>x.productID==ram[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[i*3+1].Id).opinions" price=@ram[i*3+1].Price name=@ram[i*3+1].Name Photo=@ram[i*3+1].Attributes.Photo[0] ID=@ram[i*3+1].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[i*3+1].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[i*3+1].Attributes.Memory_type,"Taktowanie: "+ram[i*3+1].Attributes.Frequency,"Opóźnienie: "+ram[i*3+1].Attributes.Cycle_latency  })" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[x*3+2].Id)" rating="opinions.Find(x=>x.productID==ram[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[i*3+2].Id).opinions" price=@ram[i*3+2].Price name=@ram[i*3+2].Name Photo=@ram[i*3+2].Attributes.Photo[0] ID=@ram[i*3+2].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[i*3+2].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[i*3+2].Attributes.Memory_type,"Taktowanie: "+ram[i*3+2].Attributes.Frequency,"Opóźnienie: "+ram[i*3+2].Attributes.Cycle_latency })" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (ram.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[0].Id)" rating="opinions.Find(x=>x.productID==ram[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[0].Id).opinions" price=@ram[0].Price name=@ram[0].Name Photo=@ram[0].Attributes.Photo[0] ID=@ram[0].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[0].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[0].Attributes.Memory_type,"Taktowanie: "+ram[0].Attributes.Frequency,"Opóźnienie: "+ram[0].Attributes.Cycle_latency})" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (ram.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[0].Id)" rating="opinions.Find(x=>x.productID==ram[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[0].Id).opinions" price=@ram[0].Price name=@ram[0].Name Photo=@ram[0].Attributes.Photo[0] ID=@ram[0].Id Attributes="@(new List<string> {"Całkowita pojemność: "+  ram[0].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[0].Attributes.Memory_type,"Taktowanie: "+ram[0].Attributes.Frequency,"Opóźnienie: "+ram[0].Attributes.Cycle_latency})" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(ram[1].Id)" rating="opinions.Find(x=>x.productID==ram[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==ram[1].Id).opinions" price=@ram[1].Price name=@ram[1].Name Photo=@ram[1].Attributes.Photo[0] ID=@ram[1].Id Attributes="@(new List<string> {"Całkowita pojemność: "+ ram[1].Attributes.Memory_size_full.ToString()+" GB","Rodzaj pamięci: "+ram[1].Attributes.Memory_type,"Taktowanie: "+ram[1].Attributes.Frequency,"Opóźnienie: "+ram[1].Attributes.Cycle_latency})" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span style="color: #c8c8c8;" class="d-inline-flex align-items-center user-select-none min-height-100">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+                                <div class="position-relative offset w-100 col-20-per">
+
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0 h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wybranych filtrów :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            break;
+        case 9:
+            <div class="container-fluid mt-5 w-80 p-0">
+                <div class="row mr-auto ml-auto">
+
+                    <div class="col-3">
+                        <CascadingValue Value="this">
+                            <FiltrComponent product="search_result" categoryID="9" />
+                        </CascadingValue>
+                    </div>
+
+                    <div class="container col-9 ml-auto mr-auto" style="padding-right: 4vw; padding-left: 4vw;">
+                        @if (list.Count != 0 && list is not null)
+                        {
+                            var l = (list.Count % (rows * 3) == 0) ? list.Count / (rows * 3) : (list.Count / (rows * 3)) + 1;
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <span class="d-inline-flex align-items-center min-height-100 user-select-none" style="color: #c8c8c8;">
+                                        Liczba produktów: @list.Count
+                                    </span>
+                                </div>
+
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:20%;">
+                                    <span class="d-inline-flex align-items-center min-height-100 user-select-none" style="color: #c8c8c8;">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @if (page_number_selected == l && list.Count % (rows * 3) != 0)
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < ((list.Count) / 3); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[x*3].Id,list[x*3].producttype)" rating="opinions.Find(x=>x.productID==list[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[i*3].Id).opinions" price=@list[i*3].Price name=@list[i*3].Name Photo=@list[i*3].Photo[0] ID=@list[i*3].Id Attributes="list[i*3].Attributes" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[x*3+1].Id,list[x*3+1].producttype)" rating="opinions.Find(x=>x.productID==list[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[i*3+1].Id).opinions" price=@list[i*3+1].Price name=@list[i*3+1].Name Photo=@list[i*3+1].Photo[0] ID=@list[i*3+1].Id Attributes="list[i*3+1].Attributes" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[x*3+2].Id,list[x*3+2].producttype)" rating="opinions.Find(x=>x.productID==list[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[i*3+2].Id).opinions" price=@list[i*3+2].Price name=@list[i*3+2].Name Photo=@list[i*3+2].Photo[0] ID=@list[i*3+2].Id Attributes="list[i*3+2].Attributes" />
+                                        </div>
+                                    </div>
+
+                                }
+                                @if (list.Count % 3 == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[list.Count-1].Id,list[list.Count-1].producttype)" rating="opinions.Find(x=>x.productID==list[list.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[list.Count-1].Id).opinions" price=@list[list.Count-1].Price name=@list[list.Count-1].Name Photo=@list[list.Count-1].Photo[0] ID=@list[list.Count-1].Id Attributes="list[list.Count-1].Attributes" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    if (list.Count % 3 == 2)
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(list[list.Count-2].Id,list[list.Count-2].producttype)" rating="opinions.Find(x=>x.productID==list[list.Count-2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[list.Count-2].Id).opinions" price=@list[list.Count-2].Price name=@list[list.Count-2].Name Photo=@list[list.Count-2].Photo[0] ID=@list[list.Count-2].Id Attributes="list[list.Count-2].Attributes" />
+                                            </div>
+                                            <div class="col-4">
+                                                <ProductComponent link="@Navigate_to_Product_Page(list[list.Count-1].Id,list[list.Count-1].producttype)" rating="opinions.Find(x=>x.productID==list[list.Count-1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[list.Count-1].Id).opinions" price=@list[list.Count-1].Price name=@list[list.Count-1].Name Photo=@list[list.Count-1].Photo[0] ID=@list[list.Count-1].Id Attributes="list[list.Count-1].Attributes" />
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                }
+                            }
+                            else
+                            {
+                                @for (int i = (rows * page_number_selected) - rows; i < (rows * page_number_selected); i++)
+                                {
+                                    var x = i;
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[x*3].Id,list[x*3].producttype)" rating="opinions.Find(x=>x.productID==list[i*3].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[i*3].Id).opinions" price=@list[i*3].Price name=@list[i*3].Name Photo=@list[i*3].Photo[0] ID=@list[i*3].Id Attributes="list[i*3].Attributes" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[x*3+1].Id,list[x*3+1].producttype)" rating="opinions.Find(x=>x.productID==list[i*3+1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[i*3+1].Id).opinions" price=@list[i*3+1].Price name=@list[i*3+1].Name Photo=@list[i*3+1].Photo[0] ID=@list[i*3+1].Id Attributes="list[i*3+1].Attributes" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[x*3+2].Id,list[x*3+2].producttype)" rating="opinions.Find(x=>x.productID==list[i*3+2].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[i*3+2].Id).opinions" price=@list[i*3+2].Price name=@list[i*3+2].Name Photo=@list[i*3+2].Photo[0] ID=@list[i*3+2].Id Attributes="list[i*3+2].Attributes" />
+                                        </div>
+                                    </div>
+
+                                }
+
+                                @if (list.Count == 1)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[0].Id,list[0].producttype)" rating="opinions.Find(x=>x.productID==list[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[0].Id).opinions" price=@list[0].Price name=@list[0].Name Photo=@list[0].Photo[0] ID=@list[0].Id Attributes="list[0].Attributes" />
+                                        </div>
+                                    </div>
+                                }
+                                @if (list.Count == 2)
+                                {
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[0].Id,list[0].producttype)" rating="opinions.Find(x=>x.productID==list[0].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[0].Id).opinions" price=@list[0].Price name=@list[0].Name Photo=@list[0].Photo[0] ID=@list[0].Id Attributes="list[0].Attributes" />
+                                        </div>
+                                        <div class="col-4">
+                                            <ProductComponent link="@Navigate_to_Product_Page(list[1].Id,list[1].producttype)" rating="opinions.Find(x=>x.productID==list[1].Id).rating" amount_of_opinions="opinions.Find(x=>x.productID==list[1].Id).opinions" price=@list[1].Price name=@list[1].Name Photo=@list[1].Photo[0] ID=@list[1].Id Attributes="list[1].Attributes" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="row mr-0 ml-0 pb-2" style="border-bottom: 1px solid #f1f1f1;">
+                                <div class="position-relative offset w-100 col-20-per" style="margin-left:40%;">
+                                    <span class="d-inline-flex align-items-center user-select-none min-height-100" style="color: #c8c8c8">
+                                        Liczba wierszy na stronie:
+                                    </span>
+                                </div>
+
+                                <div class="position-relative offset w-100 col-20-per">
+                                    <div class="row ml-0 mr-0">
+                                        <select @bind="rows" class="pr-2 pl-2 select-page-number">
+                                            <option value="2">2</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="position-relative offset w-100 d-flex justify-content-center col-20-per">
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)" style="margin-right:5px;">
+                                        <i class="fas fa-caret-left"></i>
+                                    </button>
+                                    <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-page-number">
+                                        @for (int j = 0; j < l; j++)
+                                        {
+                                            var index = j + 1;
+                                            <option value="@index">@index</option>
+                                        }
+                                    </select>
+                                    <button class="button-page" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)" style="margin-left:5px;">
+                                        <i class="fas fa-caret-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row ml-0 mr-0 h-100">
+                                <span class="w-100 center-VERT-HOR-1 text-error-span">
+                                    Brak produktów dla wyszukiwania "@searchtext" :( Spróbuj ponownie!
+                                </span>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            break;
+        default:
+            <div>WRONG CATEGORY NUMBER! PAGE DOESNT EXIST! CONTACT WITH ADMIN</div>
+            break;
+    }
+
+}
+else
+{
+    <div class="container-fluid mt-5 justify-content-center 2-80 p-0">
+        <div class="lds-ring" style="height: 40px;"><div style="width: 40px; height: 40px; "></div><div style="width: 40px; height: 40px;"></div><div style="width: 40px; height: 40px; "></div><div style="width: 40px; height: 40px;"></div></div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int category { get; set; }
+
+    public List<Product<Processor>> processor = new List<Product<Processor>>();
+    public List<Product<ComputerCase>> computercase = new List<Product<ComputerCase>>();
+    public List<Product<Disc>> disc = new List<Product<Disc>>();
+    public List<Product<Motherboard>> motherboard = new List<Product<Motherboard>>();
+    public List<Product<GraphicCard>> graphiccard = new List<Product<GraphicCard>>();
+    public List<Product<PowerSupply>> Powersupply = new List<Product<PowerSupply>>();
+    public List<Product<Radiator>> radiator = new List<Product<Radiator>>();
+    public List<Product<Ram>> ram = new List<Product<Ram>>();
+    private List<Opinions> opinions = new List<Opinions>();
+
+    private List<Product<Processor>> searched_processor = new List<Product<Processor>>();
+    private List<Product<ComputerCase>> searched_computercase = new List<Product<ComputerCase>>();
+    private List<Product<Disc>> searched_disc = new List<Product<Disc>>();
+    private List<Product<Motherboard>> searched_motherboard = new List<Product<Motherboard>>();
+    private List<Product<GraphicCard>> searched_graphiccard = new List<Product<GraphicCard>>();
+    private List<Product<PowerSupply>> searched_Powersupply = new List<Product<PowerSupply>>();
+    private List<Product<Radiator>> searched_radiator = new List<Product<Radiator>>();
+    private List<Product<Ram>> searched_ram = new List<Product<Ram>>();
+    private List<ProductSearch> list = new List<ProductSearch>();
+
+    private bool loading { get; set; }
+    private string searchtext { get; set; }
+    private int amount_opinion_on_page { get; set; }
+    public int rows { get { return this.amount_opinion_on_page; } set { page_number_selected = 1; this.amount_opinion_on_page = value; } }
+    public int page_number_selected { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        page_number_selected = 1;
+        amount_opinion_on_page = 5;
+        opinions = await Additional_Functions.Read_Opinions_From_JSON(env);
+        Uri currenturi = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (!Additional_Functions.Check_if_url_has_right_query(currenturi, category))
+        {
+            await Load_Products();
+        }
+
+        loading = true;
+        NavigationManager.LocationChanged += NavigationManager_LocationChanged;
+    }
+
+    private void NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        base.InvokeAsync(async () =>
+        {
+            Uri currenturi = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            if (currenturi.Query.Length == 0)
+            {
+                await Load_Products();
+                StateHasChanged();
+            }
+            if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("search", out var _initialCount))
+            {
+                searched_processor = new List<Product<Processor>>();
+                searched_computercase = new List<Product<ComputerCase>>();
+                searched_disc = new List<Product<Disc>>();
+                searched_motherboard = new List<Product<Motherboard>>();
+                searched_graphiccard = new List<Product<GraphicCard>>();
+                searched_Powersupply = new List<Product<PowerSupply>>();
+                searched_radiator = new List<Product<Radiator>>();
+                searched_ram = new List<Product<Ram>>();
+                searchtext = _initialCount;
+                list = await _data.LoadData<ProductSearch, dynamic>("select [Id],[prname] as 'Name',[price],[brand],[warranty],[producttype] from Products where prname like '%" + searchtext + "%'", new { });
+                foreach (var item in list)
+                {
+                    switch (item.producttype)
+                    {
+                        case "computercase":
+                            List<ComputerCase> list1 = await _data.LoadData<ComputerCase, dynamic>("select * from ComputerCases where productID=" + item.Id, new { });
+                            searched_computercase.Add(new Product<ComputerCase>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list1[0] });
+                            break;
+                        case "disc":
+                            List<Disc> list2 = await _data.LoadData<Disc, dynamic>("select * from Discs where productID=" + item.Id, new { });
+                            searched_disc.Add(new Product<Disc>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list2[0] });
+
+                            break;
+                        case "motherboard":
+                            List<Motherboard> list3 = await _data.LoadData<Motherboard, dynamic>("select * from Motherboards where productID=" + item.Id, new { });
+                            searched_motherboard.Add(new Product<Motherboard>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list3[0] });
+
+                            break;
+                        case "graphiccard":
+                            List<GraphicCard> list4 = await _data.LoadData<GraphicCard, dynamic>("select * from GraphicCards where productID=" + item.Id, new { });
+                            searched_graphiccard.Add(new Product<GraphicCard>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list4[0] });
+
+                            break;
+                        case "powersupply":
+                            List<PowerSupply> list5 = await _data.LoadData<PowerSupply, dynamic>("select * from PowerSupply where productID=" + item.Id, new { });
+                            searched_Powersupply.Add(new Product<PowerSupply>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list5[0] });
+
+                            break;
+                        case "processor":
+                            List<Processor> list6 = await _data.LoadData<Processor, dynamic>("select * from Processors where productID=" + item.Id, new { });
+                            searched_processor.Add(new Product<Processor>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list6[0] });
+
+                            break;
+                        case "radiator":
+                            List<Radiator> list7 = await _data.LoadData<Radiator, dynamic>("select * from Radiators where productID=" + item.Id, new { });
+                            searched_radiator.Add(new Product<Radiator>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list7[0] });
+
+                            break;
+                        case "ram":
+                            List<Ram> list8 = await _data.LoadData<Ram, dynamic>("select * from Rams where productID=" + item.Id, new { });
+                            searched_ram.Add(new Product<Ram>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list8[0] });
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                list = new List<ProductSearch>();
+                foreach (var item in searched_processor)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Seria: " + item.Attributes.Processor_number, "Taktowanie: " + item.Attributes.Frequency, "Liczba rdzeni: " + item.Attributes.Cores.ToString(), "Cache: " + item.Attributes.Cache } });
+                }
+                foreach (var item in searched_computercase)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Typ: " + item.Attributes.Type, "Standard płyty: " + item.Attributes.Motherboards_typeSTR, "Karty rozszerzeń: " + item.Attributes.Extension_cards.ToString(), "Maks. długość grafiki: " + item.Attributes.Max_graphic_card_length.ToString() + " mm" } });
+                }
+                foreach (var item in searched_disc)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Pojemność: " + item.Attributes.Capacity.ToString() + " GB", "Interfejs: " + item.Attributes.Interfaces, "Prędkość odczytu: " + item.Attributes.Read_speed.ToString() + " MB/s", "Prędkość zapisu: " + item.Attributes.Write_speed.ToString() + " MB/s" } });
+                }
+                foreach (var item in searched_graphiccard)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Układ: " + item.Attributes.Graphics_processing, "Pamięć: " + item.Attributes.Memory_size.ToString() + " GB", "Rodzaj pamięci: " + item.Attributes.Memory_type, "Złącza: " + item.Attributes.OutputsSTR } });
+                }
+                foreach (var item in searched_motherboard)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Gniazdo procesora: " + item.Attributes.Socket, "Format: " + item.Attributes.Format, "Chipset: " + item.Attributes.Chipset, "Max wielkość RAM: " + item.Attributes.Memory_max_size.ToString() + " GB" } });
+                }
+                foreach (var item in searched_Powersupply)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Moc: " + item.Attributes.Power.ToString() + " W", "Standard: " + item.Attributes.Standard, "Sprawność: " + item.Attributes.Efficiency, "Certyfikat: " + item.Attributes.Certificate } });
+                }
+                foreach (var item in searched_radiator)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Rodzaj chłodzenia: " + item.Attributes.Cooling_type, "Kompatybilność: " + item.Attributes.SocketsSTR, "Wentylatory: " + item.Attributes.FansSTR, "Max głośność: " + item.Attributes.Max_dB } });
+                }
+                foreach (var item in searched_ram)
+                {
+                    list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Całkowita pojemność: " + item.Attributes.Memory_size_full.ToString() + " GB", "Rodzaj pamięci: " + item.Attributes.Memory_type, "Taktowanie: " + item.Attributes.Frequency, "Opóźnienie: " + item.Attributes.Cycle_latency } });
+                }
+                StateHasChanged();
+            }
+
+        });
+    }
+
+    private async Task Load_Products()
+    {
+        switch (category)
+        {
+            case 1:
+                processor = await Additional_Functions.Read_Processors_From_JSON(env);
+                Console.WriteLine();
+                break;
+            case 2:
+                computercase = await Additional_Functions.Read_Computercases_From_JSON(env);
+                break;
+            case 3:
+                disc = await Additional_Functions.Read_Discs_From_JSON(env);
+                break;
+            case 4:
+                graphiccard = await Additional_Functions.Read_GraphicCards_From_JSON(env);
+                break;
+            case 5:
+                motherboard = await Additional_Functions.Read_Motherboards_From_JSON(env);
+                break;
+            case 6:
+                Powersupply = await Additional_Functions.Read_PowerSupplies_From_JSON(env);
+                break;
+            case 7:
+                radiator = await Additional_Functions.Read_Radiators_From_JSON(env);
+                break;
+            case 8:
+                ram = await Additional_Functions.Read_Rams_From_JSON(env);
+                break;
+            case 9:
+                Uri currenturi = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+                searchtext = "";
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("search", out var _initialCount))
+                {
+                    searchtext = _initialCount;
+                    list = await _data.LoadData<ProductSearch, dynamic>("select [Id],[prname] as 'Name',[price],[brand],[warranty],[producttype] from Products where prname like '%" + searchtext + "%'", new { });
+                    foreach (var item in list)
+                    {
+                        switch (item.producttype)
+                        {
+                            case "computercase":
+                                List<ComputerCase> list1 = await _data.LoadData<ComputerCase, dynamic>("select * from ComputerCases where productID=" + item.Id, new { });
+                                searched_computercase.Add(new Product<ComputerCase>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list1[0] });
+                                break;
+                            case "disc":
+                                List<Disc> list2 = await _data.LoadData<Disc, dynamic>("select * from Discs where productID=" + item.Id, new { });
+                                searched_disc.Add(new Product<Disc>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list2[0] });
+
+                                break;
+                            case "motherboard":
+                                List<Motherboard> list3 = await _data.LoadData<Motherboard, dynamic>("select * from Motherboards where productID=" + item.Id, new { });
+                                searched_motherboard.Add(new Product<Motherboard>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list3[0] });
+
+                                break;
+                            case "graphiccard":
+                                List<GraphicCard> list4 = await _data.LoadData<GraphicCard, dynamic>("select * from GraphicCards where productID=" + item.Id, new { });
+                                searched_graphiccard.Add(new Product<GraphicCard>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list4[0] });
+
+                                break;
+                            case "powersupply":
+                                List<PowerSupply> list5 = await _data.LoadData<PowerSupply, dynamic>("select * from PowerSupply where productID=" + item.Id, new { });
+                                searched_Powersupply.Add(new Product<PowerSupply>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list5[0] });
+
+                                break;
+                            case "processor":
+                                List<Processor> list6 = await _data.LoadData<Processor, dynamic>("select * from Processors where productID=" + item.Id, new { });
+                                searched_processor.Add(new Product<Processor>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list6[0] });
+
+                                break;
+                            case "radiator":
+                                List<Radiator> list7 = await _data.LoadData<Radiator, dynamic>("select * from Radiators where productID=" + item.Id, new { });
+                                searched_radiator.Add(new Product<Radiator>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list7[0] });
+
+                                break;
+                            case "ram":
+                                List<Ram> list8 = await _data.LoadData<Ram, dynamic>("select * from Rams where productID=" + item.Id, new { });
+                                searched_ram.Add(new Product<Ram>() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Attributes = list8[0] });
+
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    list = new List<ProductSearch>();
+                    foreach (var item in searched_processor)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Seria: " + item.Attributes.Processor_number, "Taktowanie: " + item.Attributes.Frequency, "Liczba rdzeni: " + item.Attributes.Cores.ToString(), "Cache: " + item.Attributes.Cache } });
+                    }
+                    foreach (var item in searched_computercase)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Typ: " + item.Attributes.Type, "Standard płyty: " + item.Attributes.Motherboards_typeSTR, "Karty rozszerzeń: " + item.Attributes.Extension_cards.ToString(), "Maks. długość grafiki: " + item.Attributes.Max_graphic_card_length.ToString() + " mm" } });
+                    }
+                    foreach (var item in searched_disc)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Pojemność: " + item.Attributes.Capacity.ToString() + " GB", "Interfejs: " + item.Attributes.Interfaces, "Prędkość odczytu: " + item.Attributes.Read_speed.ToString() + " MB/s", "Prędkość zapisu: " + item.Attributes.Write_speed.ToString() + " MB/s" } });
+                    }
+                    foreach (var item in searched_graphiccard)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Układ: " + item.Attributes.Graphics_processing, "Pamięć: " + item.Attributes.Memory_size.ToString() + " GB", "Rodzaj pamięci: " + item.Attributes.Memory_type, "Złącza: " + item.Attributes.OutputsSTR } });
+                    }
+                    foreach (var item in searched_motherboard)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Gniazdo procesora: " + item.Attributes.Socket, "Format: " + item.Attributes.Format, "Chipset: " + item.Attributes.Chipset, "Max wielkość RAM: " + item.Attributes.Memory_max_size.ToString() + " GB" } });
+                    }
+                    foreach (var item in searched_Powersupply)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Moc: " + item.Attributes.Power.ToString() + " W", "Standard: " + item.Attributes.Standard, "Sprawność: " + item.Attributes.Efficiency, "Certyfikat: " + item.Attributes.Certificate } });
+                    }
+                    foreach (var item in searched_radiator)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Rodzaj chłodzenia: " + item.Attributes.Cooling_type, "Kompatybilność: " + item.Attributes.SocketsSTR, "Wentylatory: " + item.Attributes.FansSTR, "Max głośność: " + item.Attributes.Max_dB } });
+                    }
+                    foreach (var item in searched_ram)
+                    {
+                        list.Add(new ProductSearch() { Id = item.Id, Brand = item.Brand, Name = item.Name, Price = item.Price, producttype = item.producttype, Warranty = item.Warranty, Photo = item.Attributes.Photo, Attributes = new List<string> { "Całkowita pojemność: " + item.Attributes.Memory_size_full.ToString() + " GB", "Rodzaj pamięci: " + item.Attributes.Memory_type, "Taktowanie: " + item.Attributes.Frequency, "Opóźnienie: " + item.Attributes.Cycle_latency } });
+                    }
+                    StateHasChanged();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void changeprocessors(List<Product<Processor>> processors)
+    {
+        processor = processors;
+        StateHasChanged();
+    }
+    public void changecomputercase(List<Product<ComputerCase>> computercases)
+    {
+        computercase = computercases;
+        StateHasChanged();
+    }
+    public void changedisc(List<Product<Disc>> discs)
+    {
+        disc = discs;
+        StateHasChanged();
+    }
+    public void changegraphiccard(List<Product<GraphicCard>> graphiccards)
+    {
+        graphiccard = graphiccards;
+        StateHasChanged();
+    }
+    public void changemotherboard(List<Product<Motherboard>> motherboards)
+    {
+        motherboard = motherboards;
+        StateHasChanged();
+    }
+    public void changepowersupply(List<Product<PowerSupply>> powersupplies)
+    {
+        Powersupply = powersupplies;
+        StateHasChanged();
+    }
+    public void changeradiator(List<Product<Radiator>> radiators)
+    {
+        radiator = radiators;
+        StateHasChanged();
+    }
+    public void changeram(List<Product<Ram>> rams)
+    {
+        ram = rams;
+        StateHasChanged();
+    }
+
+    private string Navigate_to_Product_Page(int index, string product = "")
+    {
+        string url = "";
+        if (product.Length == 0)
+        {
+            url = NavigationManager.Uri;
+            url = (url.Split('?')[0].EndsWith('/')) ? url.Split('?')[0] : url.Split('?')[0] + "/";
+        }
+        switch (product)
+        {
+            case "processor":
+                url = NavigationManager.BaseUri + "c/1/";
+                break;
+            case "disc":
+                url = NavigationManager.BaseUri + "c/3/";
+                break;
+            case "computercase":
+                url = NavigationManager.BaseUri + "c/2/";
+                break;
+            case "motherboard":
+                url = NavigationManager.BaseUri + "c/5/";
+                break;
+            case "powersupply":
+                url = NavigationManager.BaseUri + "c/6/";
+                break;
+            case "graphiccard":
+                url = NavigationManager.BaseUri + "c/4/";
+                break;
+            case "radiator":
+                url = NavigationManager.BaseUri + "c/7/";
+                break;
+            case "ram":
+                url = NavigationManager.BaseUri + "c/8/";
+                break;
+            default:
+                break;
+        }
+        return url + index;
+    }
+}

@@ -1,0 +1,22 @@
+﻿
+<div>
+    <div class="d-flex justify-content-center align-items-center position-absolute btn-i"  @onclick="(() => index = (index == 0) ? photos.Length - 1 : index-1)" style="height:384px;width:5%; border-radius:20px 0 0 20px">
+        <i class="fas fa-chevron-left fa-3x icon-change"></i>
+    </div>
+    <div class="d-flex justify-content-center align-items-center position-absolute btn-i" @onclick="(() => index = (index == photos.Length - 1) ? 0 : index + 1)" style="height: 384px; width: 5%;left:85%; border-radius:0 20px 20px 0">
+        <i class="fas fa-chevron-right fa-3x icon-change"></i>
+    </div>
+    <img src="@photos[index]" class="max-width-100 border-radius20"/>    
+</div>
+
+@code {
+
+    private int index { get; set; }
+    private string[] photos { get; set; }
+
+    protected override void OnInitialized()
+    {
+        index = 0;
+        photos = new string[] { "/img/Slider/photo1.png", "/img/Slider/photo2.png" };
+    }
+}

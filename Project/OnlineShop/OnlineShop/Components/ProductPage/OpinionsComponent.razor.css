@@ -1,0 +1,19 @@
+﻿.button {
+    border: 1px solid lightgrey;
+    border-radius: 50%;
+    width: 30px; 
+    height: 30px;
+    outline:none;
+
+}
+.input-number {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+}
+.select-number {
+    -webkit-appearance: none;
+    border-radius: 5px;
+    outline: none;
+    width: 45px;
+    height: 35px;
+}

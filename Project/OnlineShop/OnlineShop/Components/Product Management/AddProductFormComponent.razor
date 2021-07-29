@@ -1,0 +1,2464 @@
+﻿@using Models
+@using DataAccess
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Configuration
+
+@inherits ComponentBase
+
+@inject NavigationManager NavigationManager
+@inject SqlDataAccess _data
+@inject IWebHostEnvironment env
+@inject IConfiguration _config
+@inject DistinctService distinctService
+
+@if (distinctService.json_Distinct is not null)
+{
+    <div class="row ml-0 mr-0 w-100">
+        @switch (Name)
+        {
+            case "processors":
+                <EditForm Model="@processor" OnValidSubmit="@AddProcessor" class="w-100">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="processor.Name" placeholder="np: Intel Core i9-11900K" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="processor.Brand" placeholder="np: Intel" class="w-50" />
+                                <InputSelect @bind-Value="processor.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="processor.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="processor.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź rodzinę procesorów:</label>
+                                <InputText @bind-Value="processor.Attributes.Family" placeholder="np: Intel Core i9" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Family" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Family)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź serie procesora:</label>
+                                <InputText @bind-Value="processor.Attributes.Processor_number" placeholder="np: i9-11900K" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gniazdo procesora:</label>
+                                <InputText @bind-Value="processor.Attributes.Socket" placeholder="np: Socket 1200" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Socket" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Socket)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Architekture procesora:</label>
+                                <InputText @bind-Value="processor.Attributes.Arch" placeholder="np: Rocket Lake (11 generacja)" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Arch" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Arch)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź taktowanie rdzenia:</label>
+                                <InputText @bind-Value="processor.Attributes.Frequency" placeholder="np: 3.6 GHz (5.2 GHz w trybie turbo)" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź liczbę rdzeni fizycznych:</label>
+                                <InputNumber @bind-Value="processor.Attributes.Cores" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Cores" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Cores)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź liczbę wątków:</label>
+                                <InputNumber @bind-Value="processor.Attributes.Threads" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="processor.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy jest odblokowany mnożnik:</label>
+                                <InputSelect @bind-Value="processor.Attributes.Unlocked" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź wielkość pamięci podręcznej:</label>
+                                <InputText @bind-Value="processor.Attributes.Cache" placeholder="np: 20MB" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Cache" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Cache)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy posiada zintegrowaną grafikę:</label>
+                                <InputSelect @bind-Value="processor.Attributes.Intergrated_graphic" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź zintegrowaną grafikę(jeśli jest):</label>
+                                <InputText @bind-Value="processor.Attributes.Processor_graphic" placeholder="np: Intel UHD Graphics 630" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Processor_graphic" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Processor_graphic)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź rodzaj obsługiwanej pamięci:</label>
+                                <InputText @bind-Value="processor.Attributes.Memory_types" placeholder="np: DDR4-2933" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Memory_types" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Memory_types)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź proces litograficzny:</label>
+                                <InputText @bind-Value="processor.Attributes.Lithography" placeholder="np: 14 nm" class="w-50" />
+                                <InputSelect @bind-Value="processor.Attributes.Lithography" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProcessor.Lithography)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź pobór mocy:</label>
+                                <InputText @bind-Value="processor.Attributes.TDP" placeholder="np: 125W" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź technologie:</label>
+                                <InputTextArea @bind-Value="processor.Attributes.TechnologiesSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="processor.Attributes.TechnologiesSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy chłodzenie w zestawie:</label>
+                                <InputSelect @bind-Value="processor.Attributes.Cooling_in_box" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź kod producenta:</label>
+                                <InputText @bind-Value="processor.Attributes.Code" placeholder="np: BX8070110850K" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+
+                        </div>
+                        <div class="col-6">
+
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </EditForm>
+                break;
+            case "discs":
+                <EditForm Model="@disc" OnValidSubmit="@AddDisc">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="disc.Name" placeholder="np: Crucial 500GB 2,5 SATA SSD MX500" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="disc.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="disc.Brand" placeholder="np: Crucial" class="w-50" />
+                                <InputSelect @bind-Value="disc.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONDisc.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="disc.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="disc.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź przeznaczenie dysku:</label>
+                                <InputText @bind-Value="disc.Attributes.Destiny" placeholder="np: PC" class="w-50" />
+                                <InputSelect @bind-Value="disc.Attributes.Destiny" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONDisc.Destiny)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź typ dysku:</label>
+                                <InputText @bind-Value="disc.Attributes.Type" placeholder="np: SSD" class="w-50" />
+                                <InputSelect @bind-Value="disc.Attributes.Type" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONDisc.Type)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź pojemność dysku (GB):</label>
+                                <InputNumber @bind-Value="disc.Attributes.Capacity" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Format dysku:</label>
+                                <InputText @bind-Value="disc.Attributes.Format" placeholder="np: M.2 /2.5 cal" class="w-50" />
+                                <InputSelect @bind-Value="disc.Attributes.Format" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONDisc.Format)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź interfejs dysku:</label>
+                                <InputText @bind-Value="disc.Attributes.Interfaces" placeholder="np: 2,5 SATA" class="w-50" />
+                                <InputSelect @bind-Value="disc.Attributes.Interfaces" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONDisc.Interfaces)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź  Prędkość odczytu (maksymalna) dysku (MB/s):</label>
+                                <InputNumber @bind-Value="disc.Attributes.Read_speed" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź  Prędkość zapisu (maksymalna) dysku (MB/s):</label>
+                                <InputNumber @bind-Value="disc.Attributes.Write_speed" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Odczyt losowy dysku (IOPS):</label>
+                                <InputNumber @bind-Value="disc.Attributes.Random_read_speed" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź  Zapis losowy dysku (IOPS):</label>
+                                <InputNumber @bind-Value="disc.Attributes.Random_write_speed" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rodzaj kości pamięci:</label>
+                                <InputText @bind-Value="disc.Attributes.Memory_type" placeholder="np: TLC" class="w-50" />
+                                <InputSelect @bind-Value="disc.Attributes.Memory_type" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONDisc.Memory_type)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź  Niezawodność MTBF w godzinach:</label>
+                                <InputNumber @bind-Value="disc.Attributes.Reliability" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy posiada Radiator:</label>
+                                <InputSelect @bind-Value="disc.Attributes.Radiator" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dodatkowe informacje:</label>
+                                <InputTextArea @bind-Value="disc.Attributes.Additional_informationSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="disc.Attributes.Additional_informationSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dołączone akcesoria</label>
+                                <InputTextArea @bind-Value="disc.Attributes.AccessoriesSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="disc.Attributes.AccessoriesSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź kolor:</label>
+                                <InputText @bind-Value="disc.Attributes.Color" placeholder="np: Czarno-srebrny" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Szerokość:</label>
+                                <InputNumber @bind-Value="disc.Attributes.Width" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Wysokość:</label>
+                                <InputNumber @bind-Value="disc.Attributes.Heigth" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Głębokość/długość:</label>
+                                <InputNumber @bind-Value="disc.Attributes.Length" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź kod producenta:</label>
+                                <InputText @bind-Value="disc.Attributes.Code" placeholder="np: CT500MX500SSD1" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </EditForm>
+                break;
+
+            case "computercases":
+                <EditForm Model="@computercase" OnValidSubmit="@AddComputerCase">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="computercase.Name" placeholder="np: be quiet! Pure Base 500DX Black" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="computercase.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="computercase.Brand" placeholder="np: be quiet!" class="w-50" />
+                                <InputSelect @bind-Value="computercase.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONComputerCase.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="computercase.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="computercase.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Typ obudowy:</label>
+                                <InputText @bind-Value="computercase.Attributes.Type" placeholder="np: Middle Tower" class="w-50" />
+                                <InputSelect @bind-Value="computercase.Attributes.Type" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONComputerCase.Type)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Standardy płyty głównej</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.Motherboards_typeSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.Motherboards_typeSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Miejsca na karty rozszerzeń:</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Extension_cards" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Maksymalna długość karty graficznej (mm):</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Max_graphic_card_length" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Materiały</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.MaterialsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.MaterialsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dodatkowe informacje:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.Additional_informationSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.Additional_informationSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź rodzaj Panelu bocznego:</label>
+                                <InputText @bind-Value="computercase.Attributes.Side_panel" placeholder="np: Szkło hartowane" class="w-50" />
+                                <InputSelect @bind-Value="computercase.Attributes.Side_panel" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONComputerCase.Side_panel)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Podświetlenie:</label>
+                                <InputText @bind-Value="computercase.Attributes.Backlight" placeholder="np: ARGB" class="w-50" />
+                                <InputSelect @bind-Value="computercase.Attributes.Backlight" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONComputerCase.Backlight)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Standard zasilacza:</label>
+                                <InputText @bind-Value="computercase.Attributes.Power_supply_type" placeholder="np: ATX" class="w-50" />
+                                <InputSelect @bind-Value="computercase.Attributes.Power_supply_type" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONComputerCase.Power_supply_type)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Miejsca na wewnętrzne dyski/napędy:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.Space_for_discsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.Space_for_discsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Maksymalna wysokość chłodzenia CPU (mm):</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Max_height_of_cooling" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Maksymalna liczba wentylatorów:</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Max_fans" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Opcje montażu wentylatorów:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.Fans_typesSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.Fans_typesSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Opcje montażu chłodzenia wodnego:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.Water_cooling_optionsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.Water_cooling_optionsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Liczba zainstalowanych wentylatorów:</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Fans_installed" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Zainstalowane wentylatory:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.Fans_types_installedSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.Fans_types_installedSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Przyciski i regulatory:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.ButtonsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.ButtonsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Wyprowadzone złącza:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.Front_panel_outputsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.Front_panel_outputsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź kolor:</label>
+                                <InputText @bind-Value="computercase.Attributes.Color" placeholder="np: Czarny" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dołączone akcesoria:</label>
+                                <InputTextArea @bind-Value="computercase.Attributes.AccessoriesSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="computercase.Attributes.AccessoriesSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Szerokość (mm):</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Width" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Wysokość (mm):</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Heigth" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Głębokość (mm):</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Length" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Waga (kg):</label>
+                                <InputNumber @bind-Value="computercase.Attributes.Weigth" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+                break;
+
+            case "graphiccards":
+                <EditForm Model="@graphiccard" OnValidSubmit="@AddGraphicCard">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="graphiccard.Name" placeholder="np: Gigabyte GeForce Rtx 3080 VISION OC 10GB GDDR6X" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="graphiccard.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="graphiccard.Brand" placeholder="np: Gigabyte" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="graphiccard.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy Obsługa Ray tracingu:</label>
+                                <InputSelect @bind-Value="graphiccard.Attributes.Rtx" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Taktowanie rdzenia (MHz):</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Core_clock" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Układ graficzny:</label>
+                                <InputText @bind-Value="graphiccard.Attributes.Producent" placeholder="np: AMD" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Attributes.Producent" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Producent)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Układ graficzny:</label>
+                                <InputText @bind-Value="graphiccard.Attributes.Graphics_processing" placeholder="np: GeForce Rtx 2060" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Attributes.Graphics_processing" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Graphics_processing)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rodzaj złącza:</label>
+                                <InputText @bind-Value="graphiccard.Attributes.Card_bus" placeholder="np: PCI-E x16 3.0" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Attributes.Card_bus" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Card_bus)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź  Pamięć w MB:</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Memory_size" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Attributes.Memory_size" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Memory_Size)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rodzaj pamięci:</label>
+                                <InputText @bind-Value="graphiccard.Attributes.Memory_type" placeholder="np: GDDR6" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Attributes.Memory_type" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Memory_type)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Szyna pamięci (-bit):</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Memory_bus" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rdzenie CUDA:</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Cuda_cores" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Typ chłodzenia:</label>
+                                <InputText @bind-Value="graphiccard.Attributes.Cooling" placeholder="np: Aktywne" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Attributes.Cooling" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Cooling)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rodzaje wyjść:</label>
+                                <InputTextArea @bind-Value="graphiccard.Attributes.OutputsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="graphiccard.Attributes.OutputsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Obsługiwane biblioteki:</label>
+                                <InputTextArea @bind-Value="graphiccard.Attributes.Graphic_apiSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="graphiccard.Attributes.Graphic_apiSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Akcesoria:</label>
+                                <InputTextArea @bind-Value="graphiccard.Attributes.AccessoriesSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="graphiccard.Attributes.AccessoriesSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Złącze zasilania:</label>
+                                <InputText @bind-Value="graphiccard.Attributes.Power_connectors" placeholder="np: 2x 8-pin" class="w-50" />
+                                <InputSelect @bind-Value="graphiccard.Attributes.Power_connectors" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONGraphicCard.Power_connectors)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rekomendowana moc zasilacza (W):</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Recommended_psu" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Pobór mocy(Tdp):</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Tdp" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Długość (mm):</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Length" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź szerokość (mm):</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Width" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź wysokość (mm):</label>
+                                <InputNumber @bind-Value="graphiccard.Attributes.Heigth" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź kod produktu:</label>
+                                <InputText @bind-Value="graphiccard.Attributes.Code" placeholder="np: BSDFAA2312SA" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </EditForm>
+                break;
+
+            case "motherboards":
+                <EditForm Model="@motherboard" OnValidSubmit="@AddMotherboard">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="motherboard.Name" placeholder="np: Gigabyte Z590 GAMING X" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="motherboard.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="motherboard.Brand" placeholder="np: Gigabyte" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONMotherboard.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="motherboard.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Gniazdo procesora:</label>
+                                <InputText @bind-Value="motherboard.Attributes.Socket" placeholder="np: Socket 1200" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Attributes.Socket" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONMotherboard.Socket)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Chipset:</label>
+                                <InputText @bind-Value="motherboard.Attributes.Chipset" placeholder="np: Intel Z590" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Attributes.Chipset" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONMotherboard.Chipset)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Architektura procesora:</label>
+                                <InputTextArea @bind-Value="motherboard.Attributes.Arch_processSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="motherboard.Attributes.Arch_processSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Typ obsługiwanej pamięci:</label>
+                                <InputTextArea @bind-Value="motherboard.Attributes.Memory_typesSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="motherboard.Attributes.Memory_typesSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Typ obsługiwanej pamięci OC:</label>
+                                <InputTextArea @bind-Value="motherboard.Attributes.Memory_types_ocSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="motherboard.Attributes.Memory_types_ocSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź  Liczba banków pamięci (x DIMM):</label>
+                                <InputNumber @bind-Value="motherboard.Attributes.Memory_slots" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź  Maksymalna wielkość pamięci RAM(GB):</label>
+                                <InputNumber @bind-Value="motherboard.Attributes.Memory_max_size" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Architektura pamięci:</label>
+                                <InputText @bind-Value="motherboard.Attributes.Memory_channel" placeholder="np: Dual-channel" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Attributes.Memory_channel" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONMotherboard.Memory_channel)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Wewnętrzne złącza:</label>
+                                <InputTextArea @bind-Value="motherboard.Attributes.Internal_connectionSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="motherboard.Attributes.Internal_connectionSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Zewnętrzne złącza:</label>
+                                <InputTextArea @bind-Value="motherboard.Attributes.Back_panel_portsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="motherboard.Attributes.Back_panel_portsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Obsługa RAID:</label>
+                                <InputTextArea @bind-Value="motherboard.Attributes.RaidSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="motherboard.Attributes.RaidSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Obsługa wielu kart graficznych:</label>
+                                <InputText @bind-Value="motherboard.Attributes.Multi_cards" placeholder="np: AMD CrossFireX" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Attributes.Multi_cards" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONMotherboard.Multi_cards)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy posiada Obsługa układów graficznych w procesorach:</label>
+                                <InputSelect @bind-Value="motherboard.Attributes.Can_handle_processor_card" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy posiada Łączność bezprzewodowa:</label>
+                                <InputSelect @bind-Value="motherboard.Attributes.Wireless_connection" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Audio:</label>
+                                <InputText @bind-Value="motherboard.Attributes.Audio" placeholder="np: Realtek ALC892" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Attributes.Audio" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONMotherboard.Audio)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Format:</label>
+                                <InputText @bind-Value="motherboard.Attributes.Format" placeholder="np: ATX" class="w-50" />
+                                <InputSelect @bind-Value="motherboard.Attributes.Format" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONMotherboard.Format)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź szerokość płyty (mm):</label>
+                                <InputNumber @bind-Value="motherboard.Attributes.Width" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź długość płyty (mm):</label>
+                                <InputNumber @bind-Value="motherboard.Attributes.Length" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź kod producenta:</label>
+                                <InputText @bind-Value="motherboard.Attributes.Code" placeholder="np: dasdas" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </EditForm>
+                break;
+
+            case "powersupply":
+                <EditForm Model="@Powersupply" OnValidSubmit="@AddPowerSupply">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="Powersupply.Name" placeholder="np: be quiet! Straight Power 11 750W 80 Plus Platinum" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="Powersupply.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="Powersupply.Brand" placeholder="np: be quiet!" class="w-50" />
+                                <InputSelect @bind-Value="Powersupply.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONPowerSupply.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="Powersupply.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="Powersupply.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Moc maksymalna (W):</label>
+                                <InputNumber @bind-Value="Powersupply.Attributes.Power" class="w-50" />
+                                <InputSelect @bind-Value="Powersupply.Attributes.Power" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONPowerSupply.Power)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Standard:</label>
+                                <InputText @bind-Value="Powersupply.Attributes.Standard" placeholder="np: ATX" class="w-50" />
+                                <InputSelect @bind-Value="Powersupply.Attributes.Standard" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONPowerSupply.Standard)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Sprawność:</label>
+                                <InputText @bind-Value="Powersupply.Attributes.Efficiency" placeholder="np: 92-94% przy 230V oraz 20-100% obciążeniu." class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Certyfikat:</label>
+                                <InputText @bind-Value="Powersupply.Attributes.Certificate" placeholder="np: 80 PLUS Platinum" class="w-50" />
+                                <InputSelect @bind-Value="Powersupply.Attributes.Certificate" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONPowerSupply.Certificate)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Typ okablowania:</label>
+                                <InputText @bind-Value="Powersupply.Attributes.Cables_types" placeholder="np: Modularny" class="w-50" />
+                                <InputSelect @bind-Value="Powersupply.Attributes.Cables_types" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONPowerSupply.Cables_types)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Średnica wentylatora:</label>
+                                <InputText @bind-Value="Powersupply.Attributes.Fan" placeholder="np: 135 mm" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Układ Pfc (korekcja współczynnika mocy):</label>
+                                <InputText @bind-Value="Powersupply.Attributes.Pfc" placeholder="np: Aktywny" class="w-50" />
+                                <InputSelect @bind-Value="Powersupply.Attributes.Pfc" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONPowerSupply.Pfc)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Złącza:</label>
+                                <InputTextArea @bind-Value="Powersupply.Attributes.ConnectorsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="Powersupply.Attributes.ConnectorsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Zabezpieczenia:</label>
+                                <InputTextArea @bind-Value="Powersupply.Attributes.SecuritySTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="Powersupply.Attributes.SecuritySTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dodatkowe informacje:</label>
+                                <InputTextArea @bind-Value="Powersupply.Attributes.Additional_informationSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="Powersupply.Attributes.Additional_informationSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź długość (mm):</label>
+                                <InputNumber @bind-Value="Powersupply.Attributes.Length" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź szerokość (mm):</label>
+                                <InputNumber @bind-Value="Powersupply.Attributes.Width" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź wysokość (mm):</label>
+                                <InputNumber @bind-Value="Powersupply.Attributes.Heigth" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź kolor:</label>
+                                <InputText @bind-Value="Powersupply.Attributes.Color" placeholder="np: czarny" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </EditForm>
+                break;
+
+            case "radiators":
+                <EditForm Model="@Radiator" OnValidSubmit="@AddRadiator">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="Radiator.Name" placeholder="np: be quiet! Pure Rock 2 Czarny 120mm" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="Radiator.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="Radiator.Brand" placeholder="np: be quiet!" class="w-50" />
+                                <InputSelect @bind-Value="Radiator.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRadiator.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="Radiator.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="Radiator.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rodzaj chłodzenia:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Cooling_type" placeholder="np: Aktywne" class="w-50" />
+                                <InputSelect @bind-Value="Radiator.Attributes.Cooling_type" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRadiator.Cooling_type)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Kompatybilność Sockets:</label>
+                                <InputTextArea @bind-Value="Radiator.Attributes.SocketsSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="Radiator.Attributes.SocketsSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rozmiary wentylatora:</label>
+                                <InputTextArea @bind-Value="Radiator.Attributes.FansSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="Radiator.Attributes.FansSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Materiał Radiatora:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Materials" placeholder="np: Aluminium + Miedź" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Prędkość obrotowa:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Rps" placeholder="np: do 1500 obr./min." class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rodzaj łożyska:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Bearing" placeholder="np: Rifle Bearing" class="w-50" />
+                                <InputSelect @bind-Value="Radiator.Attributes.Bearing" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRadiator.Bearing)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Maksymalny poziom hałasu:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Max_dB" placeholder="np: 26,8 dB" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Złącze:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Connectors" placeholder="np: 4-pin PWM" class="w-50" />
+                                <InputSelect @bind-Value="Radiator.Attributes.Connectors" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRadiator.Connectors)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy posiada Podświetlenie:</label>
+                                <InputSelect @bind-Value="Radiator.Attributes.Backlight" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Żywotność MTBF:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Service_life" placeholder="np: 80 000 h" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Tdp:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Tdp" placeholder="np: 150 W" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dodatkowe informacje:</label>
+                                <InputTextArea @bind-Value="Radiator.Attributes.Additional_informationSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="Radiator.Attributes.Additional_informationSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź wysokość (mm):</label>
+                                <InputNumber @bind-Value="Radiator.Attributes.Heigth" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź szerokość (mm):</label>
+                                <InputNumber @bind-Value="Radiator.Attributes.Width" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź długość (mm):</label>
+                                <InputNumber @bind-Value="Radiator.Attributes.Length" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź wagę (g):</label>
+                                <InputNumber @bind-Value="Radiator.Attributes.Weight" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dołączone akcesoria:</label>
+                                <InputTextArea @bind-Value="Radiator.Attributes.AccessoriesSTR" class="w-50"></InputTextArea>
+                                <InputSelect @bind-Value="Radiator.Attributes.AccessoriesSTR" class="w-15">
+                                    <option value=""></option>
+                                    <option value="Brak">Brak</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Kod producenta:</label>
+                                <InputText @bind-Value="Radiator.Attributes.Code" placeholder="np: BK007" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </EditForm>
+                break;
+
+            case "rams":
+                <EditForm Model="@ram" OnValidSubmit="@AddRam">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź nazwę produktu:</label>
+                                <InputText @bind-Value="ram.Name" placeholder="np: HyperX 16GB (2x8GB) 3200MHz CL16 Fury RGB" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px; ">
+                                <label class="w-35">Wprowadź cenę produktu:</label>
+                                <InputNumber @bind-Value="ram.Price" placeholder="np: 2599.00" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź markę produktu:</label>
+                                <InputText @bind-Value="ram.Brand" placeholder="np: HyperX" class="w-50" />
+                                <InputSelect @bind-Value="ram.Brand" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Brand)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Dołącz zdjęcie produktu:</label>
+                                <InputFile multiple OnChange="@LoadFiles" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź gwarancję:</label>
+                                <InputText @bind-Value="ram.Warranty" placeholder="np: 36 miesięcy" class="w-50" />
+                                <InputSelect @bind-Value="ram.Warranty" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONProduct.Warranty)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Serie:</label>
+                                <InputText @bind-Value="ram.Attributes.Series" placeholder="np: Fury RGB" class="w-50" />
+                                <InputSelect @bind-Value="ram.Attributes.Series" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Series)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Rodzaj pamięci:</label>
+                                <InputText @bind-Value="ram.Attributes.Memory_type" placeholder="np: DDR4" class="w-50" />
+                                <InputSelect @bind-Value="ram.Attributes.Memory_type" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Memory_type)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Pojemność całkowita(GB):</label>
+                                <InputNumber @bind-Value="ram.Attributes.Memory_size_full" class="w-50" />
+                                <InputSelect @bind-Value="ram.Attributes.Memory_size_full" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Memory_size_full)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Pojemność kości(GB):</label>
+                                <InputNumber @bind-Value="ram.Attributes.Memory_size_single" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Liczba modułów:</label>
+                                <InputNumber @bind-Value="ram.Attributes.Items" class="w-50" />
+                                <InputSelect @bind-Value="ram.Attributes.Items" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Items)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Taktowanie:</label>
+                                <InputText @bind-Value="ram.Attributes.Frequency" placeholder="np: 3200 MHz (PC4-25600)" class="w-50" />
+                                <InputSelect @bind-Value="ram.Attributes.Frequency" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Frequency)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy posiada Pamięć ECC:</label>
+                                <InputSelect @bind-Value="ram.Attributes.Memory_ecc" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Czy posiada Podświetlenie pamięci:</label>
+                                <InputSelect @bind-Value="ram.Attributes.Memory_backlight" class="w-65">
+                                    <option value=""></option>
+                                    <option value="Tak">Tak</option>
+                                    <option value="Nie">Nie</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Opóźnienia (cycle latency):</label>
+                                <InputText @bind-Value="ram.Attributes.Cycle_latency" placeholder="np: CL 16" class="w-50" />
+                                <InputSelect @bind-Value="ram.Attributes.Cycle_latency" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Cycle_latency)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Timingi:</label>
+                                <InputText @bind-Value="ram.Attributes.Timings" placeholder="np: CL16-18-18" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Napięcie(V):</label>
+                                <InputNumber @bind-Value="ram.Attributes.Tension" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Chłodzenie:</label>
+                                <InputText @bind-Value="ram.Attributes.Cooling" placeholder="np: Radiator" class="w-50" />
+                                <InputSelect @bind-Value="ram.Attributes.Cooling" class="w-15">
+                                    <option value="">--NONE--</option>
+                                    @foreach (var item in distinctService.json_Distinct.JSONRam.Cooling)
+                                                {
+                                        <option value="@item">@item</option>
+                                                }
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Dodatkowe informacje:</label>
+                                <InputText @bind-Value="ram.Attributes.Additional_information" placeholder="np: Wsparcie Intel® XMP" class="w-65" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <label class="w-35">Wprowadź Kolor:</label>
+                                <InputText @bind-Value="ram.Attributes.Color" placeholder="np: Czarny" class="w-65" />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group row" style="margin:10px;">
+                                <button Type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+                break;
+
+            default:
+                <p>something went wrong</p>
+                break;
+        }
+    </div>
+
+    <div class="row mr-0 ml-0 w-100">
+        <div class="col-5 pl-0 pr-0">
+            <AddDescriptionComponent max_amount_of_single_des="amount_of_desc" @bind-ShortDesc="description" />
+        </div>
+    </div>
+}
+@code {
+    [Parameter]
+    public string Name { get; set; }
+    [Parameter]
+    public bool edit { get; set; }
+    [Parameter]
+    public int editindex { get; set; }
+    [CascadingParameter] EditProductsFormComponent editProducts { get; set; }
+    [CascadingParameter] ProductManagementComponent productManagement { get; set; }
+
+    private Product<Processor> processor = new Product<Processor>();
+    private Product<ComputerCase> computercase = new Product<ComputerCase>();
+    private Product<Disc> disc = new Product<Disc>();
+    private Product<Motherboard> motherboard = new Product<Motherboard>();
+    private Product<GraphicCard> graphiccard = new Product<GraphicCard>();
+    private Product<PowerSupply> Powersupply = new Product<PowerSupply>();
+    private Product<Radiator> Radiator = new Product<Radiator>();
+    private Product<Ram> ram = new Product<Ram>();
+
+    private ShortDesc description { get; set; }
+    private int amount_of_desc { get; set; }
+    private string PhotoSTR { get; set; }
+    private List<IBrowserFile> loadedFiles = new();
+
+    protected async override void OnInitialized()
+    {
+        amount_of_desc = 10;
+        description = new ShortDesc();
+        description.Text = new string[amount_of_desc];
+        description.Title = new string[amount_of_desc];
+        description.photos = new IBrowserFile[amount_of_desc];
+
+        _data = new SqlDataAccess(_config);
+        processor.Attributes = new Processor();
+        computercase.Attributes = new ComputerCase();
+        disc.Attributes = new Disc();
+        motherboard.Attributes = new Motherboard();
+        graphiccard.Attributes = new GraphicCard();
+        Powersupply.Attributes = new PowerSupply();
+        Radiator.Attributes = new Radiator();
+        ram.Attributes = new Ram();
+
+        if (edit)
+        {
+            switch (Name)
+            {
+                case "processors":
+                    List<Product<Processor>> processors = await Additional_Functions.Read_Processors_From_JSON(env);
+                    processor = processors.Find(x => x.Id == editindex);
+                    StateHasChanged();
+                    break;
+
+                case "discs":
+                    List<Product<Disc>> discs = await Additional_Functions.Read_Discs_From_JSON(env);
+                    disc = discs.Find(x => x.Id == editindex);
+                    StateHasChanged();
+                    break;
+
+                case "computercases":
+                    List<Product<ComputerCase>> computercases = await Additional_Functions.Read_Computercases_From_JSON(env);
+                    computercase = computercases.Find(x => x.Id == editindex);
+                    StateHasChanged();
+                    break;
+
+                case "graphiccards":
+                    List<Product<GraphicCard>> graphiccards = await Additional_Functions.Read_GraphicCards_From_JSON(env);
+                    graphiccard = graphiccards.Find(x => x.Id == editindex);
+                    StateHasChanged();
+                    break;
+
+                case "motherboards":
+                    List<Product<Motherboard>> motherboards = await Additional_Functions.Read_Motherboards_From_JSON(env);
+                    motherboard = motherboards.Find(x => x.Id == editindex);
+                    StateHasChanged();
+                    break;
+
+                case "Powersupply":
+                    List<Product<PowerSupply>> powerSupplies = await Additional_Functions.Read_PowerSupplies_From_JSON(env);
+                    Powersupply = powerSupplies.Find(x => x.Id == editindex);
+                    StateHasChanged();
+                    break;
+
+                case "Radiators":
+                    List<Product<Radiator>> radiators = await Additional_Functions.Read_Radiators_From_JSON(env);
+                    Radiator = radiators.Find(x => x.Id == editindex);
+                    StateHasChanged();
+                    break;
+
+                case "rams":
+                    List<Product<Ram>> rams = await Additional_Functions.Read_Rams_From_JSON(env);
+                    ram = rams.Find(x => x.Id == editindex);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        PhotoSTR = "";
+    }
+
+    private async Task AddProcessor()
+    {
+        processor = Additional_Functions.Return_checked_product(processor);
+
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = processor.Name, @Price = processor.Price, @Brand = processor.Brand, @Warranty = processor.Warranty, @Id = processor.Id });
+            string sql2 = "UPDATE Processors SET [photoSTR] = @PhotoSTR ,[family] = @Family ,[processor_number] = @Processor_number ,[socket] = @Socket ,[arch] = @Arch ,[frequency] = @Frequency ,[cores] = @Cores ,[threads] = @Threads ,[unlocked] = @Unlocked ,[cache] = @Cache ,[intergrated_graphic] = @Intergrated_graphic ,[processor_graphic] = @Processor_graphic ,[memory_types] = @Memory_types ,[lithography] = @Lithography ,[tdp] = @Tdp ,[technologiesSTR] = @TechnologiesSTR ,[cooling_in_box] = @Cooling_in_box ,[code] = @Code WHERE productID=@Id ";
+            await _data.Update(sql2, new { @PhotoSTR = processor.Attributes.PhotoSTR, @Family = processor.Attributes.Family, @Processor_number = processor.Attributes.Processor_number, @Socket = processor.Attributes.Socket, @Arch = processor.Attributes.Arch, @Frequency = processor.Attributes.Frequency, @Cores = processor.Attributes.Cores, @Threads = processor.Attributes.Threads, @Unlocked = processor.Attributes.Unlocked, @Cache = processor.Attributes.Cache, @Intergrated_graphic = processor.Attributes.Intergrated_graphic, @Processor_graphic = processor.Attributes.Processor_graphic, @Memory_types = processor.Attributes.Memory_types, @Lithography = processor.Attributes.Lithography, @Tdp = processor.Attributes.TDP, @TechnologiesSTR = processor.Attributes.TechnologiesSTR, @Cooling_in_box = processor.Attributes.Cooling_in_box, @Code = processor.Attributes.Code, @Id = editindex });
+            Additional_Functions.Add_Product_To_JSON(processor, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, processor.Id, env, _config);
+            editProducts.processor = await SearchEngine.Processors_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(processor, _data, loadedFiles);
+
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(r.Item1, false, env);
+            await Load_photos_on_sever(r.Item1.Id);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+
+            processor = new Product<Processor>();
+            processor.Attributes = new Processor();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private async Task AddComputerCase()
+    {
+        computercase = Additional_Functions.Return_checked_product(computercase);
+
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = computercase.Name, @Price = computercase.Price, @Brand = computercase.Brand, @Warranty = computercase.Warranty, @Id = computercase.Id });
+            string sql2 = "UPDATE ComputerCases SET [photoSTR] = @PhotoSTR ,[caseType] = @caseType ,[motherboards_typeSTR] = @Motherboards_typeSTR ,[extension_cards] = @Extension_cards ,[max_graphic_card_length] = @Max_graphic_card_length ,[materialsSTR] = @MaterialsSTR ,[additional_informationSTR] = @Additional_informationSTR ,[side_panel] = @Side_panel ,[backlight] = @Backlight ,[power_supply_type] = @Power_supply_type ,[space_for_discsSTR] = @Space_for_discsSTR ,[max_height_of_cooling] = @Max_height_of_cooling ,[max_fans] = @Max_fans ,[fans_typesSTR] = @Fans_typesSTR ,[water_cooling_optionsSTR] = @Water_cooling_optionsSTR ,[fans_installed] = @Fans_installed ,[fans_types_installedSTR] = @Fans_types_installedSTR ,[buttonsSTR] = @ButtonsSTR ,[front_panel_outputsSTR] = @Front_panel_outputsSTR ,[color] = @Color ,[accessoriesSTR] = @AccessoriesSTR ,[width] = @Width ,[heigth] = @Heigth ,[length_] = @Length_ ,[weigth] = @Weigth WHERE productID=@Id ";
+            await _data.Update(sql2, new { @PhotoSTR = computercase.Attributes.PhotoSTR, @caseType = computercase.Attributes.Type, @Motherboards_typeSTR = computercase.Attributes.Motherboards_typeSTR, @Extension_cards = computercase.Attributes.Extension_cards, @Max_graphic_card_length = computercase.Attributes.Max_graphic_card_length, @MaterialsSTR = computercase.Attributes.MaterialsSTR, @Additional_informationSTR = computercase.Attributes.Additional_informationSTR, @Side_panel = computercase.Attributes.Side_panel, @Backlight = computercase.Attributes.Backlight, @Power_supply_type = computercase.Attributes.Power_supply_type, @Space_for_discsSTR = computercase.Attributes.Space_for_discsSTR, @Max_height_of_cooling = computercase.Attributes.Max_height_of_cooling, @Max_fans = computercase.Attributes.Max_fans, @Fans_typesSTR = computercase.Attributes.Fans_typesSTR, @Water_cooling_optionsSTR = computercase.Attributes.Water_cooling_optionsSTR, @Fans_installed = computercase.Attributes.Fans_installed, @Fans_types_installedSTR = computercase.Attributes.Fans_types_installedSTR, @ButtonsSTR = computercase.Attributes.ButtonsSTR, @Front_panel_outputsSTR = computercase.Attributes.Front_panel_outputsSTR, @Color = computercase.Attributes.Color, @AccessoriesSTR = computercase.Attributes.AccessoriesSTR, @Width = computercase.Attributes.Width, @Heigth = computercase.Attributes.Heigth, @Length_ = computercase.Attributes.Length, @Weigth = computercase.Attributes.Weigth, @Id = editindex });
+            Additional_Functions.Add_Product_To_JSON(computercase, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, computercase.Id, env, _config);
+            editProducts.computercase = await SearchEngine.ComputerCases_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(computercase, _data, loadedFiles);
+            computercase = r.Item1;
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(computercase, false, env);
+            await Load_photos_on_sever(computercase.Id);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+
+            computercase = new Product<ComputerCase>();
+            computercase.Attributes = new ComputerCase();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private async Task AddDisc()
+    {
+        disc = Additional_Functions.Return_checked_product(disc);
+
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = disc.Name, @Price = disc.Price, @Brand = disc.Brand, @Warranty = disc.Warranty, @Id = disc.Id });
+            string sql2 = "UPDATE Discs SET [photoSTR] = @PhotoSTR ,[destiny] = @Destiny ,[discType] = @discType ,[capacity] = @Capacity ,[discFormat] = @discFormat ,[interfaces] = @Interfaces ,[read_speed] = @Read_speed ,[write_speed] = @Write_speed ,[random_read_speed] = @Random_read_speed ,[random_write_speed] = @Random_write_speed ,[memory_type] = @Memory_type ,[reliability] = @Reliability ,[radiator] = @Radiator ,[additional_informationSTR] = @Additional_informationSTR ,[accessoriesSTR] = @AccessoriesSTR ,[color] = @Color ,[width] = @Width ,[heigth] = @Heigth ,[length_] = @Length_ ,[code] = @Code WHERE productID=@Id ";
+            await _data.Update(sql2, new { @PhotoSTR = disc.Attributes.PhotoSTR, @Destiny = disc.Attributes.Destiny, @discType = disc.Attributes.Type, @Capacity = disc.Attributes.Capacity, @discFormat = disc.Attributes.Format, @Interfaces = disc.Attributes.Interfaces, @Read_speed = disc.Attributes.Read_speed, @Write_speed = disc.Attributes.Write_speed, @Random_read_speed = disc.Attributes.Random_read_speed, @Random_write_speed = disc.Attributes.Random_write_speed, @Memory_type = disc.Attributes.Memory_type, @Reliability = disc.Attributes.Reliability, @Radiator = disc.Attributes.Radiator, @Additional_informationSTR = disc.Attributes.Additional_informationSTR, @AccessoriesSTR = disc.Attributes.AccessoriesSTR, @Color = disc.Attributes.Color, @Width = disc.Attributes.Width, @Heigth = disc.Attributes.Heigth, @Length_ = disc.Attributes.Length, @Code = disc.Attributes.Code, @Id = editindex });
+            Additional_Functions.Add_Product_To_JSON(disc, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, disc.Id, env, _config);
+            editProducts.disc = await SearchEngine.Discs_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(disc, _data, loadedFiles);
+            disc = r.Item1;
+
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(disc, false, env);
+            await Load_photos_on_sever(disc.Id);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+            disc = new Product<Disc>();
+            disc.Attributes = new Disc();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private async Task AddGraphicCard()
+    {
+        graphiccard = Additional_Functions.Return_checked_product(graphiccard);
+
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = graphiccard.Name, @Price = graphiccard.Price, @Brand = graphiccard.Brand, @Warranty = graphiccard.Warranty, @Id = graphiccard.Id });
+            string sql2 = "UPDATE GraphicCards SET [photoSTR] = @PhotoSTR ,[rtx] = @Rtx ,[core_clock] = @Core_clock ,[graphics_processing] = @Graphics_processing ,[card_bus] = @Card_bus ,[memory_size] = @Memory_size ,[memory_type] = @Memory_type ,[memory_bus] = @Memory_bus ,[cuda_cores] = @Cuda_cores ,[cooling] = @Cooling ,[outputsSTR] = @OutputsSTR ,[graphic_apiSTR] = @Graphic_apiSTR ,[power_connectors] = @Power_connectors ,[recommended_psu] = @Recommended_psu ,[tdp] = @Tdp ,[length_] = @Length_ ,[width] = @Width ,[heigth] = @Heigth ,[accessoriesSTR] = @AccessoriesSTR ,[code] = @Code, [producent]=@Producent WHERE productID=@Id ";
+            await _data.Update(sql2, new { @PhotoSTR = graphiccard.Attributes.PhotoSTR, @Rtx = graphiccard.Attributes.Rtx, @Core_clock = graphiccard.Attributes.Core_clock, @Graphics_processing = graphiccard.Attributes.Graphics_processing, @Card_bus = graphiccard.Attributes.Card_bus, @Memory_size = graphiccard.Attributes.Memory_size, @Memory_type = graphiccard.Attributes.Memory_type, @Memory_bus = graphiccard.Attributes.Memory_bus, @Cuda_cores = graphiccard.Attributes.Cuda_cores, @Cooling = graphiccard.Attributes.Cooling, @OutputsSTR = graphiccard.Attributes.OutputsSTR, @Graphic_apiSTR = graphiccard.Attributes.Graphic_apiSTR, @Power_connectors = graphiccard.Attributes.Power_connectors, @Recommended_psu = graphiccard.Attributes.Recommended_psu, @Tdp = graphiccard.Attributes.Tdp, @Length_ = graphiccard.Attributes.Length, @Width = graphiccard.Attributes.Width, @Heigth = graphiccard.Attributes.Heigth, @AccessoriesSTR = graphiccard.Attributes.AccessoriesSTR, @Code = graphiccard.Attributes.Code, @Id = editindex, @Producent = graphiccard.Attributes.Producent });
+            Additional_Functions.Add_Product_To_JSON(graphiccard, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, graphiccard.Id, env, _config);
+            editProducts.graphiccard = await SearchEngine.GraphicCards_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(graphiccard, _data, loadedFiles);
+            graphiccard = r.Item1;
+
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(graphiccard, false, env);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+
+            await Load_photos_on_sever(graphiccard.Id);
+            graphiccard = new Product<GraphicCard>();
+            graphiccard.Attributes = new GraphicCard();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private async Task AddMotherboard()
+    {
+        motherboard = Additional_Functions.Return_checked_product(motherboard);
+
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = motherboard.Name, @Price = motherboard.Price, @Brand = motherboard.Brand, @Warranty = motherboard.Warranty, @Id = motherboard.Id });
+            string sql2 = "UPDATE Motherboards SET [photoSTR] = @PhotoSTR ,[socket] = @Socket ,[chipset] = @Chipset ,[arch_processSTR] = @Arch_processSTR ,[memory_typesSTR] = @Memory_typesSTR ,[memory_types_ocSTR] = @Memory_types_ocSTR ,[memory_slots] = @Memory_slots ,[memory_max_size] = @Memory_max_size ,[memory_channel] = @Memory_channel ,[internal_connectionSTR] = @Internal_connectionSTR ,[back_panel_portsSTR] = @Back_panel_portsSTR ,[raidSTR] = @RaidSTR ,[multi_cards] = @Multi_cards ,[can_handle_processor_card] = @Can_handle_processor_card ,[audio] = @Audio ,[wireless_connection] = @Wireless_connection ,[boardformat] = @boardFormat ,[width] = @Width ,[length_] = @Length_ ,[code] = @Code WHERE productID=@Id ";
+            await _data.Update(sql2, new { @PhotoSTR = motherboard.Attributes.PhotoSTR, @Socket = motherboard.Attributes.Socket, @Chipset = motherboard.Attributes.Chipset, @Arch_processSTR = motherboard.Attributes.Arch_processSTR, @Memory_typesSTR = motherboard.Attributes.Memory_typesSTR, @Memory_types_ocSTR = motherboard.Attributes.Memory_types_ocSTR, @Memory_slots = motherboard.Attributes.Memory_slots, @Memory_max_size = motherboard.Attributes.Memory_max_size, @Memory_channel = motherboard.Attributes.Memory_channel, @Internal_connectionSTR = motherboard.Attributes.Internal_connectionSTR, @Back_panel_portsSTR = motherboard.Attributes.Back_panel_portsSTR, @RaidSTR = motherboard.Attributes.RaidSTR, @Multi_cards = motherboard.Attributes.Multi_cards, @Can_handle_processor_card = motherboard.Attributes.Can_handle_processor_card, @Audio = motherboard.Attributes.Audio, @Wireless_connection = motherboard.Attributes.Wireless_connection, @boardFormat = motherboard.Attributes.Format, @Width = motherboard.Attributes.Width, @Length_ = motherboard.Attributes.Length, @Code = motherboard.Attributes.Code, @Id = editindex });
+            Additional_Functions.Add_Product_To_JSON(motherboard, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, motherboard.Id, env, _config);
+
+            editProducts.motherboard = await SearchEngine.Motherboards_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(motherboard, _data, loadedFiles);
+            motherboard = r.Item1;
+
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(motherboard, false, env);
+            await Load_photos_on_sever(motherboard.Id);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+
+            motherboard = new Product<Motherboard>();
+            motherboard.Attributes = new Motherboard();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private async Task AddPowerSupply()
+    {
+        Powersupply = Additional_Functions.Return_checked_product(Powersupply);
+
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = Powersupply.Name, @Price = Powersupply.Price, @Brand = Powersupply.Brand, @Warranty = Powersupply.Warranty, @Id = Powersupply.Id });
+            string sql2 = "UPDATE PowerSupply SET [photoSTR] = @PhotoSTR ,[power_] = @Power_ ,[standard_] = @Standard_ ,[efficiency] = @Efficiency ,[certificate_] = @Certificate_ ,[cables_types] = @Cables_types ,[fan] = @Fan ,[pfc] = @Pfc ,[connectorsSTR] = @ConnectorsSTR ,[securitySTR] = @SecuritySTR ,[additional_informationSTR] = @Additional_informationSTR ,[length_] = @Length_ ,[width] = @Width ,[heigth] = @Heigth ,[color] = @Color WHERE productID=@Id ";
+            await _data.Update(sql2, new { @PhotoSTR = Powersupply.Attributes.PhotoSTR, @Power_ = Powersupply.Attributes.Power, @Standard_ = Powersupply.Attributes.Standard, @Efficiency = Powersupply.Attributes.Efficiency, @Certificate_ = Powersupply.Attributes.Certificate, @Cables_types = Powersupply.Attributes.Cables_types, @Fan = Powersupply.Attributes.Fan, @Pfc = Powersupply.Attributes.Pfc, @ConnectorsSTR = Powersupply.Attributes.ConnectorsSTR, @SecuritySTR = Powersupply.Attributes.SecuritySTR, @Additional_informationSTR = Powersupply.Attributes.Additional_informationSTR, @Length_ = Powersupply.Attributes.Length, @Width = Powersupply.Attributes.Width, @Heigth = Powersupply.Attributes.Heigth, @Color = Powersupply.Attributes.Color, @Id = editindex });
+            Additional_Functions.Add_Product_To_JSON(Powersupply, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, Powersupply.Id, env, _config);
+
+            editProducts.powersupply = await SearchEngine.PowerSupplies_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(Powersupply, _data, loadedFiles);
+            Powersupply = r.Item1;
+
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(Powersupply, false, env);
+            await Load_photos_on_sever(Powersupply.Id);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+
+            Powersupply = new Product<PowerSupply>();
+            Powersupply.Attributes = new PowerSupply();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private async Task AddRadiator()
+    {
+        Radiator = Additional_Functions.Return_checked_product(Radiator);
+
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = Radiator.Name, @Price = Radiator.Price, @Brand = Radiator.Brand, @Warranty = Radiator.Warranty, @Id = Radiator.Id });
+            string sql2 = "UPDATE Radiators SET [photoSTR] = @PhotoSTR ,[cooling_type] = @Cooling_type ,[socketsSTR] = @SocketsSTR ,[fansSTR] = @FansSTR ,[materials] = @Materials ,[rps] = @Rps ,[bearing] = @Bearing ,[max_dB] = @Max_dB ,[connectors] = @Connectors ,[backlight] = @Backlight ,[service_life] = @Service_life ,[tdp] = @dp ,[additional_informationSTR] = @Additional_informationSTR ,[heigth] = @Heigth ,[width] = @Width ,[length_] = @Length_ ,[weight_] = @Weight_ ,[accessoriesSTR] = @AccessoriesSTR ,[code] = @Code WHERE productID=@Id  ";
+            await _data.Update(sql2, new { @PhotoSTR = Radiator.Attributes.PhotoSTR, @Cooling_type = Radiator.Attributes.Cooling_type, @SocketsSTR = Radiator.Attributes.SocketsSTR, @FansSTR = Radiator.Attributes.FansSTR, @Materials = Radiator.Attributes.Materials, @Rps = Radiator.Attributes.Rps, @Bearing = Radiator.Attributes.Bearing, @Max_dB = Radiator.Attributes.Max_dB, @Connectors = Radiator.Attributes.Connectors, @Backlight = Radiator.Attributes.Backlight, @Service_life = Radiator.Attributes.Service_life, @Tdp = Radiator.Attributes.Tdp, @Additional_informationSTR = Radiator.Attributes.Additional_informationSTR, @Heigth = Radiator.Attributes.Heigth, @Width = Radiator.Attributes.Width, @Length_ = Radiator.Attributes.Length, @Weight_ = Radiator.Attributes.Weight, @AccessoriesSTR = Radiator.Attributes.AccessoriesSTR, @Code = Radiator.Attributes.Code, @Id = editindex });
+            Additional_Functions.Add_Product_To_JSON(Radiator, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, Radiator.Id, env, _config);
+
+            editProducts.radiator = await SearchEngine.Radiators_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(Radiator, _data, loadedFiles);
+            Radiator = r.Item1;
+
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(Radiator, false, env);
+
+            await Load_photos_on_sever(Radiator.Id);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+
+            Radiator = new Product<Radiator>();
+            Radiator.Attributes = new Radiator();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private async Task AddRam()
+    {
+        ram = Additional_Functions.Return_checked_product(ram);
+        if (edit)
+        {
+            string sql = "update products set prName = @prName, price = @Price,brand = @Brand,warranty = @Warranty where Id=@Id";
+            await _data.Update(sql, new { @prName = ram.Name, @Price = ram.Price, @Brand = ram.Brand, @Warranty = ram.Warranty, @Id = ram.Id });
+            string sql2 = "UPDATE Rams SET [photoSTR] = @PhotoSTR ,[series] = @Series ,[memory_type] = @Memory_type ,[memory_size_full] = @Memory_size_full ,[memory_size_single] = @Memory_size_single ,[items] = @Items ,[frequency] = @Frequency ,[cycle_latency] = @Cycle_latency ,[timings] = @Timings ,[tension] = @Tension ,[cooling] = @Cooling ,[memory_ecc] = @Memory_ecc ,[memory_backlight] = @Memory_backlight ,[additional_information] = @Additional_information ,[color] = @Color WHERE productID=@Id  ";
+            await _data.Update(sql2, new { @PhotoSTR = ram.Attributes.PhotoSTR, @Series = ram.Attributes.Series, @Memory_type = ram.Attributes.Memory_type, @Memory_size_full = ram.Attributes.Memory_size_full, @Memory_size_single = ram.Attributes.Memory_size_single, @Items = ram.Attributes.Items, @Frequency = ram.Attributes.Frequency, @Cycle_latency = ram.Attributes.Cycle_latency, @Timings = ram.Attributes.Timings, @Tension = ram.Attributes.Tension, @Cooling = ram.Attributes.Cooling, @Memory_ecc = ram.Attributes.Memory_ecc, @Memory_backlight = ram.Attributes.Memory_backlight, @Additional_information = ram.Attributes.Additional_information, @Color = ram.Attributes.Color, @Id = editindex });
+            Additional_Functions.Add_Product_To_JSON(ram, true, env);
+            await Additional_Functions.Edit_Description_To_DB(description, ram.Id, env, _config);
+            editProducts.ram = await SearchEngine.Rams_List_from_SQL(_config);
+            editProducts.changevalue();
+        }
+        else
+        {
+            var r = await Additional_Functions.Add_Product_To_SQL(ram, _data, loadedFiles);
+            ram = r.Item1;
+
+            await Additional_Functions.Add_Opinion_To_JSON(r.Item2[0], env);
+            Additional_Functions.Add_Product_To_JSON(ram, false, env);
+
+            await Load_photos_on_sever(ram.Id);
+            await Additional_Functions.Add_Description_To_DB(description, r.Item1.Id, env, _config);
+
+            ram = new Product<Ram>();
+            ram.Attributes = new Ram();
+        }
+
+        await distinctService.json_Distinct.Laoddistinct(_config, env);
+        await Additional_Functions.Create_TopMenu_JSON(_config, env);
+        StateHasChanged();
+    }
+
+    private string[] getPhotos(int idproduct)
+    {
+        string[] PhotoSTR = new string[loadedFiles.Count];
+        int index = 0;
+        foreach (var item in loadedFiles)
+        {
+            var path = $"\\img\\" + idproduct + "_" + index + "." + item.ContentType.Split('/')[item.ContentType.Split('/').Length - 1];
+            PhotoSTR[index] = path;
+            index++;
+        }
+        return PhotoSTR;
+    }
+
+    private async Task Load_photos_on_sever(int idproduct)
+    {
+        int index = 0;
+        foreach (var item in loadedFiles)
+        {
+            Stream stream = item.OpenReadStream(3072000);
+            var path = $"\\img\\" + idproduct + "_" + index + "." + item.ContentType.Split('/')[item.ContentType.Split('/').Length - 1];
+            FileStream fs = File.Create(env.WebRootPath + path);
+            await stream.CopyToAsync(fs);
+            stream.Close();
+            fs.Close();
+            index++;
+        }
+    }
+
+    private void LoadFiles(InputFileChangeEventArgs e)
+    {
+        loadedFiles.Clear();
+
+        foreach (var file in e.GetMultipleFiles(5))
+        {
+            try
+            {
+                loadedFiles.Add(file);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+    }
+
+    private string[] convertInputTextAreaToProjectSyntax(string input)
+    {
+        return input.Split("\n", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+    }
+}

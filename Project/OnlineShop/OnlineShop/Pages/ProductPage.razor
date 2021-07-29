@@ -1,0 +1,460 @@
+﻿@page "/c/{Category:int}/{ProductID:int}"
+@using Models
+@using System.Collections.Generic
+@using OnlineShop.Components.ProductPage
+@using Services
+@using OnlineShop.Components.ProductList
+@using Microsoft.AspNetCore.Hosting
+
+@inject IWebHostEnvironment env
+@inject NavigationManager NavigationManager
+@inject Cart Cart
+@inject Refresh_Component Refresh_Component
+
+@if (attributes is not null)
+{
+    <div class="container-fluid p-0 w-100">
+        <div class="row p-0 w-60 mr-auto ml-auto h-50 mt-2">
+            @foreach (var item in path)
+            {
+                var directlink = NavigationManager.BaseUri + item[1];
+                if (item[0] == "Strona główna")
+                {
+                    <a href="@directlink" style="color:black">
+                        <span class="text-center-VERT">@item[0]</span>
+                    </a>
+                }
+                else
+                {
+                    <i class="fas fa-chevron-right center-VERT-HOR-1" style="margin-right:10px; margin-left:10px;"></i>
+
+                    <a href="@directlink" style="color:black">
+                        <span class="text-center-VERT">@item[0]</span>
+                    </a>
+                }
+            }
+        </div>
+
+        <div class="row p-0 w-60 mr-auto ml-auto justify-content-end">
+            <h3>@Name</h3>
+        </div>
+
+        <div class="row p-0 w-60 mr-auto ml-auto">
+            <div class="col-6 m-0">
+                <Display_photosComponent Paths="Photo" />
+            </div>
+
+            <div class="col-6" style="margin:0;">
+                <div class="row justify-content-end h-90">
+                    <div class="col-6 h-100">
+                        <div class="d-flex flex-column h-50 border-lightgrey border-radius10">
+                            <div class="row ml-0 mr-0 justify-content-center align-items-center cursor-pointer" style="margin-top:10px;height:40px;">
+                                <div class="col-auto pl-0 pr-0">
+                                    <a onclick="document.getElementById('opinions').scrollIntoView({behavior:'smooth'})">
+                                        <StarComponent rating="@opinion.rating" />
+                                    </a>
+                                </div>
+
+                                <div class="col-auto pl-0 pr-0">
+                                    <a onclick="document.getElementById('opinions').scrollIntoView({behavior:'smooth'})">
+                                        <span class="user-select-none">
+                                            (@opinion.opinions)
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="row ml-0 mr-0 flex-fill justify-content-center">
+                                <div class="col-12 pl-0 pr-0">
+                                    <div class="d-flex justify-content-center align-items-center h-100">
+                                        @if (opinion.opinions == 0)
+                                        {
+                                            <span class="font-size30 user-select-none" style="color: #b9b9b9;font-family: cursive;">
+                                                brak opini
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            if (opinion.rating >= 3.33)
+                                            {
+                                                <i class="far fa-grin fa-8x" style="color: #83c57f;"></i>
+                                            }
+                                            else
+                                            {
+                                                if (opinion.rating <= 1.66)
+                                                {
+                                                    <i class="far fa-frown-open fa-8x" style="color: #ff9595;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-meh fa-8x" style="color: #ffd696;"></i>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 justify-content-center border-lightgrey border-radius10 h-fit-content">
+                        <div class="row h-10 justify-content-end mr-1 mt-2">
+                            <span style="font-size: xx-large;">
+                                @((items * Price % 1 == 0) ? items * Price + ".00 zł" : items * Price + " zł")
+                            </span>
+                        </div>
+
+                        <div class="row mr-1 ml-1" style="margin:0 10px 10px 10px">
+                            <div class="col-auto ml-auto mr-auto pl-0 pr-0">
+                                <EditForm Model="items">
+                                    <InputSelect @bind-Value="items" class="form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </InputSelect>
+                                </EditForm>
+                            </div>
+                            <div class="col-auto pl-0 pr-0">
+                                <button type="button" class="btn btn-success" @onclick="Add_to_Cart">Dodaj do koszyka</button>
+                            </div>
+                        </div>
+
+                        <div class="row ml-1 mr-1 pt-2 border-top-lightgrey">
+                            <div class="col-3 p-0">
+                                <i class="fas fa-truck fa-2x item-center"></i>
+                            </div>
+                            <div class="col-9 pl-2 pr-0 ">
+                                <span class="d-flex align-items-center h-100">
+                                    Transport Kurierem
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row ml-1 mr-1 pt-2">
+                            <div class="col-3 p-0">
+                                <i class="fas fa-stopwatch fa-2x item-center"></i>
+                            </div>
+                            <div class="col-9 pl-2 pr-0">
+                                <span class="d-flex align-items-center h-100">
+                                    Wysyłka w 24h
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row ml-1 mr-1 pt-2">
+                            <div class="col-3 p-0">
+                                <i class="far fa-check-circle fa-2x item-center" style="color: darkgreen;"></i>
+                            </div>
+                            <div class="col-9 pl-2 pr-0">
+                                <span class="d-flex align-items-center h-100">
+                                    Towar dostępny w magazynie
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row ml-1 mr-1 pt-2">
+                            <div class="col-3 p-0">
+                                <i class="fas fa-wallet fa-2x item-center" style="color: darkgreen;"></i>
+                            </div>
+                            <div class="col-9 pl-2 pr-0">
+                                <span class="d-flex align-items-center h-100">
+                                    DARMOWA wysyłka
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row ml-1 mr-1 pt-2 mb-1">
+                            <div class="col-3 p-0">
+                                <i class="fas fa-globe-americas fa-2x item-center"></i>
+                            </div>
+                            <div class="col-9 pl-2 pr-0">
+                                <span class="d-flex align-items-center h-100">
+                                    Wysyłka do każdego kraju
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row p-0 w100 mr-auto ml-auto justify-content-center mt-3 mb-3 border-top-lightgrey border-bottom-lightgrey">
+            <div class="col-2 pt-3 pb-3 pl-0 pr-0 text-center nav-product-menu arr-btn cursor-pointer" onclick="document.getElementById('opis').scrollIntoView({behavior:'smooth'})">
+                <div class="d-flex">
+                    <div>
+                        <div class="animation-arrows">
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex-fill d-flex justify-content-center align-items-center">
+                        <span class="font-size-20">
+                            OPIS
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="animation-arrows">
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-2 pt-3 pb-3 pl-0 pr-0 text-center nav-product-menu arr-btn cursor-pointer" onclick="document.getElementById('spec').scrollIntoView({behavior:'smooth'})">
+                <div class="d-flex">
+                    <div>
+                        <div class="animation-arrows">
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex-fill d-flex justify-content-center align-items-center">
+                        <span class="font-size-20">
+                            SPECYFIKACJA
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="animation-arrows">
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 pt-3 pb-3 pl-0 pr-0 text-center nav-product-menu arr-btn cursor-pointer" onclick="document.getElementById('opinions').scrollIntoView({behavior:'smooth'})">
+                <div class="d-flex">
+                    <div>
+                        <div class="animation-arrows">
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex-fill d-flex justify-content-center align-items-center">
+                        <span class="font-size-20">
+                            OPINIE
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="animation-arrows">
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                            <i class="fas fa-chevron-down" style="opacity:0;"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row mr-0 ml-0 w-60 mr-auto ml-auto font-size30">
+            <div class="row mr-0 ml-0 w-100 font-size30 border-bottom-lightgrey" id="opis">
+                <span>
+                    Opis
+                </span>
+            </div>
+            <div class="row mr-0 ml-0">
+                <DescriptionComponent ProductID="ProductID" />
+            </div>
+        </div>
+        <div class="row p-0 w-60 mr-auto ml-auto mt-5 border-top-lightgrey">
+            <div class="row mr-0 ml-0 w-100 font-size30 border-bottom-lightgrey" id="spec">
+                <span>
+                    Specyfikacja
+                </span>
+            </div>
+            <div class="container mt-1" id="spec">
+                @for (int i = 0; i < attributes.GetLength(1); i++)
+                {
+                    string bg = (i % 2 == 0) ? "background-ligth" : "background-ligther";
+
+                    <div class="row justify-content-center pt-2 pb-2 mr-0 ml-0 @bg">
+                        <div class="col-5 pl-0 pr-0" style="border-right:1px solid lightgrey">
+                            <span class="pl-15">
+                                @attributes[0, i]
+                            </span>
+                        </div>
+
+                        <div class="col-7 pl-0 pr-0">
+                            <span class="pl-3M " style="white-space: pre-line; box-decoration-break: clone; -webkit-box-decoration-break: clone;">
+                                @attributes[1, i]
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row p-0 w-60 mr-auto ml-auto mt-3 h-50" id="opinions">
+            <OpinionsComponent ProductId="ProductID" Category="Category" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Category { get; set; }
+    [Parameter]
+    public int ProductID { get; set; }
+
+    private Product<Processor> Processor { get; set; }
+    private Product<Disc> Disc { get; set; }
+    private Product<ComputerCase> ComputerCase { get; set; }
+    private Product<Motherboard> Motherboard { get; set; }
+    private Product<GraphicCard> GraphicCard { get; set; }
+    private Product<Ram> Ram { get; set; }
+    private Product<Radiator> Radiator { get; set; }
+    private Product<PowerSupply> PowerSupply { get; set; }
+
+    private List<string[]> path { get; set; }
+    private string Name { get; set; }
+    private string[] Photo { get; set; }
+    private float Price { get; set; }
+    private int items { get; set; }
+    private string[,] attributes { get; set; }
+
+    private Opinions opinion { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Refresh_Component.productPage = this;
+        path = new List<string[]>();
+        path.Add(new string[] { "Strona główna", "" });
+        items = 1;
+        opinion = await Additional_Functions.Read_Opinion_From_JSON(ProductID,env);
+        switch (Category)
+        {
+            case 1:
+                List<Product<Processor>> Processors = await Additional_Functions.Read_Processors_From_JSON( env);
+                Processor = Processors.Find(x => x.Id == ProductID);
+                Name = Processor.Name;
+                Photo = Processor.Attributes.Photo;
+                Price = Processor.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(Processor);
+                path.Add(new string[] { "Procesory", "c/1" });
+                path.Add(new string[] { "Procesory " + Processor.Brand, "c/1?brand=" + Processor.Brand });
+                path.Add(new string[] { Processor.Attributes.Family, "c/1?brand=" + Processor.Brand + "&family=" + Processor.Attributes.Family });
+                break;
+            case 2:
+                List<Product<ComputerCase>> ComputerCases = await Additional_Functions.Read_Computercases_From_JSON(env);
+                ComputerCase = ComputerCases.Find(x => x.Id == ProductID);
+                Name = ComputerCase.Name;
+                Photo = ComputerCase.Attributes.Photo;
+                Price = ComputerCase.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(ComputerCase);
+                path.Add(new string[] { "Obudowy", "c/2" });
+                path.Add(new string[] { "Obudowy " + ComputerCase.Attributes.Type, "c/2?casetype=" + ComputerCase.Attributes.Type });
+                break;
+            case 3:
+                List<Product<Disc>> Discs = await Additional_Functions.Read_Discs_From_JSON(env);
+                Disc = Discs.Find(x => x.Id == ProductID);
+                Name = Disc.Name;
+                Photo = Disc.Attributes.Photo;
+                Price = Disc.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(Disc);
+                path.Add(new string[] { "Dyski", "c/3" });
+                path.Add(new string[] { "Dyski " + Disc.Attributes.Type, "c/3?disctype=" + Disc.Attributes.Type });
+                path.Add(new string[] { "Dyski" + Disc.Attributes.Format, "c/3?disctype=" + Disc.Attributes.Type + "&discformat=" + Disc.Attributes.Format });
+                break;
+            case 4:
+                List<Product<GraphicCard>> GraphicCards = await Additional_Functions.Read_GraphicCards_From_JSON(env);
+                GraphicCard = GraphicCards.Find(x => x.Id == ProductID);
+                Name = GraphicCard.Name;
+                Photo = GraphicCard.Attributes.Photo;
+                Price = GraphicCard.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(GraphicCard);
+                path.Add(new string[] { "Karty Graficzne", "c/4" });
+                path.Add(new string[] { "Karty " + GraphicCard.Attributes.Producent, "c/4?producent=" + GraphicCard.Attributes.Producent });
+                path.Add(new string[] { GraphicCard.Attributes.Graphics_processing, "c/4?producent=" + GraphicCard.Attributes.Producent + "&processor=" + GraphicCard.Attributes.Graphics_processing });
+                break;
+            case 5:
+                List<Product<Motherboard>> Motherboards = await Additional_Functions.Read_Motherboards_From_JSON(env);
+                Motherboard = Motherboards.Find(x => x.Id == ProductID);
+                Name = Motherboard.Name;
+                Photo = Motherboard.Attributes.Photo;
+                Price = Motherboard.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(Motherboard);
+                path.Add(new string[] { "Płyty główne", "c/5" });
+                path.Add(new string[] { "Płyty " + Motherboard.Attributes.Format, "c/5?format=" + Motherboard.Attributes.Format });
+                path.Add(new string[] { Motherboard.Attributes.Socket, "c/5?format=" + Motherboard.Attributes.Format + "&socket=" + Motherboard.Attributes.Socket });
+                break;
+            case 6:
+                List<Product<PowerSupply>> PowerSupplies = await Additional_Functions.Read_PowerSupplies_From_JSON(env);
+                PowerSupply = PowerSupplies.Find(x => x.Id == ProductID);
+                Name = PowerSupply.Name;
+                Photo = PowerSupply.Attributes.Photo;
+                Price = PowerSupply.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(PowerSupply);
+                path.Add(new string[] { "Zasilacze", "c/6" });
+                path.Add(new string[] { "Zasilacze " + PowerSupply.Attributes.Standard, "c/6?standard=" + PowerSupply.Attributes.Standard });
+                path.Add(new string[] { PowerSupply.Attributes.Certificate, "c/6?standard=" + PowerSupply.Attributes.Standard + "&certificate=" + PowerSupply.Attributes.Certificate });
+                break;
+            case 7:
+                List<Product<Radiator>> Radiators = await Additional_Functions.Read_Radiators_From_JSON(env);
+                Radiator = Radiators.Find(x => x.Id == ProductID);
+                Name = Radiator.Name;
+                Photo = Radiator.Attributes.Photo;
+                Price = Radiator.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(Radiator);
+                path.Add(new string[] { "Radiatory", "c/7" });
+                path.Add(new string[] { "Chłodzenie " + Radiator.Attributes.Cooling_type, "c/7?type=" + Radiator.Attributes.Cooling_type });
+                break;
+            case 8:
+                List<Product<Ram>> Rams = await Additional_Functions.Read_Rams_From_JSON(env);
+                Ram = Rams.Find(x => x.Id == ProductID);
+                Name = Ram.Name;
+                Photo = Ram.Attributes.Photo;
+                Price = Ram.Price;
+                attributes = Additional_Functions.Convert_Attributes_To_Two_Dim_Array(Ram);
+                path.Add(new string[] { "Pamięci Ram", "c/8" });
+                path.Add(new string[] { "Zasilacze " + Ram.Attributes.Memory_type, "c/8?type=" + Ram.Attributes.Memory_type });
+                path.Add(new string[] { Ram.Attributes.Memory_size_full.ToString(), "c/8?type=" + Ram.Attributes.Memory_type + "&gb=" + Ram.Attributes.Memory_size_full });
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
+
+    private void Add_to_Cart()
+    {
+        if (Cart.items is null)
+        {
+            Cart.items = new List<Items>();
+        }
+
+        if (Cart.items.Any(x => x.name == this.Name))
+        {
+            int index = Cart.items.IndexOf(Cart.items.First(x => x.name == this.Name));
+
+            if (Cart.items[index].amount + items >= 10)
+            {
+                Cart.items[index].amount = 10;
+                Refresh_Component.topMenuComponent.Refresh();
+            }
+            else
+            {
+                Cart.items[index].amount = Cart.items[index].amount + items;
+                Refresh_Component.topMenuComponent.Refresh();
+            }
+        }
+        else
+        {
+            Cart.items.Add(new Items() { amount = items, id = this.ProductID, name = this.Name, photo = this.Photo[0], price = (decimal)this.Price });
+            Refresh_Component.topMenuComponent.Refresh();
+        }
+    }
+}

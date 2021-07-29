@@ -1,0 +1,434 @@
+﻿@using System.IO;
+@using Models;
+@using OnlineShop.Components.LoginSystem
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.AspNetCore.Hosting
+
+@inject ProtectedLocalStorage BrowserStorage
+@inject NavigationManager NavigationManager
+@inject SimpleUserInfo SimpleUserInfo
+@inject Cart Cart
+@inject Refresh_Component Refresh_Component
+@inject IWebHostEnvironment env
+<div class="row mr-0 ml-0 h-60">
+    <div class="row w-80 h-100 m-auto">
+        <div class="col-3 pl-0 pr-0 h-100 text-center">
+            <div class="container h-100">
+                @{var baseurl = NavigationManager.BaseUri;}
+                <div class="row ml-0 mr-0 h-100 cursor-pointer" @onclick="(()=>Navigate_To(baseurl))">
+                    <div class="col-4 pl-0 pr-0 h-100">
+                        <img src="/img/Logo/logo.svg" style="max-height: 90%;" />
+                    </div>
+
+                    <div class="col-8 pl-0 pr-0 h-100">
+                        <span style="font-family: fantasy;" class="d-inline-flex align-items-center min-height-100 font-size20">
+                            PC-COMPONENTS.COM
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-5 pl-0 pr-0">
+            <div class="d-flex align-items-center h-100" style="padding-right: 20px;">
+                <div class="position-relative w-100 pl-0 pr-0 h-100 h-50 col-95per">
+                    <input type="text" placeholder="Szukaj..." @bind="search_text" @oninput="(ui =>  search_text = (string) ui.Value)" @onkeydown="@Search_enter" class="item-center w-100 h-50" style="outline: none; border-radius: 10px 0 0 10px; border: 1px solid #7d7d7d; transform: translateX(-50%) translateY(-50%) " />
+                </div>
+
+                <div class="pl-0 pr-0 position-relative w-100 h-50 col-5per" style="border-radius: 0 10px 10px 0; border-top: 1px solid #7d7d7d; border-bottom: 1px solid #7d7d7d; border-right: 1px solid #7d7d7d; background-color: #eaeaea; ">
+                    <a href="/c/9?search=@search_text" class="search-button d-flex justify-content-center align-items-center">
+                        <i class="fas fa-search search-icon"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4 pl-0 pr-0 h-100">
+            @if (SimpleUserInfo.IsLogged)
+            {
+                <div class="d-flex align-items-center h-100 justify-content-end">
+                    <div style="width:44%;" class="justify-content-center align-items-center d-flex h-70">
+                        <span class="text-welcome">
+                            Witaj @SimpleUserInfo.UserName
+                        </span>
+                    </div>
+
+                    <div style="width:27%;" class="h-70">
+                        <button class="login-button h-100 w-100 anim-border" @onclick='(() => { SimpleUserInfo = new SimpleUserInfo(); BrowserStorage.SetAsync("login","False"); BrowserStorage.SetAsync("role", ""); BrowserStorage.SetAsync("ID", ""); BrowserStorage.SetAsync("Email", ""); BrowserStorage.SetAsync("UserAddress", ""); BrowserStorage.SetAsync("UserName", "");NavigationManager.NavigateTo(NavigationManager.Uri, true); })'>
+                            <div class="container h-100 pr-0 pl-0">
+                                <div class="row ml-0 mr-0 h-100 align-items-center">
+                                    <div class="col-3 pl-0 pr-0">
+                                        <i class="fas fa-sign-out-alt fa-2x"></i>
+                                    </div>
+
+                                    <div class="col-9 pl-0 pr-0">
+                                        <span class="d-inline-flex align-items-center h-100">
+                                            Wyloguj się
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div style="width:29%;" class="h-70">
+                        @{ var link = NavigationManager.BaseUri + "your-cart";}
+                        <button class="login-button h-100 w-100 cart-animation1 anim-border" @onclick="(()=> { Navigate_To(link); })">
+                            <div class="container h-100 pr-0 pl-0">
+                                <div class="row ml-0 mr-0 h-100 align-items-center">
+                                    <div class="col-3 pl-0 pr-0">
+                                        <i class="fas fa-shopping-cart fa-2x cart-animation2"></i>
+                                    </div>
+
+                                    <div class="col-9 pl-0 pr-0">
+                                        @{ string price = (Cart.items is null || Cart.items.Count == 0) ? "0,00 zł" : (Cart.items.Sum((x) => x.price * x.amount) % 1 == 0) ? (Cart.items.Sum((x) => x.price * x.amount) + ",00 zł") : (Cart.items.Sum((x) => x.price * x.amount) + " zł");}
+                                        <span class="d-inline-flex align-items-center h-100">
+                                            @price
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+            }
+            else
+            {
+                <div class="d-flex align-items-center h-100 justify-content-end">
+                    <div style="width:35%;" class="h-70">
+                        <button class="login-button h-100 w-100 anim-border" @onclick="(()=> ShowLoginWindow=!ShowLoginWindow)">
+                            <div class="container h-100 pr-0 pl-0">
+                                <div class="row ml-0 mr-0 h-100 align-items-center">
+                                    <div class="col-3 pl-0 pr-0">
+                                        <i class="fas fa-user fa-2x"></i>
+                                    </div>
+
+                                    <div class="col-9 pl-0 pr-0">
+                                        <span class="d-inline-flex align-items-center h-100">
+                                            Zaloguj się
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div style="width:35%;" class="h-70">
+                        @{ var link = NavigationManager.BaseUri + "your-cart";}
+                        <button class="login-button h-100 w-100 cart-animation1 anim-border" @onclick="(()=> { Navigate_To(link); })">
+                            <div class="container h-100 pr-0 pl-0">
+                                <div class="row ml-0 mr-0 h-100 align-items-center">
+                                    <div class="col-3 pl-0 pr-0 ">
+                                        <i class="fas fa-shopping-cart fa-2x cart-animation2"></i>
+                                    </div>
+
+                                    <div class="col-9 pl-0 pr-0">
+                                        @{ string price = (Cart.items is null || Cart.items.Count==0) ? "0,00 zł" : (Cart.items.Sum((x) => x.price * x.amount)%1==0)? (Cart.items.Sum((x) => x.price * x.amount)+",00 zł"): (Cart.items.Sum((x) => x.price * x.amount)+" zł");}
+                                        <span class="d-inline-flex align-items-center h-100">
+                                            @price
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+            }
+
+
+
+            @if (ShowLoginWindow)
+            {
+                <div class="position-fixed" style="width: 100vw; height: 100vh; background-color: rgb(0, 0, 0, 0.56); z-index: 100; top: 0; left: 0;">
+                    <div class="mr-auto ml-auto position-relative border-radius50" style="width: 30vw; height: 60vh; background-color: white; margin-top: 20vh; box-shadow: 0 0 20px 0px black; ">
+                        <div class="container h-100">
+                            <div class="row justify-content-end" style="height:50px;">
+                                <button @onclick="(()=> ShowLoginWindow=!ShowLoginWindow)" class="bg-transparent h-100" style="border:none;width:15%;border-radius:0 50px 0 0;outline:none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <div class="row justify-content-center" style="height:50px;">
+                                <div class="col-4 cursor-pointer" style="@style1" @onclick='(()=> { style2 = "";style1 = "border-bottom: 1px solid blue;"; })'>
+                                    <span class="d-flex font-size20 justify-content-center align-items-center h-100">
+                                        Zaloguj się
+                                    </span>
+                                </div>
+
+                                <div class="col-4 cursor-pointer" style="@style2" @onclick='(()=> { style1 = "";style2 = "border-bottom: 1px solid blue;"; })'>
+                                    <span class="d-flex font-size20 justify-content-center align-items-center h-100">
+                                        Utwórz konto
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row justify-content-center" style="height: calc(100% - 140px); margin-top:40px;">
+                                @if (style2.Length == 0)
+                                {
+                                    <div class="col-8 h-100">
+                                        <LoginComponent />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-8 h-100">
+                                        <RegisterComponent />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row w-100 ml-0 mr-0" style="height: 40%; box-shadow: 0 4px 3px -3px #868686; background-color: #f1f1f1; ">
+    @if (topmenu.Products_List is not null && topmenu.Products_List.Count != 0)
+    {
+        <div class="row w-80 h-100 m-auto">
+            @foreach (var item1 in topmenu.Products_List.Select((value, i) => new { i, value }))
+            {
+                var width = ((float)100 / (float)topmenu.Products_List.Count).ToString().Replace(',', '.');
+                <div class="position-relative w-100" style="-ms-flex: 0 0 @width%; flex: 0 0 @width%; max-width: @width% ">
+                    <div class="my-dropdown w-100 h-100">
+                        @{ var link = NavigationManager.BaseUri + item1.value.Product_link;}
+                        <a class="w-100 h-100 my-a text-center d-block" href="@link">
+                            <span class="d-inline-flex align-items-center min-height-100">
+                                @item1.value.Product_name
+                            </span>
+                        </a>
+                        @{
+                            var style = (item1.i >= topmenu.Products_List.Count / 2) ? "right: 0px; border-radius: 20px 0px 20px 20px;" : "border-radius:0 20px 20px 20px;";
+                        }
+                        <div class="position-absolute bcg" style="height: calc(100vh - 120px); width: 1000%; bottom: calc((120px - 100vh)); left: calc((0.9 - (0.1 * @item1.i)) * 100vw - 100vw); pointer-events: none">
+                        </div>
+
+                        <div class="myborder menu-anim2 position-absolute" style="z-index: 999; min-width: 250%; height: 200px; top: 100%; border-radius: 0 0 0 20px; @style">
+                            <div class="container h-100 pr-0 pl-0">
+                                <div class="row ml-0 mr-0 w-100 h-100">
+                                    @{
+                                        var style2 = (item1.i >= topmenu.Products_List.Count / 2) ? "border-radius: 20px 0px 0px 20px; border-top: 1px solid lightgrey;" : "border-radius: 0 0px 0px 20px; border-top: 1px solid white;";
+                                    }
+                                    <div class="w-100 position-relative border-bottom-lightgrey border-left-lightgrey" style="-ms-flex: 0 0 40%; flex: 0 0 40%; max-width: 40%;@style2"></div>
+
+                                    <div class="position-relative border-top-lightgrey border-bottom-lightgrey w-100" style="-ms-flex: 0 0 20%; flex: 0 0 20%; max-width: 20%;"></div>
+                                    @{
+                                        var style3 = (item1.i >= topmenu.Products_List.Count / 2) ? "border-radius: 0px 0px 20px 0px; border-top: 1px solid white;" : "border-radius: 0 20px 20px 0px; border-top: 1px solid lightgrey;";
+                                    }
+                                    <div class="position-relative border-right-lightgrey border-bottom-lightgrey w-100" style="-ms-flex: 0 0 40%; flex: 0 0 40%; max-width: 40%;@style3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @{
+                            var style4 = (item1.i >= topmenu.Products_List.Count / 2) ? "right: 1px; border-radius: 20px 0px 20px 20px;" : "left:1px;border-radius:0 20px 20px 20px;";
+                        }
+
+                        <div class="my-dropdown-content menu-anim" style="min-width: calc(250% - 2px);@style4">
+                            <div class="container pr-0 pl-0 h-100">
+                                <div class="row ml-0 mr-0 w-100 h-100">
+                                    <div class="h-100 w-100 position-relative" style="padding-top:20px;-ms-flex: 0 0 40%; flex: 0 0 40%; max-width: 40%">
+                                        @foreach (var item2 in item1.value.Categories)
+                                        {
+                                            <div class="row ml-0 mr-0 test w-100 " style="height:20%;">
+                                                @{ var link2 = NavigationManager.BaseUri + item2.Category_link;}
+                                                <a class="text-center w-100 h-100 my-a2 d-flex" href="@link2">
+                                                    <div class="h-100 d-inline-block overflow-hidden text-nowrap" style="width: 80%;text-overflow: ellipsis; ">
+                                                        <span class="d-inline-flex align-items-center min-height-100">
+                                                            @item2.Category_name
+                                                        </span>
+                                                    </div>
+                                                    <div class="h-100" style="width:20%;">
+                                                        <i class="animated-icon fas fa-chevron-right item-center d-block"></i>
+                                                    </div>
+                                                </a>
+
+                                                <div class="test2">
+                                                    <div class="container h-100 pr-0 pl-0">
+                                                        @foreach (var item3 in item2.Subcategories.Select((value, i) => new { i, value }))
+                                                        {
+                                                            if (item3.i < 5)
+                                                            {
+                                                                <div class="row mr-0 ml-0 w-100" style="height: calc(100% * 0.1666);">
+                                                                    @{ var link3 = NavigationManager.BaseUri + item3.value.Subcategory_link;}
+                                                                    <a class="w-100 h-100 my-a3" href="@link3">
+                                                                        <span style="font-size:14px;" class="pl-3">
+                                                                            @item3.value.Subcategory_name
+                                                                        </span>
+                                                                    </a>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="row mr-0 ml-0 w-100" style="height: calc(100% * 0.1666);">
+                                                                    <a class="w-100 h-100 my-a3" href="@link2">
+                                                                        <span style="font-size:14px;" class="pl-3">
+                                                                            Zobacz więcej...
+                                                                        </span>
+                                                                    </a>
+                                                                </div>
+                                                                break;
+                                                            }
+
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="h-100 position-relative w-100" style="-ms-flex: 0 0 60%; flex: 0 0 60%; max-width: 60%">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+@code {
+
+    private string style1 { get; set; }
+    private string style2 { get; set; }
+    private TopMenuModel topmenu { get; set; }
+
+    public bool ShowLoginWindow { get; set; }
+
+    private string search_text { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        style1 = "border-bottom: 1px solid blue;";
+        style2 = "";
+        Refresh_Component.topMenuComponent = this;
+        search_text = "";
+        ShowLoginWindow = false;
+        topmenu = new TopMenuModel();
+        topmenu.Products_List = new List<Products>();
+
+        using (StreamReader r = new StreamReader(env.WebRootPath+$"\\json\\topmenu.json"))
+        {
+            string json = r.ReadToEnd();
+            topmenu = await Task.Run(() => JsonConvert.DeserializeObject<TopMenuModel>(json));
+        }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await BrowserStorage.GetAsync<string>("login");
+            if (result.Success)
+            {
+                //if logged
+                if (bool.Parse(result.Value))
+                {
+                    var result2 = await BrowserStorage.GetAsync<string>("role");
+                    SimpleUserInfo.UserRole = (result2.Success) ? result2.Value : "";
+                    var result4 = await BrowserStorage.GetAsync<string>("Email");
+                    SimpleUserInfo.Email = (result4.Success) ? result4.Value : "";
+                    var result5 = await BrowserStorage.GetAsync<string>("UserAddress");
+                    SimpleUserInfo.UserAddress = (result5.Success) ? result5.Value : "";
+                    var result6 = await BrowserStorage.GetAsync<string>("UserName");
+                    SimpleUserInfo.UserName = (result6.Success) ? result6.Value : "";
+                    SimpleUserInfo.IsLogged = (result.Success) ? bool.Parse(result.Value) : false;
+
+                    string x = GetRightUrl(NavigationManager.Uri);
+
+                    if (NavigationManager.Uri.Contains("admin-panel"))
+                    {
+                        Refresh_Component.adminPanelPage.Refresh();
+                    }
+                    if (x.Count(f => f == '/') == 1)
+                    {
+                        Refresh_Component.opinionsComponent.Refresh();
+                    }
+                    StateHasChanged();
+                }
+            }
+        }
+    }
+    private string GetRightUrl(string fullurl)
+    {
+        string r = "";
+        if (fullurl.Contains("/c/"))
+        {
+
+            string x = fullurl.Split("/c/").Last();
+
+            int z = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                if (i == 0)
+                {
+                    if (x[i] == '/')
+                    {
+                        z++;
+                    }
+                    r += x[i];
+                }
+                else
+                {
+                    if (x[i] != '/')
+                    {
+                        z = 0;
+                        r += x[i];
+                    }
+                    else
+                    {
+                        if (z == 0)
+                        {
+                            z++;
+                            r += x[i];
+                        }
+                        else
+                        {
+                        }
+                    }
+                }
+            }
+
+            if (r[r.Length - 1] == '/')
+            {
+                r.Remove(r.Length - 1);
+            }
+            if (r[0] == '/')
+            {
+                r.Remove(0, 1);
+            }
+        }
+
+        return r;
+    }
+    private void Search_enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter")
+        {
+            Navigate_To(NavigationManager.BaseUri + "c/9?search=" + search_text);
+        }
+    }
+
+    private void Navigate_To(string link)
+    {
+        NavigationManager.NavigateTo(link);
+    }
+
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
+
+    public void closewindow()
+    {
+        ShowLoginWindow = false;
+        StateHasChanged();
+    }
+
+}

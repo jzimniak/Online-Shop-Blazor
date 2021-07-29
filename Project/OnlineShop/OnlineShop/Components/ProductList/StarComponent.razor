@@ -1,0 +1,30 @@
+﻿
+<div>
+    @for (int i = 0; i < 5; i++)
+    {
+        if (rating > i && rating - i == 0.5)
+        {
+            <i class="fas fa-star-half-alt" style="color: #ffc356;"></i>
+        }
+        if (rating > i && rating - i != 0.5)
+        {
+            <i class="fas fa-star" style="color: #ffc356;"></i>
+        }
+        if (rating <= i)
+        {
+            <i class="far fa-star" style="color: #ffc356;"></i>
+        }
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public double rating { get; set; }
+
+    protected override void OnInitialized()
+    {
+        rating = Math.Round(rating * 2, MidpointRounding.AwayFromZero) / 2;
+    }
+
+}

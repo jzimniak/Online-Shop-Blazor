@@ -1,0 +1,148 @@
+﻿@using Models.User
+@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject ProtectedLocalStorage BrowserStorage
+@inject IConfiguration _config
+@inject SimpleUserInfo SimpleUserInfo
+@inject Services.Refresh_Component Refresh_Component
+@inject NavigationManager NavigationManager
+<div class="d-flex h-100">
+    <div class="container">
+        <EditForm Model="RegisterModel" OnValidSubmit="Register">
+            <DataAnnotationsValidator />
+            <div class="row form-group">
+                <label>Nazwa użytkownika:</label>
+                <InputText @bind-Value="RegisterModel.UserName" placeholder="login" class="form-control" />
+                <ValidationMessage For="@(()=> RegisterModel.UserName)" />
+            </div>
+            <div class="row form-group">
+                <label>Email:</label>
+                <InputText @bind-Value="RegisterModel.Email" placeholder="email" class="form-control" />
+                <ValidationMessage For="@(()=> RegisterModel.Email)" />
+            </div>
+            <div class="row form-group">
+                <label>Hasło:</label>
+                <InputText @bind-Value="RegisterModel.Password" placeholder="password" class="form-control" type="password" />
+                <ValidationMessage For="@(()=> RegisterModel.Password)" />
+            </div>
+            <div class="row form-group">
+                <label>Powtórz hasło:</label>
+                <InputText @bind-Value="RegisterModel.ConfirmPassword" placeholder="repeat password" class="form-control" type="password" />
+                <ValidationMessage For="@(()=> RegisterModel.ConfirmPassword)" />
+            </div>
+            <div class="row justify-content-end">
+                <label class="mr-2 mt-auto">@info</label>
+                @if (loading)
+                {
+                    <div class="lds-ring" style="height: 25px;"><div style="width:25px;height:25px;"></div><div style="width:25px;height:25px;"></div><div style="width:25px;height:25px;"></div><div style="width:25px;height:25px;"></div></div>
+                }
+                <button class="btn btn-primary" Type="submit">Register</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+    private Register RegisterModel { get; set; }
+
+    private bool loading { get; set; }
+    private string info { get; set; }
+
+    protected override void OnInitialized()
+    {
+        RegisterModel = new();
+    }
+
+    private async void Register()
+    {
+        loading = true;
+        if (await Additional_Functions.UserExist(RegisterModel.UserName, _config))
+        {
+            RegisterModel.UserName = null;
+            info = "Użytkownik o podanej nazwie istnieje";
+        }
+        else
+        {
+            await Additional_Functions.Create_User(RegisterModel, _config);
+
+            SimpleUserInfo.IsLogged = true;
+            SimpleUserInfo.Email = RegisterModel.Email;
+            SimpleUserInfo.UserName = RegisterModel.UserName;
+            SimpleUserInfo.UserRole = "User";
+            await BrowserStorage.SetAsync("login", "True");
+            await BrowserStorage.SetAsync("role", SimpleUserInfo.UserRole);
+            await BrowserStorage.SetAsync("Email", SimpleUserInfo.Email);
+            await BrowserStorage.SetAsync("UserAddress", SimpleUserInfo.UserAddress);
+            await BrowserStorage.SetAsync("UserName", SimpleUserInfo.UserName);
+
+
+
+            string x = GetRightUrl(NavigationManager.Uri);
+
+            if (NavigationManager.Uri.Contains("admin-panel"))
+            {
+                Refresh_Component.adminPanelPage.Refresh();
+            }
+            if (x.Count(f => f == '/') == 1)
+            {
+                Refresh_Component.opinionsComponent.Refresh();
+            }
+            Refresh_Component.topMenuComponent.Refresh();
+            Refresh_Component.topMenuComponent.closewindow();
+        }
+        loading = false;
+        StateHasChanged();
+    }
+    private string GetRightUrl(string fullurl)
+    {
+        string r = "";
+        if (fullurl.Contains("/c/"))
+        {
+            string x = fullurl.Split("/c/").Last();
+            int z = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                if (i == 0)
+                {
+                    if (x[i] == '/')
+                    {
+                        z++;
+                    }
+                    r += x[i];
+                }
+                else
+                {
+                    if (x[i] != '/')
+                    {
+                        z = 0;
+                        r += x[i];
+                    }
+                    else
+                    {
+                        if (z == 0)
+                        {
+                            z++;
+                            r += x[i];
+                        }
+                        else
+                        {
+                        }
+                    }
+                }
+            }
+
+            if (r[r.Length - 1] == '/')
+            {
+                r.Remove(r.Length - 1);
+            }
+            if (r[0] == '/')
+            {
+                r.Remove(0, 1);
+            }
+        }
+
+        return r;
+    }
+}

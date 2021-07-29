@@ -1,0 +1,105 @@
+﻿
+<div class="w-100 container" style="height:550px;">
+    <div class="row h-85 justify-content-center m-0">
+        <div class="shadow_button_photos_letf h-100">
+            <button type="button" class="icon-change-left d-flex justify-content-center align-items-center w-50 h-50 position-relative cursor-pointer bg-transparent" style="outline:none; border-radius: 25px; top: 50%; transform: translateY(-50%);border:none" @onclick="()=>Odd_Index()">
+                <i class="fas fa-chevron-left fa-2x left-i"></i>
+            </button>
+        </div>
+        <div class="custom_col-10" style="cursor:pointer;" @onclick="(() => zoom = true)">
+            <img src="@Paths[Current_Index]" class="max-width-100 h-auto p-0 position-relative" style="object-fit: contain;top: 50%; transform: translateY(-50%) translateX(-50%); left: 50%;" />
+        </div>
+
+        <div class="shadow_button_photos_right h-100">
+            <button type="button" class="icon-change-right d-flex justify-content-center align-items-center position-relative cursor-pointer bg-transparent" style="outline: none; width: 50px; height: 50px; border-radius: 25px; top: 50%; transform: translateY(-50%) translateX(-50%); left: 50%; border: none" @onclick="()=>Add_Index()">
+                <i class="fas fa-chevron-right fa-2x right-i"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row justify-content-center h-15 w-100 m-0">
+        @foreach (var item in Paths.Select((value, i) => new { i, value }))
+        {
+            <div @onclick="()=>Change_Image(item.i)" class="@((Current_Index==item.i)? "col h-100 photo_border_selected" : "col h-100 photo_border_not_selected")">
+                <img src="@item.value" class="photo-mini" />
+            </div>
+        }
+    </div>
+</div>
+@if (zoom)
+{
+<div class="position-fixed" style="width: 100vw; height: 100vh; background-color: rgb(0, 0, 0, 0.56); z-index: 100; top: 0; left: 0;">
+    <div class="mr-auto ml-auto position-relative border-radius50 bg-white" style="width: 85vw; height: 85vh;top: 50%; margin-top: -42.5vh; box-shadow: 0 0 20px 0px black; ">
+        <div class="container-fluid pl-0 pr-0 h-100">
+            <div class="row ml-0 mr-0 justify-content-end" style="height:50px;">
+                <div style="width:10%;height:50px;">
+                    <button @onclick="(() => zoom = false)" class="w-100 h-100 icon-change-left bg-transparent" style="border-radius: 0 50px 0 0; border: none; outline: none; ">
+                        <i class="fas fa-times left-i"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row ml-0 mr-0 justify-content-center" style="height: calc((100% - 100px))">
+                <div style="width: 2.5vw;" class="icon-change-left d-flex justify-content-center align-items-center m-auto h-50 cursor-pointer" @onclick="()=>Odd_Index()">
+                    <i class="fas fa-chevron-left left-i"></i>
+                </div>
+                <div style="width:80vw;">
+                    <img src="@Paths[Current_Index]" style="height:75vh;"  class="opacity d-block m-auto"/>
+                </div>             
+                <div style="width: 2.5vw;" class="icon-change-right d-flex justify-content-center align-items-center m-auto h-50 cursor-pointer" @onclick="()=>Add_Index()">
+                    <i class="fas fa-chevron-right right-i"></i>
+                </div>
+            </div>
+            <div class="row ml-0 mr-0 w-100 justify-content-center pb-1" style="height: 50px;">
+                @foreach (var item in Paths.Select((value, i) => new { i, value }))
+                {
+                    <div @onclick="()=>Change_Image(item.i)" class="@((Current_Index==item.i)? "col photo_border_selected-2" : "col photo_border_not_selected-2") h-100">
+                        <img src="@item.value" class="photo-mini-2" style="left:0;right:0;" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@code {
+
+    [Parameter]
+    public string[] Paths { get; set; }
+
+    private int Current_Index { get; set; }
+    private bool zoom { get; set; }
+
+    protected override void OnInitialized()
+    {
+        zoom = false;
+        Current_Index = 0;
+    }
+
+    private void Change_Image(int index)
+    {
+        Current_Index = index;
+    }
+    private void Add_Index()
+    {
+        if (Current_Index == Paths.Length - 1)
+        {
+            Current_Index = 0;
+        }
+        else
+        {
+            Current_Index++;
+        }
+    }
+    private void Odd_Index()
+    {
+        if (Current_Index == 0)
+        {
+            Current_Index = Paths.Length - 1;
+        }
+        else
+        {
+            Current_Index--;
+        }
+    }
+
+}

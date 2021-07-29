@@ -1,0 +1,33 @@
+﻿.flex-cointainer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    height:auto;
+}
+.w-35{
+    width:25%;
+}
+.input-log{
+    width:80%;
+    margin-left:10%;
+    border-radius:10px;
+    border: solid 1px grey;
+    font-size:20px;
+}
+.btn-log{
+    border-radius:5px;
+    border:0;
+    background-color:lightgray;
+    color:black;
+    height:40px;
+}
+.mt-30px {
+    margin-top: 30px;
+}
+.brakdostepu-span {
+    font-family: monospace;
+    font-size: 20px;
+    color: #bababa;
+    user-select: none;
+}

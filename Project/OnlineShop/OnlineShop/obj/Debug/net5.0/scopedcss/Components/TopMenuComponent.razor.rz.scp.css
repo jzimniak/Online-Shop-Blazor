@@ -1,0 +1,206 @@
+.wid100[b-i5swwpustl] {
+    width: 100%;
+}
+.col-95per[b-i5swwpustl] {
+    -ms-flex: 0 0 95%;
+    flex: 0 0 95%;
+    max-width: 95%
+}
+.text-welcome[b-i5swwpustl] {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+}
+.col-5per[b-i5swwpustl] {
+    -ms-flex: 0 0 5%;
+    flex: 0 0 5%;
+    max-width: 5%
+}
+.my-dropdown[b-i5swwpustl] {
+    display: inline-block;
+    position: relative;
+}
+
+.my-dropdown-button[b-i5swwpustl] {
+    background-color: grey;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.my-dropdown-content[b-i5swwpustl] {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    background-color:white;
+    top: calc(100% + 1px);
+    height: 198px;
+}
+.my-dropdown:hover .my-dropdown-content[b-i5swwpustl] {
+    display:block;
+}
+
+.test2[b-i5swwpustl] {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    min-width: 150%;
+    left: 100%;
+    top: 0;
+    height: 200px;
+    padding-top: 20px;
+    padding-bottom:20px;
+}
+.test:hover .test2[b-i5swwpustl] {
+    display: block;
+    
+}
+
+
+.my-a[b-i5swwpustl] {
+    color: black;
+    text-decoration:none;
+}
+    .my-dropdown:hover .my-a[b-i5swwpustl] {
+        background-color: white;
+        border-top: 1px solid #c1c1c1;
+        border-right: 1px solid #c1c1c1;
+        border-left: 1px solid #c1c1c1;
+        font-size:17px;
+    }
+.my-a2[b-i5swwpustl] {
+    color: black;
+    text-decoration: none;
+    font-size: 16px;
+    transition: font-size 250ms linear, background-color 250ms linear;
+    background-color: white;
+}
+.test:hover .my-a2[b-i5swwpustl] {
+    background-color: whitesmoke;
+}
+.my-a3[b-i5swwpustl] {
+    color: black;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 250ms linear;
+    background-color: white;
+}
+    .my-a3:hover[b-i5swwpustl] {
+        background-color: whitesmoke;
+    }
+.animated-icon[b-i5swwpustl] {
+    transform: translateY(-50%) translateX(-50%);
+    transition: transform 250ms linear;
+    font-size: 0.8rem;
+}
+.test:hover .animated-icon[b-i5swwpustl] {
+    transform: translateY(-50%) translateX(-25%);
+}
+
+.my-dropdown:hover .background[b-i5swwpustl] {
+    display: block;
+    background-color: aquamarine;
+}
+.menu-anim[b-i5swwpustl] {
+    animation-duration: 250ms;
+}
+.menu-anim2[b-i5swwpustl]{
+animation-duration:250ms;
+    }
+.my-dropdown:hover .menu-anim2[b-i5swwpustl] {
+    animation-name: expand2-b-i5swwpustl;
+}
+    .my-dropdown:hover .menu-anim[b-i5swwpustl] {
+        animation-name: expand-b-i5swwpustl;
+    }
+@keyframes expand2-b-i5swwpustl {
+    0% {
+        height: 0;
+    }
+
+    100% {
+        height: 200px;
+    }
+}
+@keyframes expand-b-i5swwpustl{
+    0% { height:0;
+    }
+    100% {
+        height: 198px;
+    }
+}
+.bcg[b-i5swwpustl] {
+    background-color: #00000054;
+    opacity: 0;
+    transition: opacity 250ms linear;
+}
+.my-dropdown:hover .bcg[b-i5swwpustl] {
+    opacity: 1;
+}
+.myborder[b-i5swwpustl]{
+    display:none;
+}
+.my-dropdown:hover .myborder[b-i5swwpustl]{
+    display:block;
+}
+.login-button[b-i5swwpustl]{
+    display:block;
+    width:auto;
+    background-color:white;
+    outline:none;
+    border:none;
+}
+
+.search-button[b-i5swwpustl] {
+    display:block;
+    height:100%;
+    color:black;
+    text-decoration:none;
+}
+.search-icon[b-i5swwpustl] {
+    font-size: 1rem;
+    transition: font-size 250ms linear;
+    
+}
+.search-button:hover .search-icon[b-i5swwpustl] {
+    font-size: 1.7rem;  
+}
+.icon-change-close[b-i5swwpustl] {
+    font-size: 1rem;
+    transition: font-size 250ms linear;
+}
+.hover-btn:hover .icon-change-close[b-i5swwpustl] {
+    font-size: 1.4rem;
+}
+
+.cart-animation1:hover .cart-animation2[b-i5swwpustl] {
+    animation-name: anim-cart-b-i5swwpustl;
+    animation-timing-function: ease;
+}
+.cart-animation2[b-i5swwpustl] {
+    animation-duration: 0.4s;
+    
+}
+.cart-animation1[b-i5swwpustl]{
+display:inline-block;
+
+}
+@keyframes anim-cart-b-i5swwpustl {
+    0% {transform: rotate(0deg);}
+    25% {transform: rotate(10deg);}
+    75% {transform: rotate(-20deg);}
+    100% {transform: rotate(10deg);}
+}
+
+.anim-border[b-i5swwpustl]:after {
+    display: flex;
+    content: '';
+    border-bottom: solid 1px blue;
+    transform: scaleX(0);
+    transition: transform 400ms ease-in-out;
+    height: 2px;
+}
+.anim-border:hover[b-i5swwpustl]:after {
+    transform: scaleX(1);
+}

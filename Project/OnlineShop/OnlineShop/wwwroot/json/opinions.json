@@ -1,0 +1,1001 @@
+[
+  {
+    "Id": 1,
+    "productID": 1,
+    "rating": 4.428571,
+    "opinions": 7,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 2,
+    "star4": 0,
+    "star5": 5,
+    "opinions_text": [
+      {
+        "Nick": "admin",
+        "Text": "Przesiadłem się z i5 6500 powiem tyle ta i9 to jest potwór procesor świetny w grach, polecam każdemu za te pieniądze",
+        "star": 5,
+        "Date": "2021-07-27T01:46:32.169212+02:00"
+      },
+      {
+        "Nick": "admin",
+        "Text": "Uważam że ten procesor jest lepszy od droższej i9 10900k i wydajniejszy wedlug mnie",
+        "star": 5,
+        "Date": "2021-07-27T01:46:44.4907361+02:00"
+      },
+      {
+        "Nick": "admin",
+        "Text": "Spoko procesor na dobrym zasilaczu enermax 1050W platinium i płycie z490 aorus extreme idzie na 5,6ghz na over-ride\nna all",
+        "star": 5,
+        "Date": "2021-07-27T01:46:52.7022924+02:00"
+      },
+      {
+        "Nick": "admin",
+        "Text": "Po przesiadce ze starego 2500K to nawet nie ma porównania. Przy montażu wideo nawet się nie zająknie.",
+        "star": 5,
+        "Date": "2021-07-27T01:47:03.0749079+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "productID": 2,
+    "rating": 4.5,
+    "opinions": 2,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 1,
+    "star5": 1,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Procesor użytkuję od premiery i jestem zadowolony. Ustawiony na 5Ghz all core na napięciu 1.28v z pamięciami\n3866Mhz w Gear 1. Działa bezproblemowo na chłodzeniu powietrznym Noctua. Temperatury w grach średnio w\ngranicach 60 paru stopni z peakami do 70 paru w bardziej wymagających tytułach typu BF5. Na pulpicie pobiera ok 25W\nmnimum z temperaturami od 25-40 stopni.",
+        "star": 5,
+        "Date": "2021-07-27T01:50:10.1267903+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Opinia dotyczy modelu:Zintegrowany układ graficzny: Tak\nProcesor w grach nie ma sbie równych.\n\nWady :\n\nWysokie temperatury\n\nW programach do renderu 5900x zmiata go z powierzchni.",
+        "star": 4,
+        "Date": "2021-07-27T01:50:21.5857056+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 3,
+    "productID": 3,
+    "rating": 4.5,
+    "opinions": 2,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 1,
+    "star5": 1,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Procesor piekielnie szybki (szczególnie w single core). W Cinebench R23 - single core: 1656pkt, multicore: 14902pkt (też bardzo dobry wynik) ...ale i piekielnie gorący!. Grzeje się, jak piec hutniczy. Komputer mam na podłodze - w nogach. Zimą będę nogi ogrzewał. Chwała Bogu, że nie zamontowałem BOX-owego wentylatora, a ogromny wiatrak o TDP 180W, ale i on jest za mały. W teście Cinebench ten procesor, który ma ponoć TDP tylko 65W …. pobiera z gniazdka naprawdę 205W! - sam procesor. Jest naprawdę szybki, ale w grę wchodzi tylko chłodzenie wodne. Podczas pracy w Windows np.: w Wordzie, przy przeglądaniu Internetu, oglądaniu filmów 4K ma natomiast tylko max. 50 stopni. Dziękuję X-KOM za bardzo szybką dostawę!. Pozdrawiam! Zwiń",
+        "star": 5,
+        "Date": "2021-07-27T01:51:00.7788027+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 4,
+    "productID": 4,
+    "rating": 2.6237624,
+    "opinions": 101,
+    "star0": 10,
+    "star1": 16,
+    "star2": 17,
+    "star3": 23,
+    "star4": 29,
+    "star5": 6,
+    "opinions_text": null
+  },
+  {
+    "Id": 5,
+    "productID": 5,
+    "rating": 3.2293577,
+    "opinions": 109,
+    "star0": 0,
+    "star1": 18,
+    "star2": 22,
+    "star3": 22,
+    "star4": 11,
+    "star5": 36,
+    "opinions_text": null
+  },
+  {
+    "Id": 6,
+    "productID": 6,
+    "rating": 3.3064516,
+    "opinions": 62,
+    "star0": 4,
+    "star1": 1,
+    "star2": 18,
+    "star3": 3,
+    "star4": 21,
+    "star5": 15,
+    "opinions_text": null
+  },
+  {
+    "Id": 7,
+    "productID": 7,
+    "rating": 2.8828828,
+    "opinions": 111,
+    "star0": 12,
+    "star1": 16,
+    "star2": 12,
+    "star3": 27,
+    "star4": 21,
+    "star5": 23,
+    "opinions_text": null
+  },
+  {
+    "Id": 8,
+    "productID": 8,
+    "rating": 3.1153846,
+    "opinions": 104,
+    "star0": 12,
+    "star1": 19,
+    "star2": 9,
+    "star3": 7,
+    "star4": 19,
+    "star5": 38,
+    "opinions_text": null
+  },
+  {
+    "Id": 9,
+    "productID": 9,
+    "rating": 5.0,
+    "opinions": 4,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 0,
+    "star5": 4,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Wydajny w grach, mało się grzeje na coolerze boxowym, tani. Polecam!",
+        "star": 5,
+        "Date": "2021-07-27T02:02:14.9681006+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Polecam, używam około miesiąc i jestem bardzo zadowolony z zakupu. Leci 5 gwiazdeczek :D",
+        "star": 5,
+        "Date": "2021-07-27T02:02:20.4637454+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Fajny procesor w aktualnie bardzo dobrej cenie\nprzy tego typu sprzęcie problem z poprzednimi generacjami (obciążenia itp)\nznika kompletnie nie mialem momentu w którym procesor dobijał mi stałych 100% zazwyczaj odrazu spadał max do\n70-80%",
+        "star": 5,
+        "Date": "2021-07-27T02:02:33.7139214+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 10,
+    "productID": 10,
+    "rating": 4.72,
+    "opinions": 25,
+    "star0": 0,
+    "star1": 1,
+    "star2": 0,
+    "star3": 0,
+    "star4": 3,
+    "star5": 21,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Spokojnie pracuje na 4,9 GHz. Przy napięciu 1,30 V, temperatura w testach dochodzi do 70 stopni, w grach maksymalnie\n65-67 stopni na chłodzeniu wodnym. Z pewnością można go wyżej podkręcić, ale osobiście nie mam takiej potrzeby.\nMyślę, że to udany zakup.",
+        "star": 5,
+        "Date": "2021-07-27T01:59:57.1781157+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Super procek, dobra wydajność w grach, bez problemu udało mi się podkręcić na 4,9GHz przy napięciu 1,3V a widziałem,\nże można więcej. Dołączam ss z pomiarem temperatur w stress tescie i grach po oc na chłodzeniu Navis Pro 240 ;)",
+        "star": 5,
+        "Date": "2021-07-27T02:00:03.5276575+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Procesor bardzo dobry. Bardzo dobrze się kręci przy 1.37v uzyskuje AŻ 5.2Ghz co jest wyśmienitym wynikiem lecz to też\nzależy jaka sztuka nam się trafi i jakie mamy chłodzenie max temp. to 75 stopni na coolerze Corsair ICUE H115i RGB PRO\nXT . Mogę gorąco polecić ten procesor.",
+        "star": 5,
+        "Date": "2021-07-27T02:00:08.5130933+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Naprawdę świetna jednostka z dużą wydajnością\nGodna polecenia",
+        "star": 5,
+        "Date": "2021-07-27T02:00:13.3277306+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Polecam wszystkim, jest duzo lepszy od 10400f, jest znacznie szybszy i w grach\nwyśmienicie się sprawuje. Polecam!",
+        "star": 5,
+        "Date": "2021-07-27T02:00:25.106204+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Rewelacyjny procesor, cena nie jest wygórowana, wydajność na najwyższym poziomie,",
+        "star": 5,
+        "Date": "2021-07-27T02:00:30.337311+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 11,
+    "productID": 11,
+    "rating": 5.0,
+    "opinions": 1,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 0,
+    "star5": 1,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Really nice processor. Running 4.7 - 4.9 Ghz (AVX512 offset11) water cooling , vid 1.25-1.35 correspondently. Hi\nperformance both - for one core and multy core tasks.",
+        "star": 5,
+        "Date": "2021-07-27T01:59:28.6315882+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 12,
+    "productID": 19,
+    "rating": 4.1,
+    "opinions": 10,
+    "star0": 0,
+    "star1": 1,
+    "star2": 0,
+    "star3": 1,
+    "star4": 3,
+    "star5": 5,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Giga kox polecam",
+        "star": 5,
+        "Date": "2021-07-27T02:17:43.8726043+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Dysk naprawdę szybki i wydajny. Włożyłem go do laptopa Lenovo Legion Y520\ni muszę przyznać, że dysk jest godny polecenia. Windows 10 z wolnym 420gb włączył się w zaledwie 10-13 sekund. Jeżeli\nszukasz dysku 1tb do 600zł to ten dysk jest najlepszy w swoim dziale cenowym. Polecam!",
+        "star": 5,
+        "Date": "2021-07-27T02:17:52.0907502+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Dysk w pełni godny polecenia, prędkości takie jakie podaje producent, plus zamówienie przybyło w rekordowym czasie\n(zamówienie opłaciłem o 14 a o 9 następnego dnia już czekało wpaczkomacie)",
+        "star": 5,
+        "Date": "2021-07-27T02:17:59.1952129+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Nosnik danych bardzo szybki, ale tylko na krotkie prace. Temperatury kontrolera bardzo szybko sie nagrzewaja do 85\nstopni C, gdzie nie da sie w ciaglej pracy dysku wykorzystac jego parametrow jakie deklaruje sam producent. Po\nzainstalowaniu radiatora, co wiaze sie z dodatkowym kosztem, jest juz lepiej, ale dalej nie wystarczajaco do komfortowej\npracy, a W mojej ocenie wole dwa dyski SATA w RAIDzie",
+        "star": 3,
+        "Date": "2021-07-27T02:18:08.0933183+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 13,
+    "productID": 20,
+    "rating": 3.742268,
+    "opinions": 97,
+    "star0": 1,
+    "star1": 0,
+    "star2": 12,
+    "star3": 27,
+    "star4": 27,
+    "star5": 30,
+    "opinions_text": null
+  },
+  {
+    "Id": 14,
+    "productID": 21,
+    "rating": 2.9056604,
+    "opinions": 106,
+    "star0": 12,
+    "star1": 15,
+    "star2": 19,
+    "star3": 7,
+    "star4": 31,
+    "star5": 22,
+    "opinions_text": null
+  },
+  {
+    "Id": 15,
+    "productID": 22,
+    "rating": 2.5405405,
+    "opinions": 74,
+    "star0": 5,
+    "star1": 15,
+    "star2": 15,
+    "star3": 23,
+    "star4": 6,
+    "star5": 10,
+    "opinions_text": null
+  },
+  {
+    "Id": 16,
+    "productID": 23,
+    "rating": 3.4782608,
+    "opinions": 69,
+    "star0": 5,
+    "star1": 8,
+    "star2": 7,
+    "star3": 8,
+    "star4": 11,
+    "star5": 30,
+    "opinions_text": null
+  },
+  {
+    "Id": 17,
+    "productID": 24,
+    "rating": 2.74,
+    "opinions": 50,
+    "star0": 0,
+    "star1": 10,
+    "star2": 8,
+    "star3": 18,
+    "star4": 13,
+    "star5": 1,
+    "opinions_text": null
+  },
+  {
+    "Id": 18,
+    "productID": 26,
+    "rating": 3.2,
+    "opinions": 20,
+    "star0": 3,
+    "star1": 2,
+    "star2": 2,
+    "star3": 2,
+    "star4": 3,
+    "star5": 8,
+    "opinions_text": [
+      {
+        "Nick": "User123",
+        "Text": "takie sobie",
+        "star": 2,
+        "Date": "2021-07-06T19:43:33.9188657+02:00"
+      },
+      {
+        "Nick": "User123",
+        "Text": "Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych\nustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.",
+        "star": 5,
+        "Date": "2021-07-07T02:47:13.2754421+02:00"
+      },
+      {
+        "Nick": "User123",
+        "Text": "Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych ustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych ustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych ustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych ustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych ustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych ustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.Procesor działa bardzo dobrze. Szybko myśli oraz się nie grzeje. Wyjątkiem było włączenie MSFS 2020 na maksymalnych ustawieniach graficznych. Wtedy zaczął się lekko grzać, ale jeszcze nie na tyle aby się martwić.Procesor działa ",
+        "star": 0,
+        "Date": "2021-07-07T03:27:19.8781169+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 19,
+    "productID": 27,
+    "rating": 3.2307692,
+    "opinions": 13,
+    "star0": 2,
+    "star1": 2,
+    "star2": 0,
+    "star3": 1,
+    "star4": 3,
+    "star5": 5,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Karta wydajna, cicha i chłodna, kupiona w salonie co uważam za osobisty sukces. Nie zawiodłem się na tym modelu.",
+        "star": 5,
+        "Date": "2021-07-27T02:19:48.0104834+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 20,
+    "productID": 28,
+    "rating": 2.6,
+    "opinions": 5,
+    "star0": 0,
+    "star1": 0,
+    "star2": 2,
+    "star3": 3,
+    "star4": 0,
+    "star5": 0,
+    "opinions_text": [
+    ]
+  },
+  {
+    "Id": 21,
+    "productID": 29,
+    "rating": 0.0,
+    "opinions": 1,
+    "star0": 1,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 0,
+    "star5": 0,
+    "opinions_text": [
+    ]
+  },
+  {
+    "Id": 22,
+    "productID": 30,
+    "rating": 3.402439,
+    "opinions": 82,
+    "star0": 10,
+    "star1": 7,
+    "star2": 3,
+    "star3": 15,
+    "star4": 14,
+    "star5": 33,
+    "opinions_text": null
+  },
+  {
+    "Id": 23,
+    "productID": 31,
+    "rating": 3.3090909,
+    "opinions": 110,
+    "star0": 11,
+    "star1": 8,
+    "star2": 19,
+    "star3": 9,
+    "star4": 24,
+    "star5": 39,
+    "opinions_text": null
+  },
+  {
+    "Id": 24,
+    "productID": 32,
+    "rating": 2.8181818,
+    "opinions": 66,
+    "star0": 9,
+    "star1": 15,
+    "star2": 10,
+    "star3": 4,
+    "star4": 1,
+    "star5": 27,
+    "opinions_text": null
+  },
+  {
+    "Id": 25,
+    "productID": 33,
+    "rating": 3.84,
+    "opinions": 75,
+    "star0": 0,
+    "star1": 5,
+    "star2": 7,
+    "star3": 9,
+    "star4": 28,
+    "star5": 26,
+    "opinions_text": null
+  },
+  {
+    "Id": 18,
+    "productID": 26,
+    "rating": 3.0,
+    "opinions": 1,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 1,
+    "star4": 0,
+    "star5": 0,
+    "opinions_text": [
+    ]
+  },
+  {
+    "Id": 26,
+    "productID": 34,
+    "rating": 3.1375,
+    "opinions": 80,
+    "star0": 4,
+    "star1": 5,
+    "star2": 23,
+    "star3": 13,
+    "star4": 14,
+    "star5": 21,
+    "opinions_text": null
+  },
+  {
+    "Id": 27,
+    "productID": 35,
+    "rating": 2.347826,
+    "opinions": 23,
+    "star0": 7,
+    "star1": 0,
+    "star2": 3,
+    "star3": 8,
+    "star4": 1,
+    "star5": 4,
+    "opinions_text": null
+  },
+  {
+    "Id": 28,
+    "productID": 36,
+    "rating": 3.6181817,
+    "opinions": 110,
+    "star0": 8,
+    "star1": 4,
+    "star2": 12,
+    "star3": 13,
+    "star4": 34,
+    "star5": 39,
+    "opinions_text": null
+  },
+  {
+    "Id": 29,
+    "productID": 37,
+    "rating": 2.94,
+    "opinions": 100,
+    "star0": 10,
+    "star1": 15,
+    "star2": 22,
+    "star3": 13,
+    "star4": 4,
+    "star5": 36,
+    "opinions_text": null
+  },
+  {
+    "Id": 30,
+    "productID": 38,
+    "rating": 2.7169812,
+    "opinions": 53,
+    "star0": 0,
+    "star1": 6,
+    "star2": 18,
+    "star3": 18,
+    "star4": 7,
+    "star5": 4,
+    "opinions_text": null
+  },
+  {
+    "Id": 31,
+    "productID": 39,
+    "rating": 3.409836,
+    "opinions": 61,
+    "star0": 2,
+    "star1": 0,
+    "star2": 12,
+    "star3": 10,
+    "star4": 31,
+    "star5": 6,
+    "opinions_text": null
+  },
+  {
+    "Id": 32,
+    "productID": 40,
+    "rating": 3.1744187,
+    "opinions": 86,
+    "star0": 9,
+    "star1": 11,
+    "star2": 2,
+    "star3": 22,
+    "star4": 18,
+    "star5": 24,
+    "opinions_text": null
+  },
+  {
+    "Id": 33,
+    "productID": 41,
+    "rating": 0.8,
+    "opinions": 5,
+    "star0": 2,
+    "star1": 2,
+    "star2": 1,
+    "star3": 0,
+    "star4": 0,
+    "star5": 0,
+    "opinions_text": [
+    ]
+  },
+  {
+    "Id": 34,
+    "productID": 42,
+    "rating": 3.75,
+    "opinions": 88,
+    "star0": 7,
+    "star1": 0,
+    "star2": 13,
+    "star3": 3,
+    "star4": 30,
+    "star5": 35,
+    "opinions_text": null
+  },
+  {
+    "Id": 35,
+    "productID": 43,
+    "rating": 2.768116,
+    "opinions": 69,
+    "star0": 7,
+    "star1": 14,
+    "star2": 9,
+    "star3": 14,
+    "star4": 8,
+    "star5": 17,
+    "opinions_text": null
+  },
+  {
+    "Id": 36,
+    "productID": 44,
+    "rating": 3.7529411,
+    "opinions": 85,
+    "star0": 3,
+    "star1": 9,
+    "star2": 8,
+    "star3": 2,
+    "star4": 27,
+    "star5": 36,
+    "opinions_text": null
+  },
+  {
+    "Id": 37,
+    "productID": 45,
+    "rating": 3.7272727,
+    "opinions": 11,
+    "star0": 1,
+    "star1": 1,
+    "star2": 0,
+    "star3": 2,
+    "star4": 1,
+    "star5": 6,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Obudowa świetnie wygląda, dołączone do niej wentylatory są ultra ciche, a podświetlenie zwala z nóg. Ogółem jeżeli ktoś\nlubi wysoką jakość, kompaktowe rozmiary oraz podąża za trendem RGB i chciałby przewiewną obudowę to jest to wybór\ndla niego. Jest przestronna i posiada dużo miejsca na kable i jedyny minus jaki zauważyłem to dosyć mało miejsca nad\nsamą płytą główną. A tak to wszystko bangla :)",
+        "star": 5,
+        "Date": "2021-07-27T01:53:21.9650232+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Obudowa fajna mała i zgrabna przy okazji bardzo ciasna w miejscu procesorowym.Wszystko ładnie dopasowane i z\nwyglądu może się podobać.\nMinusy poważne jak za tę cenę i firmę której nie przystało to cienkie blachy w których dwa kołki pod płytą były z\nwyrobionym gwintem od nowości.",
+        "star": 3,
+        "Date": "2021-07-27T01:53:27.4829221+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Dobry produkt.\nMa wsparcie ARGB co mnie bardzo ucieszylo (polecam dopierac z asu tuf gaming).\nW razie czego opinie bede edytował w czasie",
+        "star": 5,
+        "Date": "2021-07-27T01:53:33.2294683+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 38,
+    "productID": 46,
+    "rating": 5.0,
+    "opinions": 2,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 0,
+    "star5": 2,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "W obudowie jest wszystko przemyslane, prowadnice do kabli sa idealne, dzieki tej obudowie jest czysto i schludnie.\nPolecam",
+        "star": 5,
+        "Date": "2021-07-25T22:39:49.8162043+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Bardzo dobra obudowa",
+        "star": 5,
+        "Date": "2021-07-25T22:42:00.7268159+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 39,
+    "productID": 47,
+    "rating": 3.0,
+    "opinions": 9,
+    "star0": 1,
+    "star1": 0,
+    "star2": 1,
+    "star3": 4,
+    "star4": 2,
+    "star5": 1,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Opinia dotyczy modelu:Kolor: Czarno-pomarańczowy\nPolecam\nObudowa robi wrażenie swoją wielkością i możliwościami.",
+        "star": 5,
+        "Date": "2021-07-27T01:54:31.5840101+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Obudowa rewelacja. Montaż zasilacza upierdliwy. Ale Pan na video uczciwie uprzedzał. Poza tym jak już jest kilka miejsc\nna dyski to uchwytów montażowych mogłoby być tyle samo a nie o dwa mniej. Dzisiaj ich nie potrzebuję ale za jakiś czas\nmoże być problem z dokupieniem.",
+        "star": 4,
+        "Date": "2021-07-27T01:54:52.8030463+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Zalety w internecie. Wady: czarna farba słabej jakości, założenie wentylatorów w tunelu blokuje możliwośc instalacji dłuższego zasilacza i koszyka na dyski, koszyczek na SSD na pleckach jest za ciasny, instrukcja typu domyśl się sam, brak systemu szybkiego montażu dysków, montaż zasilacza w max. tylnej pozycji blokuje możliwość instalacji maskownicy z przedłużaczem .\nZa te pieniądze należy oczekiwać dużo lepszej jakości. Moja poprzednia obudowa była tańsza a dużo bardziej funkcjonalna.",
+        "star": 2,
+        "Date": "2021-07-27T01:55:07.0459785+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 40,
+    "productID": 48,
+    "rating": 5.0,
+    "opinions": 1,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 0,
+    "star5": 1,
+    "opinions_text": [
+    ]
+  },
+  {
+    "Id": 41,
+    "productID": 49,
+    "rating": 4.076923,
+    "opinions": 13,
+    "star0": 0,
+    "star1": 1,
+    "star2": 2,
+    "star3": 0,
+    "star4": 2,
+    "star5": 8,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Bardzo dobra plyta pod ryzen 5 2600. Niskie temperatury, czytelny BIOS, ładne czerwone podświetlenie. Nic dodać nic\nująć",
+        "star": 5,
+        "Date": "2021-07-27T02:22:43.843199+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Płyta posiada idealny rozstaw otworów mocowania radiatorów na sekcji zasilania dla popularnych bloków wodnych i w\nłatwy sposób można ją zwodować",
+        "star": 5,
+        "Date": "2021-07-27T02:22:49.9884428+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Bardzo dobra płyta. Działa bez zarzutu z Ryzen 5 3600",
+        "star": 5,
+        "Date": "2021-07-27T02:22:54.8241046+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Płyta spoko ale b450 wyłącza 2 porty sata kiedy podłączy się m.2 tak że jak macie więcej dysków to b450 nie ma sensu\nbrać.",
+        "star": 4,
+        "Date": "2021-07-27T02:23:01.974648+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 42,
+    "productID": 50,
+    "rating": 5.0,
+    "opinions": 1,
+    "star0": 0,
+    "star1": 0,
+    "star2": 0,
+    "star3": 0,
+    "star4": 0,
+    "star5": 1,
+    "opinions_text": [
+      {
+        "Nick": "User100",
+        "Text": "Bardzo dobra płyta. Pod I7 9700k świetnie się sprawuje... polecam wybór tym, którzy chcą się nieźle bawić i nie\nzbankrutować przy okazji ;)",
+        "star": 5,
+        "Date": "2021-07-26T00:07:36.1250761+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 43,
+    "productID": 51,
+    "rating": 3.2765958,
+    "opinions": 94,
+    "star0": 10,
+    "star1": 17,
+    "star2": 3,
+    "star3": 1,
+    "star4": 33,
+    "star5": 30,
+    "opinions_text": null
+  },
+  {
+    "Id": 44,
+    "productID": 52,
+    "rating": 3.0,
+    "opinions": 97,
+    "star0": 0,
+    "star1": 13,
+    "star2": 17,
+    "star3": 29,
+    "star4": 33,
+    "star5": 5,
+    "opinions_text": null
+  },
+  {
+    "Id": 45,
+    "productID": 53,
+    "rating": 3.6626506,
+    "opinions": 83,
+    "star0": 2,
+    "star1": 1,
+    "star2": 22,
+    "star3": 11,
+    "star4": 9,
+    "star5": 38,
+    "opinions_text": null
+  },
+  {
+    "Id": 46,
+    "productID": 54,
+    "rating": 3.2051282,
+    "opinions": 78,
+    "star0": 5,
+    "star1": 13,
+    "star2": 11,
+    "star3": 7,
+    "star4": 16,
+    "star5": 26,
+    "opinions_text": null
+  },
+  {
+    "Id": 47,
+    "productID": 55,
+    "rating": 2.6533334,
+    "opinions": 75,
+    "star0": 6,
+    "star1": 4,
+    "star2": 22,
+    "star3": 22,
+    "star4": 20,
+    "star5": 1,
+    "opinions_text": null
+  },
+  {
+    "Id": 48,
+    "productID": 56,
+    "rating": 3.3466666,
+    "opinions": 75,
+    "star0": 6,
+    "star1": 6,
+    "star2": 17,
+    "star3": 6,
+    "star4": 7,
+    "star5": 33,
+    "opinions_text": null
+  },
+  {
+    "Id": 49,
+    "productID": 57,
+    "rating": 2.493671,
+    "opinions": 79,
+    "star0": 10,
+    "star1": 19,
+    "star2": 20,
+    "star3": 0,
+    "star4": 12,
+    "star5": 18,
+    "opinions_text": null
+  },
+  {
+    "Id": 50,
+    "productID": 58,
+    "rating": 3.313433,
+    "opinions": 67,
+    "star0": 8,
+    "star1": 7,
+    "star2": 6,
+    "star3": 2,
+    "star4": 23,
+    "star5": 21,
+    "opinions_text": null
+  },
+  {
+    "Id": 51,
+    "productID": 59,
+    "rating": 3.128205,
+    "opinions": 78,
+    "star0": 4,
+    "star1": 4,
+    "star2": 17,
+    "star3": 14,
+    "star4": 31,
+    "star5": 8,
+    "opinions_text": null
+  },
+  {
+    "Id": 52,
+    "productID": 60,
+    "rating": 2.4509804,
+    "opinions": 102,
+    "star0": 14,
+    "star1": 16,
+    "star2": 15,
+    "star3": 24,
+    "star4": 33,
+    "star5": 0,
+    "opinions_text": null
+  },
+  {
+    "Id": 53,
+    "productID": 61,
+    "rating": 3.8333333,
+    "opinions": 6,
+    "star0": 1,
+    "star1": 0,
+    "star2": 0,
+    "star3": 1,
+    "star4": 0,
+    "star5": 4,
+    "opinions_text": [
+      {
+        "Nick": "Admin",
+        "Text": "Procesor bardzo szybki, dobry do gier. Jednak nie mogę o nim napisać pozytywnej recenzji. Po 3 miesiącach komputer\nsypał black screenami, restartował się i generował tysiące błędów WHEA. Winą był wadliwy procek. Zwróciłem przez\nrekojmię. Dziękuję za sprawne załatwienie sprawy. Komp odbudowałem ale już na 10850k. Nie zdecydowałem się\nna kolejne podejście do R5 5600x",
+        "star": 0,
+        "Date": "2021-07-27T01:51:44.6986603+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Procesor na płycie Asus tuf gaming b550m wifi grzeje się bardzo w nieoczekiwanych momentach - podczas pobierania\ndanych osiąga 78 stopni przy obciążeniu 15-20%, czyli tyle ile podczas grania. Co dziwniejsze, gdy dociążę go na 99%\npodczas pakowania dużej paczki 7zip temperatura nie przekracza 65 stopni.",
+        "star": 3,
+        "Date": "2021-07-27T01:52:05.0437137+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Najwydajniejsze 6jajek na rynku",
+        "star": 5,
+        "Date": "2021-07-27T01:52:17.9102194+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Bardzo fajny procesor, przesiadłem sie z intela 4690K podkręconego do 4.5 Giga, przeskok wydajnościowy ogromny.\nNiestety boxowe chłodzenie do zmiany, troche głośne. Zaraz wskakuje Grandis 3 .",
+        "star": 5,
+        "Date": "2021-07-27T01:52:24.7821799+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Produkt jak najbardziej godny polecenia.",
+        "star": 5,
+        "Date": "2021-07-27T01:52:32.3778571+02:00"
+      },
+      {
+        "Nick": "Admin",
+        "Text": "Procesor świetnie sprawdza się wwgrach FPS",
+        "star": 5,
+        "Date": "2021-07-27T01:52:39.9154346+02:00"
+      }
+    ]
+  },
+  {
+    "Id": 54,
+    "productID": 62,
+    "rating": 2.5531914,
+    "opinions": 47,
+    "star0": 2,
+    "star1": 1,
+    "star2": 17,
+    "star3": 23,
+    "star4": 4,
+    "star5": 0,
+    "opinions_text": null
+  }
+]

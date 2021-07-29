@@ -1,0 +1,721 @@
+﻿@using Models.Filtrs
+@using Services
+@using Microsoft.AspNetCore.WebUtilities
+@using Models
+@using Microsoft.AspNetCore.Hosting
+
+@inject NavigationManager NavigationManager
+@inject DistinctService distinctService
+@inject IWebHostEnvironment env
+<div style="border-radius:4px;border: 2px solid #ECEFE9;" lang="it" class="w-auto h-auto">
+    @if (distinctService.json_Distinct is not null)
+    {
+        @switch (product)
+        {
+            case "processor":
+                <EditForm Model="@filtr_Processor" OnValidSubmit="@processor_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONProcessor.Brand" @bind-list="filtr_Processor.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_Processor.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_Processor.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Rodzina procesorów:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONProcessor.Family" @bind-list="filtr_Processor.Family" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Socket procesora:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONProcessor.Socket" @bind-list="filtr_Processor.Socket" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Architektura procesora:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONProcessor.Arch" @bind-list="filtr_Processor.Arch" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Liczba rdzeni procesora:</label>
+                        @{List<string> l = convert_list_int_to_string(distinctService.json_Distinct.JSONProcessor.Cores);}
+                        <CheckboxListComponent json_Distinct2="@l" @bind-list="filtr_Processor.Cores" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Odblokowany mnożnik procesora:</label>
+                        <CheckboxListComponent json_Distinct2="@(new List<string> {"Tak","Nie"})" @bind-list="filtr_Processor.Unlocked" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Pamięć Cache procesora:</label>
+                        <CheckboxListComponent json_Distinct2="distinctService.json_Distinct.JSONProcessor.Cache" @bind-list="filtr_Processor.Cache" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Zintegrowana grafika procesora:</label>
+                        <CheckboxListComponent json_Distinct2="@(new List<string> {"Tak","Nie"})" @bind-list="filtr_Processor.Intergrated_graphic" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+
+                </EditForm>
+                break;
+            case "computercase":
+                <EditForm Model="@filtr_ComputerCase" OnValidSubmit="@computercase_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONComputerCase.Brand" @bind-list="filtr_ComputerCase.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_ComputerCase.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_ComputerCase.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Typ obudowy:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONComputerCase.Type" @bind-list="filtr_ComputerCase.Type" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Standard płyty głównej:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONComputerCase.Motherboardstype" @bind-list="filtr_ComputerCase.Motherboardstype" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Standard zasilacza:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONComputerCase.Power_supply_type" @bind-list="filtr_ComputerCase.Power_supply_type" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="font-weight-bold" style="margin-left:5px;font-size:1rem; margin:5px 0 2px 0;padding-left:2px; width:100%">Maksymalna szerokość obudowy(mm):</label>
+                        <input type="number" inputmode="numeric" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:100%" @bind-value="filtr_ComputerCase.Width" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="font-weight-bold" style="margin-left: 5px; font-size: 1rem; margin: 5px 0 2px 0; padding-left: 2px; width: 100%">Maksymalna wysokość obudowy(mm):</label>
+                        <input type="number" inputmode="numeric" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:100%" @bind-value="filtr_ComputerCase.Heigth" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="font-weight-bold" style="margin-left: 5px; font-size: 1rem; margin: 5px 0 2px 0; padding-left: 2px; width: 100%">Maksymalna długość obudowy(mm):</label>
+                        <input type="number" inputmode="numeric" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:100%" @bind-value="filtr_ComputerCase.Length" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+                </EditForm>
+                break;
+            case "disc":
+                <EditForm Model="@filtr_Disc" OnValidSubmit="@disc_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONDisc.Brand" @bind-list="filtr_Disc.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_Disc.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_Disc.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Rodzaj dysku:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONDisc.Type" @bind-list="filtr_Disc.Type" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Format dysku:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONDisc.Format" @bind-list="filtr_Disc.Format" />
+                    </div>
+
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="font-weight-bold" style="margin-left:5px;font-size:1rem; margin:5px 0 2px 0;padding-left:2px; width:100%">Minimalna prędkość odczytu (MB/s):</label>
+                        <input type="number" inputmode="numeric" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:100%" @bind-value="filtr_Disc.Read_speed" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="font-weight-bold" style="margin-left:5px;font-size:1rem; margin:5px 0 2px 0;padding-left:2px; width:100%">Minimalna prędkość zapisu (MB/s):</label>
+                        <input type="number" inputmode="numeric" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:100%" @bind-value="filtr_Disc.Write_speed" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+                </EditForm>
+                break;
+            case "graphiccard":
+                <EditForm Model="@filtr_GraphicCard" OnValidSubmit="@graphiccard_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent procesora graficznego:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONGraphicCard.Producent" @bind-list="filtr_GraphicCard.Producent" attribute_check="@filtr_GraphicCard.Producent" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent karty graficznej:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONGraphicCard.Brand" @bind-list="filtr_GraphicCard.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_GraphicCard.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_GraphicCard.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Układ graficzny:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONGraphicCard.Graphics_processing" @bind-list="filtr_GraphicCard.Graphics_processing" attribute_check="@filtr_GraphicCard.Graphics_processing" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Obsługa RTX:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONGraphicCard.Rtx" @bind-list="filtr_GraphicCard.Rtx" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Wielkość pamięci (MB):</label>
+                        @{List<string> l = convert_list_int_to_string(distinctService.json_Distinct.JSONGraphicCard.Memory_Size);}
+                        <CheckboxListComponent json_Distinct2="@l" @bind-list="filtr_GraphicCard.Memory_size" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="font-weight-bold" style="margin-left:5px;font-size:1rem; margin:5px 0 2px 0;padding-left:2px; width:100%">maksymalna długość:</label>
+                        <input type="number" inputmode="numeric" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:100%" @bind-value="filtr_GraphicCard.Length" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+                </EditForm>
+                break;
+            case "motherboard":
+                <EditForm Model="@filtr_Motherboard" OnValidSubmit="@motherboard_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONMotherboard.Brand" @bind-list="filtr_Motherboard.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_Motherboard.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_Motherboard.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Socket:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONMotherboard.Socket" @bind-list="filtr_Motherboard.Socket" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Chipset:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONMotherboard.Chipset" @bind-list="filtr_Motherboard.Chipset" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Obsługa wielu kart graficznych:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONMotherboard.Multi_cards" @bind-list="filtr_Motherboard.Multi_cards" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Karta dźwiękowa:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONMotherboard.Audio" @bind-list="filtr_Motherboard.Audio" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Format:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONMotherboard.Format" @bind-list="filtr_Motherboard.Format" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+                </EditForm>
+                break;
+            case "Powersupply":
+                <EditForm Model="@filtr_PowerSupply" OnValidSubmit="@powersupply_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONPowerSupply.Brand" @bind-list="filtr_PowerSupply.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_PowerSupply.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_PowerSupply.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Moc:</label>
+                        @{List<string> l = convert_list_int_to_string(distinctService.json_Distinct.JSONPowerSupply.Power);}
+                        <CheckboxListComponent json_Distinct2="@l" @bind-list="filtr_PowerSupply.Power" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Standard:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONPowerSupply.Standard" @bind-list="filtr_PowerSupply.Standard" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Certyfikat:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONPowerSupply.Certificate" @bind-list="filtr_PowerSupply.Certificate" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Typ okablowania:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONPowerSupply.Cables_types" @bind-list="filtr_PowerSupply.Cables_types" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+                </EditForm>
+                break;
+            case "radiator":
+                <EditForm Model="@filtr_Radiator" OnValidSubmit="@radiator_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRadiator.Brand" @bind-list="filtr_Radiator.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_Radiator.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_Radiator.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Prędkość obrotowa:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRadiator.Rps" @bind-list="filtr_Radiator.Rps" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Kompatybilność (socket):</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRadiator.Socket" @bind-list="filtr_Radiator.Socket" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Rodzaj chłodzenia:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRadiator.Cooling_type" @bind-list="filtr_Radiator.Cooling_type" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Rodzaj łożyska:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRadiator.Bearing" @bind-list="filtr_Radiator.Bearing" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Złącze:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRadiator.Connectors" @bind-list="filtr_Radiator.Connectors" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+                </EditForm>
+                break;
+            case "ram":
+                <EditForm Model="@filtr_Ram" OnValidSubmit="@ram_search">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Producent:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRam.Brand" @bind-list="filtr_Ram.Brand" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Cena:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px; width:55%">OD:</label>
+                        <label style="margin-left:5px;font-size:10px; margin:5px 0 2px 0;padding-left:2px;width:45%">DO:</label>
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="od" style="border-radius:15px; border:1px solid #aeaeae;margin-right:5%; width:45%" @bind-value="filtr_Ram.Price_min" />
+                        <input step="0.01" type="number" inputmode="numeric" placeholder="do" style="border-radius:15px;border:1px solid #aeaeae;margin-left:5%;width:45%;" @bind-value="filtr_Ram.Price_max" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Rodzaj pamięci:</label>
+
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRam.Memory_type" @bind-list="filtr_Ram.Memory_type" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Pojemność całkowita (GB):</label>
+                        @{List<string> l1 = convert_list_int_to_string(distinctService.json_Distinct.JSONRam.Memory_size_full);}
+                        <CheckboxListComponent json_Distinct2="@l1" @bind-list="filtr_Ram.Memory_size_full" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Liczba modułów:</label>
+                        @{List<string> l2 = convert_list_int_to_string(distinctService.json_Distinct.JSONRam.Items);}
+                        <CheckboxListComponent json_Distinct2="@l2" @bind-list="filtr_Ram.Items" />
+                    </div>
+
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Opóźnienia (CL):</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRam.Cycle_latency" @bind-list="filtr_Ram.Cycle_latency" />
+                    </div>
+                    <div class="form-group row" style="margin:20px;">
+                        <label class="w-100 font-weight-bold">Taktowanie:</label>
+                        <CheckboxListComponent json_Distinct2="@distinctService.json_Distinct.JSONRam.Frequency" @bind-list="filtr_Ram.Frequency" />
+                    </div>
+                    <div class="form-group row justify-content-end" style="margin:20px;">
+                        <button type="submit" class="d-block w-100 anim-border text-center anim-font-size" style="border:none;background-color:transparent;outline:none;">
+                            <span>Wyszukaj</span>
+                        </button>
+                    </div>
+                </EditForm>
+                break;
+            case "search_result":
+
+                <div class="row w-100 ml-0 mr-0 mt-2">
+                    <span class="w-100 text-center font-size-20" style="font-family: monospace; color: #bababa; user-select: none;">
+                        Wyniki Wyszukiwania
+                    </span>
+                </div>
+                <div class="row w-100 ml-0 mr-0 mb-2 justify-content-center">
+                    <i class="far fa-hand-point-right fa-9x" style="color: #bababa;"></i>
+                </div>
+
+                break;
+            default:
+                break;
+        }
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string product { get; set; }
+    [Parameter]
+    public Uri currenturi { get; set; }
+    [Parameter]
+    public int categoryID { get; set; }
+
+    public Filtr_Processor filtr_Processor = new Filtr_Processor();
+    public Filtr_Ram filtr_Ram = new Filtr_Ram();
+    public Filtr_Radiator filtr_Radiator = new Filtr_Radiator();
+    public Filtr_PowerSupply filtr_PowerSupply = new Filtr_PowerSupply();
+    public Filtr_Motherboard filtr_Motherboard = new Filtr_Motherboard();
+    public Filtr_GraphicCard filtr_GraphicCard = new Filtr_GraphicCard();
+    public Filtr_Disc filtr_Disc = new Filtr_Disc();
+    public Filtr_ComputerCase filtr_ComputerCase = new Filtr_ComputerCase();
+
+    [CascadingParameter] ProductListPage productList { get; set; }
+
+    protected override void OnInitialized()
+    {
+        bool right_querry = false;
+        using (StreamReader r = new StreamReader(env.WebRootPath + $"\\json\\distinct.json"))
+        {
+            string json = r.ReadToEnd();
+            distinctService.json_Distinct = JsonConvert.DeserializeObject<OnlineShop.Services.Json_distinct>(json);
+        }
+        switch (categoryID)
+        {
+            case 1:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("brand", out var output1))
+                {
+                    filtr_Processor.Brand = new List<string> { output1 };
+                    right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("family", out var output2))
+                {
+                    filtr_Processor.Family = new List<string> { output2 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    processor_search();
+                }
+                right_querry = false;
+                break;
+            case 2:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("casetype", out var output3))
+                {
+                    filtr_ComputerCase.Type = new List<string> { output3 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("motherboard_type", out var output4))
+                {
+                    filtr_ComputerCase.Motherboardstype = new List<string> { output4 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    computercase_search();
+                }
+                right_querry = false;
+                break;
+            case 3:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("disctype", out var output5))
+                {
+                    filtr_Disc.Type = new List<string> { output5 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("discformat", out var output6))
+                {
+                    filtr_Disc.Format = new List<string> { output6 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    disc_search();
+                }
+                right_querry = false;
+                break;
+            case 4:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("producent", out var output7))
+                {
+                    filtr_GraphicCard.Producent = new List<string> { output7 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("processor", out var output8))
+                {
+                    filtr_GraphicCard.Graphics_processing = new List<string> { output8 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    graphiccard_search();
+                }
+                right_querry = false;
+                break;
+            case 5:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("format", out var output9))
+                {
+                    filtr_Motherboard.Format = new List<string> { output9 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("socket", out var output10))
+                {
+                    filtr_Motherboard.Socket = new List<string> { output10 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    motherboard_search();
+                }
+                right_querry = false;
+                break;
+            case 6:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("standard", out var output11))
+                {
+                    filtr_PowerSupply.Standard = new List<string> { output11 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("certificate", out var output12))
+                {
+                    filtr_PowerSupply.Certificate = new List<string> { output12 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    powersupply_search();
+                }
+                right_querry = false;
+                break;
+            case 7:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("type", out var output13))
+                {
+                    filtr_Radiator.Cooling_type = new List<string> { output13 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("socket", out var output14))
+                {
+                    filtr_Radiator.Socket = new List<string> { output14 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    radiator_search();
+                }
+                right_querry = false;
+                break;
+            case 8:
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("type", out var output15))
+                {
+                    filtr_Ram.Memory_type = new List<string> { output15 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("gb", out var output16))
+                {
+                    filtr_Ram.Memory_size_full = new List<string> { output16 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    ram_search();
+                }
+                right_querry = false;
+                break;
+            default:
+                break;
+        }
+        NavigationManager.LocationChanged += NavigationManager_LocationChanged;
+    }
+
+    private void NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        bool right_querry = false;
+        Uri currenturi = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        switch (categoryID)
+        {
+            case 1:
+                filtr_Processor = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("brand", out var output1))
+                {
+                    filtr_Processor.Brand = new List<string> { output1 };
+                    right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("family", out var output2))
+                {
+                    filtr_Processor.Family = new List<string> { output2 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    processor_search();
+                }
+
+                break;
+            case 2:
+                filtr_ComputerCase = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("casetype", out var output3))
+                {
+                    filtr_ComputerCase.Type = new List<string> { output3 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("motherboard_type", out var output4))
+                {
+                    filtr_ComputerCase.Motherboardstype = new List<string> { output4 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    computercase_search();
+                }
+
+                break;
+            case 3:
+                filtr_Disc = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("disctype", out var output5))
+                {
+                    filtr_Disc.Type = new List<string> { output5 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("discformat", out var output6))
+                {
+                    filtr_Disc.Format = new List<string> { output6 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    disc_search();
+                }
+
+                break;
+            case 4:
+                filtr_GraphicCard = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("producent", out var output7))
+                {
+                    filtr_GraphicCard.Producent = new List<string> { output7 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("processor", out var output8))
+                {
+                    filtr_GraphicCard.Graphics_processing = new List<string> { output8 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    graphiccard_search();
+                }
+
+                break;
+            case 5:
+                filtr_Motherboard = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("format", out var output9))
+                {
+                    filtr_Motherboard.Format = new List<string> { output9 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("socket", out var output10))
+                {
+                    filtr_Motherboard.Socket = new List<string> { output10 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    motherboard_search();
+                }
+
+                break;
+            case 6:
+                filtr_PowerSupply = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("standard", out var output11))
+                {
+                    filtr_PowerSupply.Standard = new List<string> { output11 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("certificate", out var output12))
+                {
+                    filtr_PowerSupply.Certificate = new List<string> { output12 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    powersupply_search();
+                }
+
+                break;
+            case 7:
+                filtr_Radiator = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("type", out var output13))
+                {
+                    filtr_Radiator.Cooling_type = new List<string> { output13 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("socket", out var output14))
+                {
+                    filtr_Radiator.Socket = new List<string> { output14 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    radiator_search();
+                }
+
+                break;
+            case 8:
+                filtr_Ram = new();
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("type", out var output15))
+                {
+                    filtr_Ram.Memory_type = new List<string> { output15 }; right_querry = true;
+                }
+                if (QueryHelpers.ParseQuery(currenturi.Query).TryGetValue("gb", out var output16))
+                {
+                    filtr_Ram.Memory_size_full = new List<string> { output16 }; right_querry = true;
+                }
+                if (right_querry)
+                {
+                    ram_search();
+                }
+
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    private async void processor_search()
+    {
+        productList.changeprocessors(await SearchEngine.Selected_Processors(filtr_Processor,env));
+    }
+    private async void computercase_search()
+    {
+        productList.changecomputercase(await SearchEngine.Selected_ComputerCase(filtr_ComputerCase, env));
+    }
+    private async void disc_search()
+    {
+        productList.changedisc(await SearchEngine.Selected_Discs(filtr_Disc, env));
+    }
+    private async void graphiccard_search()
+    {
+        productList.changegraphiccard(await SearchEngine.Selected_GraphicCards(filtr_GraphicCard, env));
+    }
+    private async void motherboard_search()
+    {
+        productList.changemotherboard(await SearchEngine.Selected_Motherboards(filtr_Motherboard, env));
+    }
+    private async void powersupply_search()
+    {
+        productList.changepowersupply(await SearchEngine.Selected_PowerSupplies(filtr_PowerSupply, env));
+    }
+    private async void radiator_search()
+    {
+        productList.changeradiator(await SearchEngine.Selected_Radiators(filtr_Radiator, env));
+    }
+    private async void ram_search()
+    {
+        productList.changeram(await SearchEngine.Selected_Rams(filtr_Ram, env));
+    }
+
+
+    private List<string> convert_list_int_to_string(List<int> x)
+    {
+        return x.ConvertAll<string>(delegate (int i) { return i.ToString(); });
+    }
+
+}

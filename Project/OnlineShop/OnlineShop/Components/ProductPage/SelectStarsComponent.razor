@@ -1,0 +1,56 @@
+﻿
+@if (!Loading)
+{
+    <div class="container">
+        <div class="row">
+            @for (int i = 0; i < 6; i++)
+            {
+                int z = i;
+                if (SelectedStars < i)
+                {
+                    <div class="col-2 pl-0 pr-0 cursor-pointer"  @onclick="@(()=> { Change_Selected_Stars(z); })">
+                        <i class="far fa-star"  ></i>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-2 pl-0 pr-0 cursor-pointer" @onclick="@(()=> { Change_Selected_Stars(z); })">
+                        <i class="fas fa-star" style="color:@colors[SelectedStars];"></i>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code
+{
+    private int SelectedStars { get; set; }
+    private bool Loading { get; set; }
+    private string[] colors = { "#ff4848", "#ff7575", "#ff9c22", "#f7db14", "#8cf18f", "#69b151" };
+
+    [Parameter]
+    public int Result { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ResultChanged { get; set; }
+
+    private Task OnResultChanged(int z)
+    {
+        Result = z;
+        StateHasChanged();
+        return ResultChanged.InvokeAsync(Result);
+    }
+
+    protected override void OnInitialized()
+    {
+        SelectedStars = 0;
+        Loading = false;
+    }
+
+    private void Change_Selected_Stars(int mouseover)
+    {
+        OnResultChanged(mouseover);
+        SelectedStars = mouseover;
+    }
+}

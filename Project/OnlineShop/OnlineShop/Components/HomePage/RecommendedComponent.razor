@@ -1,0 +1,95 @@
+﻿@using Models
+@using Microsoft.AspNetCore.Hosting
+@inject NavigationManager NavigationManager
+@inject IWebHostEnvironment env
+<div class="w-100">
+    @if (products is not null && products.Count != 0)
+    {
+        <div class="container-fluid cursor-pointer">
+            <div class="row mb-3" style=" border-bottom: 1px solid #bfbfbf;">
+                <span style="font-size:30px">
+                    Polecane Produkty:
+                </span>
+            </div>
+            <div class="row justify-content-center mt-5">
+                <div style="flex: 0 0 4%; max-width: 4%;" class="w-100 position-relative">
+                    <div @onclick="(()=> startindex=(startindex==0)?products.Count-1:startindex-1)" class="d-flex h-100 justify-content-center align-items-center btn-il">
+                        <i class="fas fa-chevron-left fa-2x icon-change iconl"></i>
+                    </div>
+                </div>
+                @{int pom = 0; }
+                @for (int i = 0; i < amount; i++)
+                {
+                    @if (i + startindex > products.Count - 1)
+                    {
+                        <div class="col-3">
+                            @{string path1 = NavigationManager.BaseUri + products[pom].Path;}
+                            <div class="container-fluid pr-0 pl-0" @onclick="(() => { NavigationManager.NavigateTo(path1); })" style="border: 1px solid #bcbcbc; border-radius: 5px;">
+                                <div class="row mt-2 mr-0 ml-0 pl-1 pr-1 justify-content-center">
+                                    <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                        @products[pom].Name
+                                    </span>
+                                </div>
+
+                                <div class="row mr-0 ml-0 mb-2 mt-1">
+                                    <div class="col-6 pr-0 pl-0 d-flex justify-content-center">
+                                        <img src="@products[pom].Photo" style="max-height:100px;" />
+                                    </div>
+                                    <div class="col-6 pr-0 pl-0 d-flex justify-content-center align-items-center">
+                                        <span>
+                                            @((products[pom].Price%1==0)? products[pom].Price+",00 zł": products[pom].Price+" zł")
+                                        </span>
+                                        @{pom++;}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-3">
+                            @{string path2 = NavigationManager.BaseUri + products[i + startindex].Path;}
+                            <div class="container-fluid pr-0 pl-0" style="border: 1px solid #bcbcbc; border-radius: 5px;" @onclick="(()=> { NavigationManager.NavigateTo(path2); })">
+                                <div class="row mt-2 mr-0 ml-0 pl-1 pr-1 justify-content-center">
+                                    <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                        @products[i + startindex].Name
+                                    </span>
+                                </div>
+
+                                <div class="row mr-0 ml-0 mb-2 mt-1">
+                                    <div class="col-6 pr-0 pl-0 d-flex justify-content-center">
+                                        <img src="@products[i+startindex].Photo" style="max-height:100px;" />
+                                    </div>
+
+                                    <div class="col-6 pr-0 pl-0 d-flex justify-content-center align-items-center">
+                                        <span>
+                                            @((products[i + startindex].Price%1==0)? products[i + startindex].Price+",00 zł": products[i + startindex].Price+" zł")
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <div style="flex: 0 0 4%; max-width: 4%;" class="w-100 position-relative">
+                    <div @onclick="(()=> startindex=(startindex==products.Count-1)?0:startindex+1)" class="d-flex h-100 justify-content-center align-items-center btn-ir">
+                        <i class="fas fa-chevron-right fa-2x icon-change iconr"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    public List<RandomProduct> products = new List<RandomProduct>();
+    private int startindex { get; set; }
+    private int amount { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        startindex = 0;
+        amount = 3;
+        products = await Additional_Functions.Get_Random_products(5, env);
+    }
+}

@@ -1,0 +1,33 @@
+.flex-cointainer[b-swuzqfp362] {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    height:auto;
+}
+.w-35[b-swuzqfp362]{
+    width:25%;
+}
+.input-log[b-swuzqfp362]{
+    width:80%;
+    margin-left:10%;
+    border-radius:10px;
+    border: solid 1px grey;
+    font-size:20px;
+}
+.btn-log[b-swuzqfp362]{
+    border-radius:5px;
+    border:0;
+    background-color:lightgray;
+    color:black;
+    height:40px;
+}
+.mt-30px[b-swuzqfp362] {
+    margin-top: 30px;
+}
+.brakdostepu-span[b-swuzqfp362] {
+    font-family: monospace;
+    font-size: 20px;
+    color: #bababa;
+    user-select: none;
+}

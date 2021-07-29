@@ -1,0 +1,59 @@
+﻿@if (json_Distinct2 is not null)
+{
+<div style="margin-left:5px;" class="w-100">
+    @for (int i = 0; i < json_Distinct2.Count; i++)
+    {
+        bool Checked = false;
+        var z = i;
+        <div class="form-check">
+            @if (attribute_check is not null && attribute_check.Count != 0)
+            {
+                Checked = (attribute_check[0] == json_Distinct2[i]) ? true : false;
+            }
+            <input class="form-check-input" type="checkbox" checked="@Checked" @onchange="@(()=> {  changecheckbox(z); })" />
+            <label class="form-check-label">@json_Distinct2[i]</label>
+        </div>
+    }
+</div>
+}
+
+
+@code {   
+
+    [Parameter]
+    public List<string> json_Distinct2 { get; set; }
+    [Parameter]
+    public List<string> attribute_check { get; set; }
+    [Parameter]
+    public EventCallback<List<string>> listChanged { get; set; }
+    [Parameter]
+    public List<string> list { get; set; }
+
+
+    public List<string> list2 { get; set; }
+
+    public bool[] b { get; set; }
+
+    protected override void OnInitialized()
+    {
+        list2 = new List<string>();
+        b = new bool[json_Distinct2.Count];
+
+    }
+
+    private async Task changecheckbox(int index)
+    {
+        b[index] = !b[index];
+        if (b[index])
+        {
+            list2.Add(json_Distinct2[index]);
+        }
+        else
+        {
+            list2.Remove(json_Distinct2[index]);
+        }
+        list = list2;
+
+        await listChanged.InvokeAsync(list);
+    }
+}

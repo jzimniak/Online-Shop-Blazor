@@ -1,0 +1,20 @@
+.pr[b-fwlguumf8m] {
+    width: 100%;
+    margin: 10px 0 0 0;
+    border: 2px solid transparent;
+}
+    .pr:hover[b-fwlguumf8m] {
+        border: 2px solid #c8c8c8;
+        border-radius: 15px;
+        box-shadow: 0 0 20px 0px #00000024;
+    }
+.row[b-fwlguumf8m]{
+    margin:0;
+}
+.text-wrapper[b-fwlguumf8m]{
+    display:inline-block;
+    overflow:hidden;
+    width:100%;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}

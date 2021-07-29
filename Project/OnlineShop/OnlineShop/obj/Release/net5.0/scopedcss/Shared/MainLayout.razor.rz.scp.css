@@ -1,0 +1,16 @@
+.page[b-t8l6goinpc] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar[b-t8l6goinpc] {
+    width: 100%;
+    height: 120px;
+    position: sticky;
+    z-index:30;
+}
+.main-body[b-t8l6goinpc]{
+    min-width:100%;
+    min-height:100%;
+}

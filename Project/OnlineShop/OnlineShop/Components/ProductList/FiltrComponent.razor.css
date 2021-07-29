@@ -1,0 +1,37 @@
+﻿input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input {
+    border-radius: 15px;
+    border: 1px solid #aeaeae;
+    padding-left: 8px;
+}
+    input:focus {
+        border-radius: 15px;
+        border: 1px solid #aeaeae;
+        outline-width: 0;
+        padding-left:8px;
+    }
+
+.anim-border:after {
+    display: flex;
+    content: '';
+    border-bottom: solid 1px blue;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+    height: 2px;
+}
+.anim-font-size {
+    font-size: 1.4rem;
+    transition: font-size 250ms ease;
+}
+.anim-font-size:hover{
+    font-size:1.6rem;
+}
+
+.anim-border:hover:after {
+    transform: scaleX(1);
+}

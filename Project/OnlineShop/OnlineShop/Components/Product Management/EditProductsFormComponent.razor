@@ -1,0 +1,654 @@
+﻿@using Models
+@using Services
+@using DataAccess
+@using Microsoft.AspNetCore.Hosting
+
+@inject SqlDataAccess _data
+@inject IWebHostEnvironment env
+@if (!editform)
+{
+    @if (!loading)
+    {
+        <div class="position-relative w-100" style="-ms-flex: 0 0 15%; flex: 0 0 15%; max-width: 15%;border-right:1px solid">
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "discs"; })" class="button-1">Dysk</button>
+            </div>
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "computercases"; })" class="button-1">Obudowa</button>
+            </div>
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "graphiccards"; })" class="button-1">Karta Graficzna</button>
+            </div>
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "motherboards"; })" class="button-1">Płyta Główna</button>
+            </div>
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "powersupply"; })" class="button-1">Zasilacz</button>
+            </div>
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "processors"; })" class="button-1">Procesor</button>
+            </div>
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "radiators"; })" class="button-1">Chłodzenie</button>
+            </div>
+            <div class="row mr-0 ml-0">
+                <button @onclick="@(()=>{ selectedcategory = "rams"; })" class="button-1">Ram</button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>LOADING...</div>
+    }
+    @if (selectedcategory != "")
+    {
+        <div class="position-relative w-100" style="-ms-flex: 0 0 85%; flex: 0 0 85%; max-width: 85%;">
+            @switch (selectedcategory)
+            {
+                case "processors":
+                    <table class="table  table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">arch</th>
+                                <th scope="col">cache</th>
+                                <th scope="col">code</th>
+                                <th scope="col">cooling_in_box</th>
+                                <th scope="col">cores</th>
+                                <th scope="col">family</th>
+                                <th scope="col">frequency</th>
+                                <th scope="col">intergrated_graphic</th>
+                                <th scope="col">lithography</th>
+                                <th scope="col">memory_types</th>
+                                <th scope="col">processor_graphic</th>
+                                <th scope="col">processor_number</th>
+                                <th scope="col">socket</th>
+                                <th scope="col">TDP</th>
+                                <th scope="col">technologiesSTR</th>
+                                <th scope="col">threads</th>
+                                <th scope="col">unlocked</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in processor)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "processors"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "processors"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Arch</td>
+                                    <td>@item.Attributes.Cache</td>
+                                    <td>@item.Attributes.Code</td>
+                                    <td>@item.Attributes.Cooling_in_box</td>
+                                    <td>@item.Attributes.Cores</td>
+                                    <td>@item.Attributes.Family</td>
+                                    <td>@item.Attributes.Frequency</td>
+                                    <td>@item.Attributes.Intergrated_graphic</td>
+                                    <td>@item.Attributes.Lithography</td>
+                                    <td>@item.Attributes.Memory_types</td>
+                                    <td>@item.Attributes.Processor_graphic</td>
+                                    <td>@item.Attributes.Processor_number</td>
+                                    <td>@item.Attributes.Socket</td>
+                                    <td>@item.Attributes.TDP</td>
+                                    <td>@item.Attributes.TechnologiesSTR</td>
+                                    <td>@item.Attributes.Threads</td>
+                                    <td>@item.Attributes.Unlocked</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                case "computercases":
+                    <table class="table  table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">[casetype]</th>
+                                <th scope="col">[motherboards_typeSTR]</th>
+                                <th scope="col">[extension_cards]</th>
+                                <th scope="col">[max_graphic_card_length]</th>
+                                <th scope="col">[materialsSTR]</th>
+                                <th scope="col">[additional_informationSTR]</th>
+                                <th scope="col">[side_panel]</th>
+                                <th scope="col">[backlight]</th>
+                                <th scope="col">[power_supply_type]</th>
+                                <th scope="col">[space_for_discsSTR]</th>
+                                <th scope="col">[max_height_of_cooling]</th>
+                                <th scope="col">[max_fans]</th>
+                                <th scope="col">[fans_typesSTR]</th>
+                                <th scope="col">[water_cooling_optionsSTR]</th>
+                                <th scope="col">[fans_installed]</th>
+                                <th scope="col">[fans_types_installedSTR]</th>
+                                <th scope="col">[buttonsSTR]</th>
+                                <th scope="col">[front_panel_outputsSTR]</th>
+                                <th scope="col">[color]</th>
+                                <th scope="col">[accessoriesSTR]</th>
+                                <th scope="col">[width]</th>
+                                <th scope="col">[heigth]</th>
+                                <th scope="col">[length_]</th>
+                                <th scope="col">[weigth]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in computercase)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "computercases"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "computercases"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Type</td>
+                                    <td>@item.Attributes.Motherboards_typeSTR</td>
+                                    <td>@item.Attributes.Extension_cards</td>
+                                    <td>@item.Attributes.Max_graphic_card_length</td>
+                                    <td>@item.Attributes.MaterialsSTR</td>
+                                    <td>@item.Attributes.Additional_informationSTR</td>
+                                    <td>@item.Attributes.Side_panel</td>
+                                    <td>@item.Attributes.Backlight</td>
+                                    <td>@item.Attributes.Power_supply_type</td>
+                                    <td>@item.Attributes.Space_for_discsSTR</td>
+                                    <td>@item.Attributes.Max_height_of_cooling</td>
+                                    <td>@item.Attributes.Max_fans</td>
+                                    <td>@item.Attributes.Fans_typesSTR</td>
+                                    <td>@item.Attributes.Water_cooling_optionsSTR</td>
+                                    <td>@item.Attributes.Fans_installed</td>
+                                    <td>@item.Attributes.Fans_types_installedSTR</td>
+                                    <td>@item.Attributes.ButtonsSTR</td>
+                                    <td>@item.Attributes.Front_panel_outputsSTR</td>
+                                    <td>@item.Attributes.Color</td>
+                                    <td>@item.Attributes.AccessoriesSTR</td>
+                                    <td>@item.Attributes.Width</td>
+                                    <td>@item.Attributes.Heigth</td>
+                                    <td>@item.Attributes.Length</td>
+                                    <td>@item.Attributes.Weigth</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                case "discs":
+                    <table class="table  table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">[destiny]</th>
+                                <th scope="col">[disctype]</th>
+                                <th scope="col">[capacity]</th>
+                                <th scope="col">[discformat]</th>
+                                <th scope="col">[interfaces]</th>
+                                <th scope="col">[read_speed]</th>
+                                <th scope="col">[write_speed]</th>
+                                <th scope="col">[random_read_speed]</th>
+                                <th scope="col">[random_write_speed]</th>
+                                <th scope="col">[memory_type]</th>
+                                <th scope="col">[reliability]</th>
+                                <th scope="col">[radiator]</th>
+                                <th scope="col">[additional_informationSTR]</th>
+                                <th scope="col">[accessoriesSTR]</th>
+                                <th scope="col">[color]</th>
+                                <th scope="col">[width]</th>
+                                <th scope="col">[heigth]</th>
+                                <th scope="col">[length_]</th>
+                                <th scope="col">[code]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in disc)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "discs"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "discs"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Destiny</td>
+                                    <td>@item.Attributes.Type</td>
+                                    <td>@item.Attributes.Capacity</td>
+                                    <td>@item.Attributes.Format</td>
+                                    <td>@item.Attributes.Interfaces</td>
+                                    <td>@item.Attributes.Read_speed</td>
+                                    <td>@item.Attributes.Write_speed</td>
+                                    <td>@item.Attributes.Random_read_speed</td>
+                                    <td>@item.Attributes.Random_write_speed</td>
+                                    <td>@item.Attributes.Memory_type</td>
+                                    <td>@item.Attributes.Reliability</td>
+                                    <td>@item.Attributes.Radiator</td>
+                                    <td>@item.Attributes.Additional_informationSTR</td>
+                                    <td>@item.Attributes.AccessoriesSTR</td>
+                                    <td>@item.Attributes.Color</td>
+                                    <td>@item.Attributes.Width</td>
+                                    <td>@item.Attributes.Heigth</td>
+                                    <td>@item.Attributes.Length</td>
+                                    <td>@item.Attributes.Code</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                case "graphiccards":
+                    <table class="table  table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">[rtx]</th>
+                                <th scope="col">[core_clock]</th>
+                                <th scope="col">[graphics_processing]</th>
+                                <th scope="col">[card_bus]</th>
+                                <th scope="col">[memory_size]</th>
+                                <th scope="col">[memory_type]</th>
+                                <th scope="col">[memory_bus]</th>
+                                <th scope="col">[cuda_cores]</th>
+                                <th scope="col">[cooling]</th>
+                                <th scope="col">[outputsSTR]</th>
+                                <th scope="col">[graphic_apiSTR]</th>
+                                <th scope="col">[power_connectors]</th>
+                                <th scope="col">[recommended_psu]</th>
+                                <th scope="col">[tdp]</th>
+                                <th scope="col">[length_]</th>
+                                <th scope="col">[width]</th>
+                                <th scope="col">[heigth]</th>
+                                <th scope="col">[accessoriesSTR]</th>
+                                <th scope="col">[code]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in graphiccard)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "graphiccards"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "graphiccards"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Rtx</td>
+                                    <td>@item.Attributes.Core_clock</td>
+                                    <td>@item.Attributes.Graphics_processing</td>
+                                    <td>@item.Attributes.Card_bus</td>
+                                    <td>@item.Attributes.Memory_size</td>
+                                    <td>@item.Attributes.Memory_type</td>
+                                    <td>@item.Attributes.Memory_bus</td>
+                                    <td>@item.Attributes.Cuda_cores</td>
+                                    <td>@item.Attributes.Cooling</td>
+                                    <td>@item.Attributes.OutputsSTR</td>
+                                    <td>@item.Attributes.Graphic_apiSTR</td>
+                                    <td>@item.Attributes.Power_connectors</td>
+                                    <td>@item.Attributes.Recommended_psu</td>
+                                    <td>@item.Attributes.Tdp</td>
+                                    <td>@item.Attributes.Length</td>
+                                    <td>@item.Attributes.Width</td>
+                                    <td>@item.Attributes.Heigth</td>
+                                    <td>@item.Attributes.AccessoriesSTR</td>
+                                    <td>@item.Attributes.Code</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                case "motherboards":
+                    <table class="table  table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">[socket]</th>
+                                <th scope="col">[chipset]</th>
+                                <th scope="col">[arch_processSTR]</th>
+                                <th scope="col">[memory_typesSTR]</th>
+                                <th scope="col">[memory_types_ocSTR]</th>
+                                <th scope="col">[memory_slots]</th>
+                                <th scope="col">[memory_max_size]</th>
+                                <th scope="col">[memory_channel]</th>
+                                <th scope="col">[internal_connectionSTR]</th>
+                                <th scope="col">[back_panel_portsSTR]</th>
+                                <th scope="col">[raidSTR]</th>
+                                <th scope="col">[multi_cards]</th>
+                                <th scope="col">[can_handle_processor_card]</th>
+                                <th scope="col">[audio]</th>
+                                <th scope="col">[wireless_connection]</th>
+                                <th scope="col">[boardformat]</th>
+                                <th scope="col">[width]</th>
+                                <th scope="col">[length_]</th>
+                                <th scope="col">[code]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in motherboard)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "motherboards"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "motherboards"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Socket</td>
+                                    <td>@item.Attributes.Chipset</td>
+                                    <td>@item.Attributes.Arch_processSTR</td>
+                                    <td>@item.Attributes.Memory_typesSTR</td>
+                                    <td>@item.Attributes.Memory_types_ocSTR</td>
+                                    <td>@item.Attributes.Memory_slots</td>
+                                    <td>@item.Attributes.Memory_max_size</td>
+                                    <td>@item.Attributes.Memory_channel</td>
+                                    <td>@item.Attributes.Internal_connectionSTR</td>
+                                    <td>@item.Attributes.Back_panel_portsSTR</td>
+                                    <td>@item.Attributes.RaidSTR</td>
+                                    <td>@item.Attributes.Multi_cards</td>
+                                    <td>@item.Attributes.Can_handle_processor_card</td>
+                                    <td>@item.Attributes.Audio</td>
+                                    <td>@item.Attributes.Wireless_connection</td>
+                                    <td>@item.Attributes.Format</td>
+                                    <td>@item.Attributes.Width</td>
+                                    <td>@item.Attributes.Length</td>
+                                    <td>@item.Attributes.Code</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                case "powersupply":
+                    <table class="table  table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">[power_]</th>
+                                <th scope="col">[standard_]</th>
+                                <th scope="col">[efficiency]</th>
+                                <th scope="col">[certificate_]</th>
+                                <th scope="col">[cables_types]</th>
+                                <th scope="col">[fan]</th>
+                                <th scope="col">[pfc]</th>
+                                <th scope="col">[connectorsSTR]</th>
+                                <th scope="col">[securitySTR]</th>
+                                <th scope="col">[additional_informationSTR]</th>
+                                <th scope="col">[length_]</th>
+                                <th scope="col">[width]</th>
+                                <th scope="col">[heigth]</th>
+                                <th scope="col">[color]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in powersupply)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "powersupply"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "powersupply"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Power</td>
+                                    <td>@item.Attributes.Standard</td>
+                                    <td>@item.Attributes.Efficiency</td>
+                                    <td>@item.Attributes.Certificate</td>
+                                    <td>@item.Attributes.Cables_types</td>
+                                    <td>@item.Attributes.Fan</td>
+                                    <td>@item.Attributes.Pfc</td>
+                                    <td>@item.Attributes.ConnectorsSTR</td>
+                                    <td>@item.Attributes.SecuritySTR</td>
+                                    <td>@item.Attributes.Additional_informationSTR</td>
+                                    <td>@item.Attributes.Length</td>
+                                    <td>@item.Attributes.Width</td>
+                                    <td>@item.Attributes.Heigth</td>
+                                    <td>@item.Attributes.Color</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                case "radiators":
+                    <table class="table  table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">[cooling_type]</th>
+                                <th scope="col">[socketsSTR]</th>
+                                <th scope="col">[fansSTR]</th>
+                                <th scope="col">[materials]</th>
+                                <th scope="col">[rps]</th>
+                                <th scope="col">[bearing]</th>
+                                <th scope="col">[max_dB]</th>
+                                <th scope="col">[connectors]</th>
+                                <th scope="col">[backlight]</th>
+                                <th scope="col">[service_life]</th>
+                                <th scope="col">[tdp]</th>
+                                <th scope="col">[additional_informationSTR]</th>
+                                <th scope="col">[heigth]</th>
+                                <th scope="col">[width]</th>
+                                <th scope="col">[length_]</th>
+                                <th scope="col">[weight_]</th>
+                                <th scope="col">[accessoriesSTR]</th>
+                                <th scope="col">[code]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in radiator)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "radiators"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "radiators"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Cooling_type</td>
+                                    <td>@item.Attributes.SocketsSTR</td>
+                                    <td>@item.Attributes.FansSTR</td>
+                                    <td>@item.Attributes.Materials</td>
+                                    <td>@item.Attributes.Rps</td>
+                                    <td>@item.Attributes.Bearing</td>
+                                    <td>@item.Attributes.Max_dB</td>
+                                    <td>@item.Attributes.Connectors</td>
+                                    <td>@item.Attributes.Backlight</td>
+                                    <td>@item.Attributes.Service_life</td>
+                                    <td>@item.Attributes.Tdp</td>
+                                    <td>@item.Attributes.Additional_informationSTR</td>
+                                    <td>@item.Attributes.Heigth</td>
+                                    <td>@item.Attributes.Width</td>
+                                    <td>@item.Attributes.Length</td>
+                                    <td>@item.Attributes.Weight</td>
+                                    <td>@item.Attributes.AccessoriesSTR</td>
+                                    <td>@item.Attributes.Code</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                case "rams":
+                    <table class="table table-striped table-bordered table-sm w-100 d-block" cellspacing="0" style="overflow-x:auto;white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">edit</th>
+                                <th scope="col">delete</th>
+                                <th scope="col">id</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Warranty</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PhotoSTR</th>
+                                <th scope="col">[series]</th>
+                                <th scope="col">[memory_type]</th>
+                                <th scope="col">[memory_size_full]</th>
+                                <th scope="col">[memory_size_single]</th>
+                                <th scope="col">[items]</th>
+                                <th scope="col">[frequency]</th>
+                                <th scope="col">[cycle_latency]</th>
+                                <th scope="col">[timings]</th>
+                                <th scope="col">[tension]</th>
+                                <th scope="col">[cooling]</th>
+                                <th scope="col">[memory_ecc]</th>
+                                <th scope="col">[memory_backlight]</th>
+                                <th scope="col">[additional_information]</th>
+                                <th scope="col">[color]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ram)
+                            {
+                                <tr>
+                                    <td><button @onclick="@(() => { editproduct(item.Id);selectedItemToADD = "rams"; })">edit</button></td>
+                                    <td><button @onclick="@(() => deleteproduct(item.Id, "rams"))">delete</button></td>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Brand</td>
+                                    <td>@item.Warranty</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Attributes.PhotoSTR</td>
+                                    <td>@item.Attributes.Series</td>
+                                    <td>@item.Attributes.Memory_type</td>
+                                    <td>@item.Attributes.Memory_size_full</td>
+                                    <td>@item.Attributes.Memory_size_single</td>
+                                    <td>@item.Attributes.Items</td>
+                                    <td>@item.Attributes.Frequency</td>
+                                    <td>@item.Attributes.Cycle_latency</td>
+                                    <td>@item.Attributes.Timings</td>
+                                    <td>@item.Attributes.Tension</td>
+                                    <td>@item.Attributes.Cooling</td>
+                                    <td>@item.Attributes.Memory_ecc</td>
+                                    <td>@item.Attributes.Memory_backlight</td>
+                                    <td>@item.Attributes.Additional_information</td>
+                                    <td>@item.Attributes.Color</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    break;
+                default:
+                    <div>error</div>
+                    break;
+            }
+        </div>
+
+    }
+}
+else
+{
+    <CascadingValue Value="this">
+        <AddProductFormComponent name=@selectedItemToADD edit="true" editindex="@editindex" />
+    </CascadingValue>
+
+}
+
+@code {
+    private string selectedcategory, selectedItemToADD;
+
+    public bool editform { get; private set; } = true;
+    private int editindex { get; set; }
+    private bool loading { get; set; }
+
+    public List<Product<Processor>> processor;
+    public List<Product<ComputerCase>> computercase;
+    public List<Product<Disc>> disc;
+    public List<Product<Motherboard>> motherboard;
+    public List<Product<GraphicCard>> graphiccard;
+    public List<Product<PowerSupply>> powersupply;
+    public List<Product<Radiator>> radiator;
+    public List<Product<Ram>> ram;
+
+    private async void deleteproduct(int index, string tablename)
+    {
+
+        selectedItemToADD = "";
+        string sql = "exec deletproduct @id=@productid, @tablename=@table";
+        await _data.Update(sql, new { @productid = index, @table = tablename });
+        await _data.Update("Delete from Stars where productID=@productId", new { @productId = index });
+        await Additional_Functions.Delete_Product_From_JSON(index, tablename, env);
+        await Additional_Functions.Delete_Opinion_From_JSON(index, env);
+    }
+
+    private void editproduct(int index)
+    {
+        editindex = index;
+        editform = true;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        selectedcategory = "";
+        editform = false;
+        loading = true;
+        processor = await Additional_Functions.Read_Processors_From_JSON(env);
+        computercase = await Additional_Functions.Read_Computercases_From_JSON(env);
+        disc = await Additional_Functions.Read_Discs_From_JSON(env);
+        motherboard = await Additional_Functions.Read_Motherboards_From_JSON(env);
+        graphiccard = await Additional_Functions.Read_GraphicCards_From_JSON(env);
+        powersupply = await Additional_Functions.Read_PowerSupplies_From_JSON(env);
+        radiator = await Additional_Functions.Read_Radiators_From_JSON(env);
+        ram = await Additional_Functions.Read_Rams_From_JSON(env);
+        loading = false;
+    }
+
+    public void changevalue()
+    {
+        editform = false;
+        StateHasChanged();
+    }
+}

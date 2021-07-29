@@ -1,0 +1,12 @@
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\bin\Debug\net5.0\DataAccess.deps.json
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\bin\Debug\net5.0\DataAccess.dll
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\bin\Debug\net5.0\ref\DataAccess.dll
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\bin\Debug\net5.0\DataAccess.pdb
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\DataAccess.AssemblyInfoInputs.cache
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\DataAccess.AssemblyInfo.cs
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\DataAccess.dll
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\ref\DataAccess.dll
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\DataAccess.pdb
+C:\Users\jarek\source\repos\OnlineShop\DataAccess\obj\Debug\net5.0\DataAccess.csproj.AssemblyReference.cache

@@ -1,0 +1,489 @@
+﻿@using Models
+@using OnlineShop.Components.ProductList
+@using DataAccess
+@using Services
+@using Microsoft.AspNetCore.Hosting
+
+@inject IWebHostEnvironment env
+@inject SqlDataAccess _data
+@inject SimpleUserInfo SimpleUserInfo
+@inject Services.Refresh_Component Refresh_Component
+@inject NavigationManager NavigationManager
+
+@if (opinion is not null)
+{
+    <div class="row mr-0 ml-0 w-100 border-bottom-lightgrey border-top-lightgrey font-size30">
+        <span>
+            Opinie
+        </span>
+    </div>
+    <div class="container pt-4">
+        <div class="row ml-0 mr-0 mb-4">
+            <div class="col-8 pl-0 pr-0">
+                <div class="w-75 border-lightgrey border-radius10">
+                    @if (opinion.opinions != 0)
+                    {
+                        <div class="container pt-3 pb-3">
+                            <div class="row ml-0 mr-0">
+                                <div class="col-3 pl-0 pr-0 mt-auto mb-auto">
+                                    <div class="container">
+                                        <div class="row ml-0 mr-0 justify-content-center">
+                                            <span style="font-size:25px;">
+                                                @Math.Round(opinion.rating, 2)
+                                            </span>
+                                            <span class="mt-auto">/5</span>
+                                        </div>
+
+                                        <div class="row ml-0 mr-0 justify-content-center">
+                                            <StarComponent rating="@opinion.rating" />
+                                        </div>
+
+                                        <div class="row ml-0 mr-0 text-center">
+                                            <span>
+                                                Liczba opini: @opinion.opinions
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-9 pl-0 pr-0">
+                                    <div class="container">
+                                        <div class="row ml-0 mr-0">
+                                            <div class="col-3 pl-0 pr-0">
+                                                <i class="fas fa-star"></i>
+                                                <span>5</span>
+                                            </div>
+
+                                            <div class="col-8 pl-0 pr-0 mt-auto mb-auto">
+                                                <div class="progress">
+                                                    @{ string progres1 = ((float)opinion.star5 / (float)opinion.opinions * 100).ToString().Replace(',', '.');}
+                                                    <div class="progress-bar" role="progressbar" style="width: @progres1%;background-color:#69b151;" aria-valuenow="@progres1" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-1 pl-2 pr-0">
+                                                <span>
+                                                    @opinion.star5
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row ml-0 mr-0">
+                                            <div class="col-3 pl-0 pr-0">
+                                                <i class="fas fa-star"></i>
+                                                <span>4</span>
+                                            </div>
+
+                                            <div class="col-8 pl-0 pr-0 mt-auto mb-auto">
+                                                <div class="progress">
+                                                    @{ string progres2 = ((float)opinion.star4 / (float)opinion.opinions * 100).ToString().Replace(',', '.');}
+                                                    <div class="progress-bar" role="progressbar" style="width: @progres2%;background-color:#8cf18f;" aria-valuenow="@progres2" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-1 pl-2 pr-0">
+                                                <span>
+                                                    @opinion.star4
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row ml-0 mr-0">
+                                            <div class="col-3 pl-0 pr-0">
+                                                <i class="fas fa-star"></i>
+                                                <span>3</span>
+                                            </div>
+
+                                            <div class="col-8 pl-0 pr-0 mt-auto mb-auto">
+                                                <div class="progress">
+                                                    @{ string progres3 = ((float)opinion.star3 / (float)opinion.opinions * 100).ToString().Replace(',', '.');}
+                                                    <div class="progress-bar" role="progressbar" style="width: @progres3%;background-color:#f7db14;" aria-valuenow="@progres3" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-1 pl-2 pr-0">
+                                                <span>
+                                                    @opinion.star3
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row ml-0 mr-0">
+                                            <div class="col-3 pl-0 pr-0">
+                                                <i class="fas fa-star"></i>
+                                                <span>2</span>
+                                            </div>
+
+                                            <div class="col-8 pl-0 pr-0 mt-auto mb-auto">
+                                                <div class="progress">
+                                                    @{ string progres4 = ((float)opinion.star2 / (float)opinion.opinions * 100).ToString().Replace(',', '.');}
+                                                    <div class="progress-bar" role="progressbar" style="width: @progres4%;background-color:#ff9c22;" aria-valuenow="@progres4" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-1 pl-2 pr-0">
+                                                <span>
+                                                    @opinion.star2
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row ml-0 mr-0">
+                                            <div class="col-3 pl-0 pr-0">
+                                                <i class="fas fa-star"></i>
+                                                <span>1</span>
+                                            </div>
+
+                                            <div class="col-8 pl-0 pr-0 mt-auto mb-auto">
+                                                <div class="progress">
+                                                    @{ string progres5 = ((float)opinion.star1 / (float)opinion.opinions * 100).ToString().Replace(',', '.');}
+                                                    <div class="progress-bar" role="progressbar" style="width: @progres5%;background-color:#ff7575;" aria-valuenow="@progres5" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-1 pl-2 pr-0">
+                                                <span>
+                                                    @opinion.star1
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row ml-0 mr-0">
+                                            <div class="col-3 pl-0 pr-0">
+                                                <i class="fas fa-star"></i>
+                                                <span>0</span>
+                                            </div>
+
+                                            <div class="col-8 pl-0 pr-0 mt-auto mb-auto">
+                                                <div class="progress">
+                                                    @{ string progres6 = ((float)opinion.star0 / (float)opinion.opinions * 100).ToString().Replace(',', '.');}
+                                                    <div class="progress-bar" role="progressbar" style="width: @progres6%;background-color:#ff4848;" aria-valuenow="@progres6" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-1 pl-2 pr-0">
+                                                <span>
+                                                    @opinion.star0
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="container pt-4 pb-4">
+                            <div class="row ml-0 mr-0">
+                                <div class="col-8 pl-0 pr-0 border-right-lightgrey">
+                                    <div class="row ml-0 mr-0 justify-content-center">
+                                        <i class="fas fa-heart-broken fa-5x" style="color:lightgray"></i>
+                                    </div>
+
+                                    <div class="row ml-0 mr-0 justify-content-center pt-2">
+                                        <span style="color:lightgray;" class="font-size-20">
+                                            Niestety produkt nie ma jeszcze opinii
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 pl-0 pr-0">
+                                    <div class="row ml-0 mr-0 justify-content-center align-items-center h-100">
+                                        <span>
+                                            <i class="far fa-hand-point-right fa-6x" style="color:lightgray"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+            </div>
+            <div class="col-4 pl-0 pr-0 center-VERT-HOR-1">
+                @if (SimpleUserInfo.IsLogged)
+                {
+                    <button class="btn btn-outline-success" @onclick="(()=> { showform = !showform; })">Dodaj opinie</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-success" @onclick="(()=> { Refresh_Component.topMenuComponent.ShowLoginWindow = true; Refresh_Component.topMenuComponent.Refresh();})">Zaloguj się by dodać opinie</button>
+                }
+
+            </div>
+        </div>
+        <div class="row ml-0 mr-0">
+            @{string cssclass = (showform) ? "d-block" : "d-none"; }
+            <div id="form-comment" class="container w-75 mt-3 @cssclass border-lightgrey border-radius10">
+                <div class="row ml-0 mr-0">
+                    <div class="col-2 pl-0 pr-0 pt-2 pb-2">
+                        <SelectStarsComponent @bind-Result="stars_given" />
+                    </div>
+
+                    <div class="col-1 pl-0 pr-0 pt-2 pb-2 text-center">
+                        <span>
+                            @stars_given/5
+                        </span>
+                    </div>
+
+                    <div class="col-9 pl-0 pr-0 pt-2 pb-2">
+                        <div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="@no_private_opinion" id="flexCheckDefault" @onchange="()=>no_private_opinion=!no_private_opinion">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Bez pisemnej opini
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row ml-0 mr-0 ">
+                    <div class="position-relative w-100">
+                        <textarea type="text" @bind="opinion_text" disabled="@no_private_opinion" @oninput="(ui => { opinion_text = (string) ui.Value;})" class="w-100 border-radius10" style="outline: none; height: 100px; resize: none; border: 1px solid grey;" maxlength="1500"></textarea>
+                        <span class="position-absolute" style="right:5px;bottom:5px; color:grey; user-select:none">
+                            @opinion_text.Length/1500
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row ml-0 mr-0 justify-content-lg-end d-flex mb-2">
+                    <button class="btn btn-dark" @onclick="Add_Opinion">Dodaj</button>
+                </div>
+            </div>
+        </div>
+        <div class="row ml-0 mr-0">
+            <div class="container">
+                @if (opinion.opinions_text is null || opinion.opinions_text.Count == 0)
+                {
+
+                }
+                else
+                {
+                    var l = (opinion.opinions_text.Count % test == 0) ? opinion.opinions_text.Count / test : opinion.opinions_text.Count / test + 1;
+
+                    <div class="row ml-0 mr-0 justify-content-end">
+                        <div>
+                            <select @bind="test" class="pr-2 pl-2 select-number">
+                                <option value="1">1</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                            </select>
+                            <button class="button" @onclick="(()=>page_number_selected = (page_number_selected == 1) ? 1 : page_number_selected - 1)">
+                                <i class="fas fa-caret-left"></i>
+                            </button>
+                            <select @bind="page_number_selected" class="pr-2 pl-2 form-select select-number">
+                                @for (int j = 0; j < l; j++)
+                                {
+                                    var index = j + 1;
+                                    <option value="@index">@index</option>
+                                }
+                            </select>
+                            <button class="button" @onclick="(()=>page_number_selected = (page_number_selected == l) ? l : page_number_selected + 1)">
+                                <i class="fas fa-caret-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    if (page_number_selected == l && opinion.opinions_text.Count % test != 0)
+                    {
+                        for (int i = (amount_opinion_on_page * page_number_selected) - amount_opinion_on_page; i < opinion.opinions_text.Count; i++)
+                        {
+                            <div class="row ml-0 mr-0 pt-4 pb-4 border-top-lightgrey border-bottom-lightgrey">
+                                <div class="col-2 pl-0 pr-0">
+                                    <div class="row ml-0 mr-0 justify-content-center">
+                                        <div class="col-4 pl-0 pr-0">
+                                            <i class="fas fa-user-circle item-center fa-3x" style="transform: translateY(-50%) translateX(-50%);"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="row ml-0 mr-0 justify-content-center" style="margin-top:10px;">
+                                        <div class="col-8 pl-0 pr-0 text-center">
+                                            <span>
+                                                @opinion.opinions_text[i].Nick
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-10 pl-0 pr-0">
+                                    <div class="row ml-0 mr-0 justify-content-between">
+                                        <div class="col-2 pl-0 pr-0">
+                                            <StarComponent rating="(double)opinion.opinions_text[i].star" />
+                                        </div>
+
+                                        <div class="col-2 pl-0 pr-0" style="text-align:end;">
+                                            <span>
+                                                @{ string date = Additional_Functions.How_long_ago(opinion.opinions_text[i].Date); }
+                                                @date
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row ml-0 mr-0 pt-2 text-justify">
+                                        @opinion.opinions_text[i].Text
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        for (int i = (test * page_number_selected) - test; i < test * page_number_selected; i++)
+                        {
+                            <div class="row ml-0 mr-0 pt-4 pb-4 border-top-lightgrey border-bottom-lightgrey">
+                                <div class="col-2 pl-0 pr-0">
+                                    <div class="row ml-0 mr-0 justify-content-center">
+                                        <div class="col-4 pl-0 pr-0">
+                                            <i class="fas fa-user-circle item-center fa-3x" style="transform: translateY(-50%) translateX(-50%);"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="row ml-0 mr-0 justify-content-center" style="margin-top:10px;">
+                                        <div class="col-8 pl-0 pr-0 text-center">
+                                            <span>
+                                                @opinion.opinions_text[i].Nick
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-10 pl-0 pr-0">
+                                    <div class="row ml-0 mr-0 justify-content-between">
+                                        <div class="col-2 pl-0 pr-0">
+                                            <StarComponent rating="(double)opinion.opinions_text[i].star" />
+                                        </div>
+
+                                        <div class="col-2 pl-0 pr-0" style="text-align:end;">
+                                            <span>
+                                                @{ string date = Additional_Functions.How_long_ago(opinion.opinions_text[i].Date); }
+                                                @date
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row ml-0 mr-0 pt-2 text-justify">
+                                        @opinion.opinions_text[i].Text
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                    }
+
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <span>Loading...</span>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public int ProductId { get; set; }
+    [Parameter]
+    public int Category { get; set; }
+
+    private int stars_given { get; set; }
+    private int amount_opinion_on_page { get; set; }
+    public int test { get { return this.amount_opinion_on_page; } set { page_number_selected = 1; this.amount_opinion_on_page = value; } }
+    public int page_number_selected { get; set; }
+    private string opinion_text { get; set; }
+    private bool no_private_opinion { get; set; }
+    private bool showform { get; set; }
+    private Opinions opinion { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Refresh_Component.opinionsComponent = this;
+        page_number_selected = 1;
+        amount_opinion_on_page = 10;
+        showform = false;
+        no_private_opinion = false;
+        opinion_text = "";
+        stars_given = 0;
+        opinion = await Additional_Functions.Read_Opinion_From_JSON(ProductId,env);
+
+        opinion.opinions_text?.Reverse();
+
+    }
+
+    private void ONopinion_text_Changed(string Value)
+    {
+        opinion_text = Value;
+    }
+
+    private async Task Add_Opinion()
+    {
+        List<Opinions> listopinions = await _data.LoadData<Opinions, dynamic>("Select * from Stars where productID=@product", new { @product = ProductId });
+        opinion = listopinions[0];
+
+        opinion.opinions++;
+        switch (stars_given)
+        {
+            case 0:
+                opinion.star0++;
+                break;
+            case 1:
+                opinion.star1++;
+                break;
+            case 2:
+                opinion.star2++;
+                break;
+            case 3:
+                opinion.star3++;
+                break;
+            case 4:
+                opinion.star4++;
+                break;
+            case 5:
+                opinion.star5++;
+                break;
+            default:
+                break;
+        }
+
+        opinion.rating = (float)(opinion.star1 + opinion.star2 * 2 + opinion.star3 * 3 + opinion.star4 * 4 + opinion.star5 * 5) / (float)opinion.opinions;
+
+
+        Opinions opinion2 = await Additional_Functions.Read_Opinion_From_JSON(ProductId,env);
+        if (opinion.opinions_text is not null)
+        {
+            opinion.opinions_text.Reverse();
+        }
+
+        opinion.opinions_text = opinion2.opinions_text;
+        if (opinion.opinions_text is null)
+        {
+            opinion.opinions_text = new List<Opinion>();
+        }
+        if (!no_private_opinion && opinion_text.Length > 15)
+        {
+            opinion.opinions_text.Add(new Opinion { Date = DateTime.Now, Nick = SimpleUserInfo.UserName, Text = opinion_text, star = stars_given });
+        }
+        await _data.Update("UPDATE Stars SET [rating] = @rating,[opinions] = @opinions,[star0] = @star0,[star1] = @star1,[star2] = @star2,[star3] = @star3,[star4] = @star4,[star5] = @star5 WHERE productID=@productID", new { @rating = opinion.rating, @opinions = opinion.opinions, @star0 = opinion.star0, @star1 = opinion.star1, @star2 = opinion.star2, @star3 = opinion.star3, @star4 = opinion.star4, @star5 = opinion.star5, @productID = ProductId });
+        await Additional_Functions.Edit_Opinion_JSON(opinion,env);
+        opinion = await Additional_Functions.Read_Opinion_From_JSON(ProductId,env);
+        if (opinion.opinions_text is not null)
+        {
+            opinion.opinions_text.Reverse();
+        }
+        opinion_text = "";
+        stars_given = 0;
+        showform = !showform;
+        StateHasChanged();
+    }
+
+    public void Refresh()
+    {
+        StateHasChanged();
+    }
+}

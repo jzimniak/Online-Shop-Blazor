@@ -1,0 +1,27 @@
+﻿.button-page {
+    border-radius: 10px;
+    width: 50px;
+    height: 100%;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    border: 1px solid darkgrey;
+}
+.text-error-span {
+    font-family: monospace;
+    font-size: 20px;
+    color: #bababa;
+    user-select: none;
+}
+.select-page-number {
+    -webkit-appearance: none;
+    border-radius: 5px;
+    outline: none;
+    width: 45px;
+    height: 35px;
+}
+.col-20-per {
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%
+}

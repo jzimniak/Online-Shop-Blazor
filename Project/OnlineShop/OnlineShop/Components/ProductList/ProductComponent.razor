@@ -1,0 +1,103 @@
+﻿
+@inject NavigationManager NavigationManager
+@inject Cart Cart
+@inject Refresh_Component Refresh_Component
+
+<div class="pr">
+    <div class="d-flex justify-content-center ml-auto mr-auto cursor-pointer" @onclick="@(()=>NavigationManager.NavigateTo(link))">
+        <img src="@Photo" style="max-width:90%;max-height:240px;" class="w-auto"/>
+    </div>
+    <div class="d-flex flex-column" style="height: 200px;">
+        <div class="row" @onclick="@(()=>NavigationManager.NavigateTo(link))">
+            <div class="col-sm">
+                <span class="text-wrapper" data-toggle="tooltip" title="@Name" data-placement="bottom" style="font-size:19px;">
+                    @Name
+                </span>
+            </div>
+        </div>
+
+        <div class="row cursor-pointer" @onclick="@(()=>NavigationManager.NavigateTo(link))">
+            <div style="flex:0 0 auto; margin-left:15px;" class="pr-0 position-relative w-auto">
+                <StarComponent rating="@rating" />
+            </div>
+
+            <div class="col-6 pl-2 ">
+                (@amount_of_opinions)
+            </div>
+        </div>
+
+        <div class="container cursor-pointer" @onclick="@(()=>NavigationManager.NavigateTo(link))">
+            @foreach (var item in Attributes)
+            {
+                <div class="row" style="font-size:13px;">
+                    <span class="text-wrapper">
+                        @item
+                    </span>
+                </div>
+            }
+        </div>
+
+        <div class="row flex-grow-1 pl-2 pr-2">
+            <div class="col-8 cursor-pointer font-size-20"  @onclick="@(()=>NavigationManager.NavigateTo(link))">
+                <span class="h-100 d-flex align-items-center" style="font-size:22px;">
+                    @((Price%1==0)? Price+",00 zł": Price + " zł")
+                </span>
+            </div>
+
+            <div class="col-4">
+                <button type="button" class="btn btn-success item-center" style="transform: translateY(-50%);" @onclick="()=>Add_Product_To_Cart()">
+                    <i class="fas fa-cart-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public float Price { get; set; }
+    [Parameter]
+    public string Name { get; set; }
+    [Parameter]
+    public string Photo { get; set; }
+    [Parameter]
+    public int ID { get; set; }
+    [Parameter]
+    public List<string> Attributes { get; set; }
+    [Parameter]
+    public float rating { get; set; }
+    [Parameter]
+    public int amount_of_opinions { get; set; }
+    [Parameter]
+    public string link { get; set; }
+
+
+    private void Add_Product_To_Cart()
+    {
+        if (Cart.items is null)
+        {
+            Cart.items = new List<Items>();
+        }
+
+        if (Cart.items.Any(x => x.name == this.Name))
+        {
+            int index = Cart.items.IndexOf(Cart.items.First(x => x.name == this.Name));
+
+            if (Cart.items[index].amount ==10)
+            {
+
+            }
+            else
+            {
+                Cart.items[index].amount = Cart.items[index].amount + 1;
+                Refresh_Component.topMenuComponent.Refresh();
+            }
+        }
+        else
+        {
+            Cart.items.Add(new Items() { amount = 1, id = this.ID, name = this.Name, photo = this.Photo, price = (decimal)this.Price });
+            Refresh_Component.topMenuComponent.Refresh();
+        }
+    }
+}

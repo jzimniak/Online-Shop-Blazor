@@ -1,0 +1,44 @@
+﻿@using System.IO
+@using Services
+@using Microsoft.Extensions.Configuration
+@using Models
+@using Microsoft.AspNetCore.Hosting
+
+@inject IWebHostEnvironment env
+@inherits LayoutComponentBase
+@inject IConfiguration _config
+@inject DistinctService distinctService
+
+
+<div class="page h-100">
+    <div class="sidebar">
+        <div class="container-fluid pr-0 pl-0 justify-content-center h-100">
+            <TopMenuComponent />
+        </div>
+    </div>
+    <div class="main-body h-100" style="min-height: calc(100% - 120px);">
+        @Body
+    </div>
+</div>
+
+@code
+{
+    protected async override Task OnInitializedAsync()
+    {
+        //await Additional_Functions.FillProductsWitfRandomOpinions(_config);
+        string x = env.WebRootPath;
+
+        if (!File.Exists(env.WebRootPath + $"\\json\\distinct.json"))
+        {
+            distinctService.json_Distinct = new Json_distinct();
+            await distinctService.json_Distinct.Laoddistinct(_config,env);
+
+        }
+        using (StreamReader r = new StreamReader(env.WebRootPath + $"\\json\\distinct.json"))
+        {
+            string json = r.ReadToEnd();
+            distinctService.json_Distinct = new Json_distinct();
+            distinctService.json_Distinct = JsonConvert.DeserializeObject<OnlineShop.Services.Json_distinct>(json);
+        }
+    }
+}

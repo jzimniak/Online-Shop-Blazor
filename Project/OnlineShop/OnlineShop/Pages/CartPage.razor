@@ -1,0 +1,191 @@
+﻿@page "/your-cart"
+@using Services
+
+@inject Cart Cart
+@inject Services.Refresh_Component Refresh_Component
+
+@if (isPurchaseComplete)
+{
+    <div class="d-flex w-100 justify-content-center mt-5">
+        <div class="row justify-content-center w-70">
+            <div class="alert alert-success mb-0" role="alert">
+                Produkty Zakupione! Zapraszamy Ponownie!
+            </div>
+        </div>
+    </div>
+}
+<div class="d-flex w-100 justify-content-center mt-5">
+    <div class="row mb-3 w-70">
+        @if (Cart.items is null || Cart.items.Count == 0)
+        {
+            <div class="container border-radius20 container-shadow">
+                <div class="row h-10vh border-bottom-lightgrey" style="border-radius: 20px 20px 0 0; ">
+                    <div class="col-8 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Produkt
+                        </span>
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Ilość
+                        </span>
+                    </div>
+                    <div class="col-2 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Cena
+                        </span>
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Usuń
+                        </span>
+                    </div>
+                </div>
+                <div class="row justify-content-center align-items-center h-10vh">
+                    <span class="empty-cart-span">
+                        Koszyk jest pusty! :(
+                    </span>
+                </div>
+                <div class="row h-10vh border-bottom-lightgrey" style="border-radius: 0px 0px 20px 20px; ">
+                    <div class="col-8 h-100 center-VERT-HOR-1">
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <span>
+                            SUMA:
+                        </span>
+                    </div>
+                    <div class="col-2 h-100 center-VERT-HOR-1">
+                        <span>
+                            0 zł
+                        </span>
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <button class="btn btn-success h-40" disabled>
+                            Kup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="container container-shadow border-radius20">
+                <div class="row h-10vh border-bottom-lightgrey" style="border-radius: 20px 20px 0 0;">
+                    <div class="col-8 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Produkt
+                        </span>
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Ilość
+                        </span>
+                    </div>
+                    <div class="col-2 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Cena
+                        </span>
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <span class="font-weight-bold">
+                            Usuń
+                        </span>
+                    </div>
+                </div>
+                @foreach (var item in Cart.items.Select((value, i) => new { i, value }))
+                {
+                    string backgroundColor = (item.i % 2 == 0) ? "background-color: whitesmoke;" : "background-color: white;";
+                    <div class="row h-10vh" style="@backgroundColor">
+                        <div class="col-2 h-100 pt-1 pb-1">
+                            <img class="image-center-HOR max-height-100 border-radius5" src="@item.value.photo" style="border: 1px solid #cacaca;" />
+                        </div>
+                        <div class="col-6 h-100">
+                            <span class="text-center-VERT">
+                                @item.value.name
+                            </span>
+                        </div>
+                        <div class="col-1 h-100 center-VERT-HOR-1">
+                            <EditForm Model="@item.value.amount">
+                                <InputSelect @bind-Value="@item.value.amount">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </InputSelect>
+                            </EditForm>
+                        </div>
+                        <div class="col-2 h-100 center-VERT-HOR-1">
+                            <span class="text-center-VERT">
+                                @(((item.value.price * item.value.amount)%1==0)? item.value.price * item.value.amount+".00 zł": item.value.price * item.value.amount+"zł")
+                            </span>
+                        </div>
+                        <div class="col-1 h-100 center-VERT-HOR-1">
+                            <button class="btn btn-danger del-btn" style="height:40%" @onclick="(()=>Delete_product(item.value))">
+                                <i class="fas fa-times del-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+                <div class="row border-top-lightgrey h-10vh" style="border-radius: 0px 0px 20px 20px;">
+                    <div class="col-8 h-100 center-VERT-HOR-1">
+
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <span>
+                            SUMA:
+                        </span>
+                    </div>
+
+                    @{ decimal? price = Cart.items.Sum((x) => x.price * x.amount);}
+                    <div class="col-2 h-100 center-VERT-HOR-1">
+                        <span>
+                            @((price%1==0)?price + ".00 zł" : price +" zł")
+                        </span>
+                    </div>
+                    <div class="col-1 h-100 center-VERT-HOR-1">
+                        <button class="btn btn-success" style="height:40%" @onclick="Buy_products">
+                            Kup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+@code {
+
+    private bool isPurchaseComplete { get; set; }
+
+    protected override void OnInitialized()
+    {
+        isPurchaseComplete = false;
+    }
+
+    private void Delete_product(Items itemToDelete)
+    {
+        Cart.items.Remove(itemToDelete);
+        Refresh_Component.topMenuComponent.Refresh();
+    }
+
+    private void Buy_products()
+    {
+        //some forms (address, name , cash/credit card ) etc..
+
+        //after every oparation is sucess and complete reset items in Cart
+
+        //for simple  demo version \/
+        isPurchaseComplete = true;
+
+        Cart.items.Clear();
+        Refresh_Component.topMenuComponent.Refresh();
+    }
+}

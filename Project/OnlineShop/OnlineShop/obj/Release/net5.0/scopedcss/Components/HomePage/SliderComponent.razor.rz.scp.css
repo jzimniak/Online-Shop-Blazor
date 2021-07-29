@@ -1,0 +1,7 @@
+.btn-i:hover .icon-change[b-ld9qaeshu7] {
+    font-size: 4em
+}
+.icon-change[b-ld9qaeshu7]{
+    font-size: 3em;
+    transition: font-size 250ms ease;
+}

@@ -1,0 +1,30 @@
+.del-btn:hover .del-icon[b-nez4vup3xn]{
+    animation-name:rotate-b-nez4vup3xn;
+}
+.del-icon[b-nez4vup3xn]{
+    animation-duration:500ms;
+}
+@keyframes rotate-b-nez4vup3xn{
+    0%{transform: rotate(0deg)}
+    100% {
+        transform: rotate(90deg)
+    }
+}
+.container-shadow[b-nez4vup3xn] {
+    box-shadow: 0 0 20px -10px black;
+}
+.h-10vh[b-nez4vup3xn] {
+    height: 10vh;
+}
+.border-bottom-lightgrey[b-nez4vup3xn] {
+    border-bottom: 1px solid lightgrey;
+}
+.empty-cart-span[b-nez4vup3xn] {
+    font-family: monospace;
+    font-size: 25px;
+    color: #bababa;
+    user-select: none;
+}
+.border-top-lightgrey[b-nez4vup3xn] {
+    border-top: 1px solid lightgrey;
+}

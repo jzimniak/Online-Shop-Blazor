@@ -1,0 +1,317 @@
+{
+  "JSONComputerCase": {
+    "Brand": [
+      "be quiet!",
+      "SilentiumPC"
+    ],
+    "Type": [
+      "Full Tower",
+      "Middle Tower"
+    ],
+    "Power_supply_type": [
+      "ATX"
+    ],
+    "Backlight": [
+      "ARGB",
+      "Bez podswietlenia"
+    ],
+    "Side_panel": [
+      "Szklo hartowane"
+    ],
+    "Motherboardstype": [
+    ]
+  },
+  "JSONMotherboard": {
+    "Brand": [
+      "Gigabyte",
+      "MSI"
+    ],
+    "Socket": [
+      "Socket 1151",
+      "Socket 1200",
+      "Socket AM4"
+    ],
+    "Chipset": [
+      "AMD B450",
+      "Intel B560",
+      "Intel Z390"
+    ],
+    "Memory_channel": [
+      "Dual-channel"
+    ],
+    "Multi_cards": [
+      "AMD CrossFireX",
+      "Nie"
+    ],
+    "Audio": [
+      "Realtek ALC892",
+      "Realtek ALC897"
+    ],
+    "Format": [
+      "ATX",
+      "mATX"
+    ]
+  },
+  "JSONGraphicCard": {
+    "Brand": [
+      "ASUS",
+      "Gigabyte",
+      "MSI",
+      "Zotac"
+    ],
+    "Card_bus": [
+      "PCI-E x16 3.0",
+      "PCI-E x16 4.0"
+    ],
+    "Producent": [
+      "AMD",
+      "NVIDIA"
+    ],
+    "Graphics_processing": [
+      "GeForce GT 1030",
+      "GeForce GTX 1660",
+      "GeForce GTX 1660 SUPER",
+      "GeForce RTX 2060",
+      "GeForce RTX 3060",
+      "GeForce RTX 3070",
+      "GeForce RTX 3080",
+      "GeForce RTX 3090",
+      "Radeon RX 6700 XT"
+    ],
+    "Rtx": [
+      "Nie",
+      "Tak"
+    ],
+    "Memory_type": [
+      "GDDR5",
+      "GDDR6",
+      "GDDR6X"
+    ],
+    "Cooling": [
+      "Aktywne",
+      "Pasywne"
+    ],
+    "Power_connectors": [
+      " 1x 8-pin",
+      "1x 8-pin",
+      "1x 8pin + 1x 6-pin",
+      "2x 8-pin",
+      "3x 8-pin",
+      "Brak"
+    ],
+    "Memory_Size": [
+      2048,
+      6144,
+      8192,
+      10240,
+      12288,
+      24576
+    ]
+  },
+  "JSONPowerSupply": {
+    "Brand": [
+      "be quiet!",
+      "Chieftec",
+      "Cooler Master",
+      "Corsair",
+      "Gigabyte"
+    ],
+    "Power": [
+      550,
+      600,
+      700,
+      850
+    ],
+    "Standard": [
+      "ATX",
+      "SFX"
+    ],
+    "Certificate": [
+      "80 PLUS",
+      "80 PLUS Bronze",
+      "80 PLUS Gold",
+      "80 PLUS Platinum"
+    ],
+    "Cables_types": [
+      "Modularny",
+      "Niemodularny"
+    ],
+    "Pfc": [
+      "Aktywny"
+    ]
+  },
+  "JSONProcessor": {
+    "Brand": [
+      "AMD",
+      "Intel"
+    ],
+    "Family": [
+      "AMD Ryzen",
+      "Intel Core i3",
+      "Intel Core i5",
+      "Intel Core i7",
+      "Intel Core i9"
+    ],
+    "Socket": [
+      "Socket 1151",
+      "Socket 1200",
+      "Socket 2066",
+      "Socket AM4",
+      "Socket sWRX8"
+    ],
+    "Arch": [
+      "Cofee Lake",
+      "Comet Lake (10 generacja)",
+      "Rocket Lake (11 generacja)",
+      "Zen 2",
+      "Zen 3"
+    ],
+    "Cores": [
+      4,
+      6,
+      8,
+      10,
+      16
+    ],
+    "Cache": [
+      "12 MB",
+      "16 MB",
+      "20 MB",
+      "22 MB",
+      "35 MB",
+      "6 MB",
+      "72 MB",
+      "9 MB"
+    ],
+    "Processor_graphic": [
+      "Brak",
+      "Intel UHD Graphics 630",
+      "Intel UHD Graphics 750"
+    ],
+    "Memory_types": [
+      "DDR4-2666 (PC4-21333)",
+      "DDR4-2933 (PC4-23466)",
+      "DDR4-3200 (PC4-25600)"
+    ],
+    "Lithography": [
+      "14 nm",
+      "7 nm"
+    ]
+  },
+  "JSONProduct": {
+    "Brand": null,
+    "Warranty": [
+      "24 miesiace (gwarancja producenta)",
+      "36 miesiecy (gwarancja producenta)",
+      "60 miesiecy (gwarancja producenta)",
+      "72 miesiace (gwarancja producenta)",
+      "dozywotnia (gwarancja producenta)"
+    ]
+  },
+  "JSONRadiator": {
+    "Brand": [
+      "be quiet!",
+      "MSI",
+      "Noctua",
+      "SilentiumPC"
+    ],
+    "Rps": [
+      "250 - 1600 obr./min.",
+      "300 - 1500 obr./min.",
+      "500 - 2000 obr./min",
+      "800 - 2300 obr./min.",
+      "do 1500 obr./min."
+    ],
+    "Socket": [
+    ],
+    "Cooling_type": [
+      "Aktywne",
+      "Wodne"
+    ],
+    "Bearing": [
+      "Dual Ball Dynamic Bearing",
+      "Hydraulic Bearing",
+      "Rifle Bearing",
+      "SSO-pressure Bearing"
+    ],
+    "Connectors": [
+      "4 PIN PWM + 2x 3 PIN ARGB",
+      "4 PIN PWM + 3 PIN ARGB",
+      "4 PIN PWM + 4 PIN RGB",
+      "4-pin PWM"
+    ]
+  },
+  "JSONRam": {
+    "Brand": [
+      "Crucial",
+      "GOODRAM",
+      "HyperX",
+      "Patriot"
+    ],
+    "Memory_size_full": [
+      8,
+      16
+    ],
+    "Items": [
+      1,
+      2
+    ],
+    "Series": [
+      "Ballistix",
+      "Fury",
+      "Fury RGB",
+      "IRDM PRO",
+      "IRDM X",
+      "Viper Elite"
+    ],
+    "Memory_type": [
+      "DDR3 SODIMM",
+      "DDR4"
+    ],
+    "Frequency": [
+      "1600 MHz (PC3-12800)",
+      "2666 MHz (PC4-21300)",
+      "3200 MHz (PC4-25600)",
+      "3600 MHz (PC4-28800)"
+    ],
+    "Cycle_latency": [
+      "CL 11",
+      "CL 16",
+      "CL 17"
+    ],
+    "Cooling": [
+      "Brak",
+      "Radiator"
+    ]
+  },
+  "JSONDisc": {
+    "Brand": [
+      "Crucial",
+      "GOODRAM",
+      "Samsung",
+      "Seagate",
+      "WD"
+    ],
+    "Destiny": [
+      "PC"
+    ],
+    "Type": [
+      "HDD",
+      "SSD"
+    ],
+    "Format": [
+      "2.5\"",
+      "3.5\"",
+      "M.2"
+    ],
+    "Interfaces": [
+      "2,5\" SATA",
+      "M.2 PCIe NVMe 3.0 x4",
+      "SATA III (6.0 Gb/s) - 1 szt."
+    ],
+    "Memory_type": [
+      "Brak",
+      "TLC"
+    ]
+  }
+}

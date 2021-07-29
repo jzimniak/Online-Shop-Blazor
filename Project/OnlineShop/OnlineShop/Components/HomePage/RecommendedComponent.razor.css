@@ -1,0 +1,16 @@
+﻿.btn-ir:hover .iconr{
+    margin-left:20px;
+}
+
+.iconr {
+    margin-left: 0;
+    transition: margin-left 250ms ease;
+}
+.btn-il:hover .iconl {
+    margin-right: 20px;
+}
+
+.iconl {
+    margin-right: 0;
+    transition: margin-right 250ms ease;
+}

@@ -1,0 +1,138 @@
+﻿.h-85{
+    height:85%;
+}
+.h-15{
+    height:15%;
+}
+.photo-mini{
+    border-radius:10px;
+    max-width:100%;
+    height:auto;
+    top:0;
+    bottom:0;
+    position:absolute;
+    margin:auto;
+}
+.photo-mini-2 {
+    height: 90%;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    margin: auto;
+}
+.photo_border_not_selected-2 {
+    flex: 0 0 5%;
+    padding: 0px;
+    border-radius: 10px;
+    border: 1px solid lightgrey;
+    margin: 0 0.25% 0 0.25%;
+    min-height: 0;
+    min-width: 0;
+    max-width: 5%;
+}
+
+.photo_border_selected-2 {
+    flex: 0 0 5%;
+    padding: 0px;
+    border-radius: 10px;
+    border: 2px solid grey;
+    margin: 0 0.25% 0 0.25%;
+    min-height: 0;
+    min-width: 0;
+    max-width: 5%;
+}
+.photo_border_not_selected {
+    flex: 0 0 18%;
+    padding: 0px;
+    border-radius: 10px;
+    border: 1px solid lightgrey;
+    margin: 0 1% 0 1%;
+    min-height: 0;
+    min-width: 0;
+    max-width: 18%;
+}
+.photo_border_selected {
+    flex: 0 0 18%;
+    padding: 0px;
+    border-radius: 10px;
+    border: 2px solid grey;
+    margin: 0 1% 0 1%;
+    min-height: 0;
+    min-width: 0;
+    max-width: 18%;
+}
+.item-center {
+    position: relative;
+    top: 50%;
+    left: 50%;
+}
+.shadow_button_photos_right {
+    border-radius: 0px 20px 20px 0px;
+    padding: 0;
+    -ms-flex: 0 0 10%;
+    flex: 0 0 10%;
+    max-width: 10%;
+}
+
+.shadow_button_photos_letf {
+    border-radius: 20px 0 0 20px;
+    padding: 0;
+    -ms-flex: 0 0 10%;
+    flex: 0 0 10%;
+    max-width: 10%;
+}
+.custom_col-10 {
+    -ms-flex: 0 0 80%;
+    flex: 0 0 80%;
+    max-width: 80%;
+}
+.left-i {
+    font-size:1rem;
+    color: black;
+    transition: font-size 0.5s;
+}
+.icon-change-left:hover > .left-i {
+    font-size:1.8rem;
+}
+.opacity {
+    animation-name:opa;
+    animation-duration:200ms;
+}
+@keyframes opa{
+    0% {
+        opacity:0;
+    }
+    100% {
+        opacity:1
+    }
+}
+.right-i {
+    font-size: 1rem;
+    color: black;
+    transition: font-size 0.5s;
+}
+.icon-change-right:hover > .right-i {
+    font-size: 1.8rem;
+}
+
+
+.left-i1 {
+    font-size: 1rem;
+    color: black;
+    transition: font-size 0.5s;
+}
+.icon-change-left1:hover > .left-i1 {
+    font-size: 1.8rem;
+}
+
+.right-i1 {
+    font-size: 1rem;
+    color: black;
+    transition: font-size 0.5s;
+}
+.icon-change-right1:hover > .right-i1 {
+    font-size: 1.8rem;
+}
+
+
+
